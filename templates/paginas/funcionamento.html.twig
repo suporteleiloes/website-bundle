@@ -1,0 +1,240 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    <title>Dúvidas frequentes | {{sl.nome_site}}</title>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('funcionamento') }}
+
+    <style>
+        .item ul, .item ul li{
+            list-style: circle !important;
+        }
+        .item ul li{
+            margin-bottom: 15px;
+            font-size: 14px;
+            letter-spacing: 0.04em;
+            line-height: 1.4;
+        }
+        .item ul li strong{
+            display: block;
+        }
+        .item ul li span{
+            display: block;
+            padding: 5px 0 0 15px;
+        }
+    </style>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('funcionamento') }}
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script>
+        $(document).ready(function(e) {
+            $('.btnMenu').click(function(){
+                $(this).toggleClass('change');
+                $(".menu").slideToggle();
+            });
+            
+            $('.funcionamento a').addClass('ativo');
+        });
+    </script>
+{% endblock %}
+
+{% block body %}
+    <section class="show-participar">
+            <div class="center">
+                <ul class="navBar">
+                    <li>
+                        <a>Como funcionam os leilões?</a>
+                    </li>
+                    <li>
+                        <a>Como posso participar do leilão?</a>
+                    </li>
+                    <li>
+                        <a>De onde vêm os bens vendidos em leilão?</a>
+                    </li>
+                    <li>
+                        <a>Como faço para visitar os bens que estão em leilão?</a>
+                    </li>
+                    <li>
+                        <a>Os imóveis de leilão estão ocupados?</a>
+                    </li>
+                    <li>
+                        <a>Quero arrematar um imóvel, mas ele está ocupado. Como e quando terei a sua posse? </a>
+                    </li>
+                    <li>
+                        <a>Quais as formas de pagamento no leilão?</a>
+                    </li>
+                    <li>
+                        <a>Para pagamento parcelado é necessária a aprovação de crédito?</a>
+                    </li>
+                    <li>
+                        <a>Posso cobrir uma proposta à vista com um lance parcelado?</a>
+                    </li>
+                    <li>
+                        <a>Como é realizado o pagamento da arrematação em cada Tribunal?</a>
+                    </li>
+                    <li>
+                        <a>Como é realizado o pagamento da comissão da Leiloeira?</a>
+                    </li>
+                    <li>
+                        <a>O que é incremento?</a>
+                    </li>
+                    <li>
+                        <a>Posso vender um bem de minha propriedade, através do leilão da SARAIVA LEILÕES?</a>
+                    </li>
+                    <li>
+                        <a>Possui mais imagens dos bens?</a>
+                    </li>
+
+                    <li>
+                        <a>Quais os procedimentos após arrematação? </a>
+                    </li>
+                </ul>
+
+                <div class="showInfos">
+                    <div class="item ativo">
+                        <ul>
+                            <li>Leilão é uma modalidade de venda, que permite a disputa de preços entre os interessados. Quem pagar mais leva o bem.</li>
+                            <li>O leilão pode ocorrer de três formas: </li>
+                            <li><strong>Presencial</strong>
+                            <span>É realizado em auditório, com a presença da Leiloeira e dos interessados.<br>
+                            A Leiloeira anuncia os bens e o preço mínimo que pode aceitar, e as pessoas presentes fazem as suas ofertas, ou seja, dão os “lances”.</span></li>
+                            <li><strong>Eletrônico</strong>
+                            <span>Ele é realizado apenas no site da Leiloeira, e para participar é necessário se cadastrar e pedir a habilitação antecipadamente.</span></li>
+                            <li><strong>Simultâneo</strong>
+                            <span>Esta modalidade é a junção do leilão presencial com o leilão eletrônico. Ele ocorre no site e no auditório da Leiloeira. As pessoas presentes no auditório acompanham em um telão os lances ofertados no site.<br>
+                            Os lances oferecidos pelos presentes no auditório, são inseridos em tempo real no site, permitindo assim o acompanhamento de quem está on line. Desta forma, é possível a disputa e participação de todos em igualdade de condições.</span></li>
+                        </ul>
+                    </div>
+
+                    <div class="item">
+                        <ul>
+                            <li>A <a style="font-weight: bold;">SARAIVA LEILÕES</a> realiza leilões nas três formas: Presencial, Eletrônico e Simultâneo (presencial e online). </li>
+                            <li>Para participar do leilão presencial ou simultâneo, no auditório da Leiloeira, é só comparecer ao local na data e hora determinados no Edital de Leilão.</li>
+                            <li>Para participar do leilão eletrônico (on line) basta se cadastrar em nosso site e solicitar a habilitação no leilão. </li>
+                        </ul>
+                    </div><!---->
+
+                    <div class="item">
+                        <ul>
+                            <strong>Diversas são as origens. Exemplos:</strong>
+                            <li><span>Pode ser devido a um Processo Judicial, onde o Juiz determinou a venda para o ressarcimento de alguma dívida (<a style="font-weight: bold;">Leilão Judicial</a>).</span></li>
+                            <li><span>Pode ser devido a Alienação Fiduciária, isto é, quando deixou de pagar um financiamento seja de imóvel ou de veículo (<a style="font-weight: bold;">Leilão Extrajudicial</a>).</span></li>
+                            <li><span>Mas também pode ser particular, porque uma empresa, ou mesmo uma pessoa, pode vender através de leilão os bens que não lhe interessa mais (<a style="font-weight: bold;">Leilão Particular</a>).</span></li>
+                        </ul>
+                    </div><!---->
+
+                    <div class="item">
+                        <ul>
+                            <p>Vai depender do tipo de leilão. Vejamos:</p>
+                            <li><strong>Bens de Leilão Judicial</strong>Os bens de Leilão Judicial, muitas vezes ficam na posse do réu (fiel depositário) até que sejam vendidos.<br>
+                            É dever do réu exibir o bem aos interessados, mas nem sempre ele cumpre com esta obrigação espontaneamente.<br>
+                            Neste caso é necessário que o Juiz intime o réu para agendar data e horário para visitação, porque não é permitido adentrar numa moradia ou empresa sem a autorização do proprietário ou ordem de um Juiz.</li>
+
+                            <li>No caso de bens móveis, a localização do bem é informada pelo Oficial de Justiça no ato da Avaliação e consta do Edital de Leilão. </li>
+
+                            <li><strong>Bens de Leilão Extrajudicial</strong>
+                            Os veículos de Leilão Extrajudicial ficam armazenados no pátio do Leiloeiro, e no Edital de Leilão é informada a data e horário de visitação.<br>
+                            No caso de Leilão Extrajudicial de imóvel, a informação sobre visitação deverá constar do Edital de Leilão.</li>
+
+                            <li><strong>Bens de Leilão Particular</strong>
+                            Neste caso, os bens sempre são disponibilizados para visitação, a data e horário são agendados com a Leiloeira.</li>
+                        </ul>
+                    </div><!---->
+
+                    <div class="item">
+                        <ul>
+                            <li>Na maioria das vezes sim, mas nem por isso deixa de ser um excelente negócio, pois o preço é muito mais baixo que o de mercado. Eventualmente pode haver algum imóvel desocupado em leilão. </li>
+                        </ul>
+                    </div><!---->
+
+                    <div class="item">
+                        <ul>
+                            <li>No Leilão Judicial a posse é dada pelo Juiz, assim <a style="text-decoration: underline;">não é necessária a Ação de Despejo.</a></li>
+                            <li>Os procedimentos até a posse são os seguintes: </li>
+                            <li><span>No ato do leilão o Leiloeiro expede o “<a style="font-weight: bold;">Auto de Arrematação</a>”, que é apresentado no Processo juntamente com o comprovante do pagamento, seja do sinal, se o pagamento for parcelado, ou do total se o pagamento for à vista.</span></li>
+                            <li><span>Homologada a arrematação pelo Juiz, é expedida a “<a style="font-weight: bold;">Carta de Arrematação</a>” pela secretaria.</span></li>
+                            <li><span>Com a “<a style="font-weight: bold;">Carta de Arrematação</a>” o arrematante irá registrar o imóvel em seu nome diretamente no Cartório de Registro de Imóveis, pois não é necessário fazer Escritura.</span></li>
+                            <li><span>Juntamente com a Carta de Arrematação o Juiz determina a “<a style="font-weight: bold;">Ordem de imissão na posse</a>”. Esta ordem obriga a entrega do bem ao arrematante.</span></li>
+                            <li><a style="font-weight: bold;">Quanto ao tempo</a>, não é possível afirmar ou garantir, porém em média, pode-se dizer que leva de três a seis meses, mas este tempo pode ser menor ou maior, e isto vai depender de eventuais recursos e do volume de trabalho das Varas.</li>
+                        </ul>
+                    </div><!---->
+
+                    <div class="item">
+                        <ul>
+                            <li>A forma preferencial de pagamento é à vista, mas se não houver lance para pagamento à vista, o Juiz poderá autorizar o pagamento parcelado (no caso de imóvel), e isto é informado no Edital de Leilão.</li>
+                            <li>O Código de Processo Civil (Art. 895) autoriza o pagamento parcelado da seguinte forma: um sinal de no mínimo 25% mais comissão da leiloeira, em 24 horas, e o restante em até 30 parcelas consecutivas. Porém, caberá ao Juiz determinar se será aceito o pagamento parcelado e qual será o número de parcelas.</li>
+                        </ul>
+                    </div><!---->
+
+                    <div class="item">
+                        <ul>
+                            <strong>O parcelamento não requer nenhuma consulta de crédito.</strong>
+                            <li>Em Leilão Judicial não é aceito o pagamento com Cartão, Carta de Crédito ou Fundo de Garantia.</li>
+                        </ul>
+                    </div><!---->
+
+                    <div class="item">
+                        <ul>
+                            <li>O Código de Processo Civil no art. 895, § 7º, determina que os lances para pagamento à vista sempre prevalecerão sobre os lances parcelados.</li>
+                        </ul>
+                    </div><!---->
+
+                    <div class="item">
+                        <ul>
+                            <li><strong>Leilão do TJMG</strong>O pagamento da arrematação é realizado através de guia judicial e o comprovante deverá ser enviado à Leiloeira para juntar no processo, até às 12 horas do próximo dia útil.</li>
+                            <li><strong>Leilão da Justiça do Trabalho</strong>
+                            Nos leilões presenciais, o pagamento da arrematação é realizado através de cheque, que será entregue à Leiloeira no ato do leilão.<br>
+                            Nos leilões eletrônicos, o pagamento é realizado através de guia judicial e o comprovante do pagamento deverá ser enviado à Leiloeira para juntar no processo até as 12 horas do próximo dia útil.</li>
+                            <li><strong>Leilão da Justiça Federal</strong>
+                            O pagamento da arrematação é realizado pelo Arrematante, na Agência da Caixa Econômica Federal localizada na Justiça Federal de Belo Horizonte, e o comprovante deverá ser enviado à Leiloeira para comprovação no processo, até as 12 horas do próximo dia útil.</li>
+                        </ul>
+                    </div><!---->
+
+                    <div class="item">
+                        <ul>
+                            <li>O pagamento da comissão da Leiloeira é realizado através de cheque, ou TED no ato do leilão, diretamente na sua conta bancária.</li>
+                            <li><strong>ALERTA: NUNCA DEPOSITE A COMISSÃO DE QUALQUER LEILOEIRO EM CONTA DE EMPRESA OU TERCEIROS. SE FIZER ISTO ESTARÁ CONTRIBUINDO COM FRAUDE, CRIME DE SONEGAÇAO DE TRIBUTOS E PODERÁ SER RESPONSABILIZADO POR ISTO.</strong></li>
+                        </ul>
+                    </div><!---->
+
+                    <div class="item">
+                        <ul>
+                            <li>É o acréscimo mínimo a ser ofertado em cima do último lance.</li>
+                        </ul>
+                    </div><!---->
+
+                    <div class="item">
+                        <ul>
+                            <li>Sim. A SARAIVA LEILÕES também realiza leilões particulares.<br>
+                            Para maiores informações, entre em contato pelo telefone (31) 3207-3900.</li>
+                        </ul>
+                    </div><!---->
+
+                    <div class="item">
+                        <ul>
+                            <li>Infelizmente não. Em nosso site colocamos fotos que estão disponíveis no google ou que foram disponibilizadas no processo.</li>
+                        </ul>
+                    </div><!---->
+
+                    <div class="item">
+                        <ul>
+                            <li>Seu próximo passo é EFETUAR OS PAGAMENTOS (comissão e arrematação) e enviar os comprovantes para Leiloeira;</li>
+                            <li>Com os comprovantes, a Leiloeira irá juntar no processo o AUTO DE ARREMATAÇÃO. Assim, o Juiz e as partes terão ciência do resultado do leilão;</li>
+                            <li>Homologada a arrematação pelo Juiz, é expedida a CARTA DE ARREMATAÇÃO pela secretaria;</li>
+                            <li>Com a CARTA DE ARREMATAÇÃO você irá registrar o imóvel em seu nome diretamente no Cartório de Registro de Imóveis OU transferir a titularidade do veículo junto ao DETRAN;</li>
+                            <li>Conforme for o seu caso, também será expedida a ORDEM DE ENTREGA (bem móvel) OU mandado de IMISSÃO NA POSSE (bem imóvel); </li>
+                            <li>PRONTINHO! Sua arrematação foi concretizada e finalizada com SUCESSO!</li>
+                        </ul>
+                    </div><!---->
+
+                </div>
+            </div>
+        </section>
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('cadastro.externo') }}
+{% endblock %}
+
+{% block body %}
+    <div class="cadastro-externo">
+        <iframe src="{{ CADASTRO_URL }}?origin=__{{ absolute_url('/') }}__" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </div>
+{% endblock %}

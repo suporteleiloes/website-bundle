@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    <title>Newsletter Cadastrada :)</title>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('app') }}
+
+    <style>
+        .show-msg{
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            padding: 50px 0 70px 0;
+        }
+        .show-msg p{
+            text-align: center;
+            width: 100%;
+        }
+        .show-msg p a{
+            color: #b17575;
+            margin-top: 4px;
+            display: block;
+        }
+    </style>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('app') }}
+{% endblock %}
+
+{% block body %}
+    <div class="show-msg">
+        <h4 class="site-title1">Opa! A sua inscrição em nossa Newsletter foi feita com <span style="color: #45c126;">sucesso</span>!</h4>
+        <p>Agora estamos conectados também por e-mail. Fique atento(a) para não perder nenhuma de nossas novidades :)</p>
+    </div>
+{% endblock %}

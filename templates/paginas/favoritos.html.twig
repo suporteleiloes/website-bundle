@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    <title>Bens Favoritos | {{sl.nome_site}}</title>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('favoritos') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('favoritos') }}
+
+    <script>
+        $(document).ready(function(e) {
+            $('.favoritos a').addClass('ativo');
+        });
+    </script>
+{% endblock %}
+
+{% block body %}
+
+{% endblock %}

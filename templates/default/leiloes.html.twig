@@ -1,0 +1,101 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    <title>Agenda de Leilões | {{ sl.nome_site }}</title>
+{% endblock %}
+
+{% block metas %}
+    {{ parent() }}
+    {#<meta name="description" content=""/>
+    <meta name="keywords" content=""/>
+    <meta property="og:title" content="Agenda de Leilões | {{sl.nome_site}}"/>
+    <meta property="og:description" content=""/>
+    <meta property="og:url" content="{{ url(app.request.get('_route')) }}"/>
+    <meta property="og:image" content=""/>
+    <meta property="og:image:width" content="">
+    <meta property="og:image:height" content="">
+    <meta property="og:phone_number" content="">#}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script>
+        $(document).ready(function(e) {
+            $('.leiloes a').addClass('ativo');
+        });
+    </script>
+
+    <script type="text/javascript">
+        var filtro = "{{ filtro }}";
+    </script>
+    {{ encore_entry_script_tags('agenda') }}
+{% endblock %}
+
+{% block body %}
+    <div class="default-subpage leiloes-page">
+        <div class="filtro-leiloes">
+            <nav class="navFiltros">
+                <ul>
+                    <li>
+                        <a href="{{ path('leiloes') }}" class="recentes">
+                            <span>Leilões Atuais</span>
+                        </a>
+                    </li>
+
+                    {% if LISTA_LEILOES_MOSTRAR_JUDICIAIS %}
+                    <li>
+                        <a href="{{ path('leiloes', {filtro: 'judiciais'}) }}" class="judiciais">
+                            <span>Judiciais</span>
+                        </a>
+                    </li>
+                    {% endif %}
+
+                    {% if LISTA_LEILOES_MOSTRAR_EXTRAJUDICIAIS %}
+                    <li>
+                        <a href="{{ path('leiloes', {filtro: 'extrajudiciais'}) }}" class="extrajudiciais">
+                            <span>Extrajudiciais</span>
+                        </a>
+                    </li>
+                    {% endif %}
+
+                    {% if LISTA_LEILOES_MOSTRAR_VENDA_DIRETA %}
+                        <li>
+                            <a href="{{ path('leiloes', {filtro: 'vendaDireta'}) }}" class="encerrados">
+                                <span>Venda Direta</span>
+                            </a>
+                        </li>
+                    {% endif %}
+
+                    {% if LISTA_LEILOES_MOSTRAR_ENCERRADOS %}
+                    <li>
+                        <a href="{{ path('leiloes', {filtro: 'encerrados'}) }}" class="encerrados">
+                            <span>Encerrados</span>
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+        <div class="center-1200">
+            
+                <h2 class="site-title1"><span>Agenda</span> de Leilões <a href="{{ print_route }}" target="_blank" class="ml-2"><small><i class="fa fa-print"></i> imprimir </small></a></h2>
+                <div class="agenda-leiloes">
+                    {% for leilao in leiloes %}
+                        {{ include('default/includes/inc.leilao-tab.html.twig', {leilao: leilao, _loop: loop}, with_context = false) }}
+                    {% endfor %}
+                    {% if not leiloes|length %}
+                        <div class="m-b-lg">Nenhum leilão</div>
+                        <div class="clearfloat"></div>
+                    {% endif %}
+                </div>
+            
+        </div>
+    </div>
+{% endblock %}

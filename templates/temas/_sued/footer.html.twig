@@ -1,0 +1,63 @@
+<footer>
+    <div class="center">
+        <div class="cont-colunas">
+            <div class="col">
+                <h6>Instagram FEED</h6>
+                <div>
+                    <a href="https://www.instagram.com/suedpeterleiloes_" target="_blank"><img width="100%" src="{{ asset('client/sued/instagram_feed.png') }}"/></a>
+                    <div><small><a href="https://www.instagram.com/suedpeterleiloes_" target="_blank" style="color: #c1f0ff">Siga-nos no instagram @suedpeterleiloes_</a></small></div>
+                </div>
+            </div><!-- Col 1 -->
+
+            <div class="col">
+                <h6>Youtube FEED</h6>
+                <div>
+                    <iframe width="100%" height="auto" src="https://www.youtube.com/embed/flMOpS0e_yE" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    <div><small><a href="https://www.youtube.com/channel/UC59Cf0KlNXv9WOMG3XL2jDw" target="_blank" class="btn btn-sm btn-danger text-uppercase" style="font-size: 11px">Inscreva-se em nosso canal</a></small></div>
+                </div>
+            </div><!-- Col 2 -->
+
+            <div class="col">
+                <h6>Fale Conosco</h6>
+                <li><a href="mailto:{{ EMAIL_CONTATO }}">{{ EMAIL_CONTATO }}</a></li>
+
+                <ul class="lista-social">
+                    {% if SL_FACEBOOK is not empty %}
+                        <li><a href="{{ SL_FACEBOOK }}" target="_blank"><i class="fab fa-facebook-f"></i></a></li>
+                    {% endif %}
+                    {% if SL_TWITTER is not empty %}
+                        <li><a href="{{ SL_TWITTER }}" target="_blank"><i class="fab fa-twitter"></i></a></li>
+                    {% endif %}
+                    {% if SL_INSTAGRAM is not empty %}
+                        <li><a href="{{ SL_INSTAGRAM }}" target="_blank"><i class="fab fa-instagram"></i></a></li>
+                    {% endif %}
+                    {% if SL_LINKEDIN is not empty %}
+                        <li><a href="{{ SL_LINKEDIN }}" target="_blank"><i class="fab fa-linkedin-in"></i></a></li>
+                    {% endif %}
+                    {% if SL_YOUTUBE is not empty %}
+                        <li><a href="{{ SL_YOUTUBE }}" target="_blank"><i class="fab fa-youtube"></i></a></li>
+                    {% endif %}
+                    {% if SL_WHATSAPP is not empty %}
+                        <li><a href="{{ SL_WHATSAPP }}" target="_blank"><i class="fab fa-whatsapp"></i></a></li>
+                    {% endif %}
+                </ul>
+            </div><!-- Col 3 -->
+
+            <div class="col">
+                <h6>Newsletter</h6>
+                <p>Inscreva-se aqui e receba nossos informes sobre os leilões e bens disponíveis. Não perca boas oportunidades!</p>
+
+                <form>
+                    <div class="position">
+                        <input type="" name="" placeholder="Digite seu melhor e-mail">
+                        <button type="submit">Inscrever</button>
+                    </div>
+                </form>
+
+                <div class="selo">
+                    <a href="https://www.suporteleiloes.com" target="_blank"><img src="{{ asset('build/images/selo.png') }}" alt="Selo"></a>
+                </div>
+            </div><!-- Col 4 -->
+        </div>
+    </div><!-- / END Center -->
+</footer>

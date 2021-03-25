@@ -1,0 +1,68 @@
+<header>
+    <div class="center-full">
+        <div class="btnMenu">
+            <div class="bar1"></div>
+            <div class="bar2"></div>
+            <div class="bar3"></div>
+        </div>
+
+        <div class="col1 logo">
+            <div class="cont-logo">
+                <a href="{{ path('home') }}" class="logo"><img src="{{ asset('client/'~CLIENT~'/logo-white.png') }}" alt="{{ sl.nome_leiloeiro }}" style="max-height: 68px"></a>
+            </div>
+        </div><!--/-->
+                
+        <div class="login-header">
+            <ul>
+                <li class="show-logged">
+                    <div class="logged-in-menu text-white">Olá, <strong id="logged-username">{{ app.request.cookies.get('sl_session-person')|split(' ')|first }}</strong>!</div>
+                </li>
+                <li class="show-logged">
+                    <a class="btn btn-xs text-white" href="{{ path('conta') }}">Minha conta</a>
+                </li>
+                {#<li class="show-logged"><a class="btn btn-danger btn-xs btn-logout" href="{{ path('api_logout') }}">Sair</a></li>#}
+
+                <li class="cadastro hide-logged"><a href="{{ path('cadastro') }}">Cadastre-se</a></li>
+                <li class="login hide-logged"><a href="{{ path('login') }}">Entrar</a></li>
+            </ul>
+        </div><!--/-->
+    </div><!-- END Center Full -->
+
+    <nav>
+        <div class="center">
+            <ul class="menu">
+                <li class="">
+                    <a href="{{ path('home') }}" class="ativo">Home</a>
+                </li>
+
+                <li class="">
+                    <a href="{{ path('leiloes') }}">Leilões</a>
+                </li>
+
+                <li class="">
+                    <a href="{{ path('funcionamento') }}">Como Participar</a>
+                </li>
+
+                <li class="">
+                    <a href="{{ path('leiloeiro') }}">Leiloeiro</a>
+                </li>
+                
+                <li class="">
+                    <a href="#">Blog</a>exit
+                </li>
+
+                <li>
+                    <a href="{{ path('contato') }}">Fale Conosco</a>
+                </li>
+
+                <li><a href="#">Consulta de documentos</a></li>
+
+                <div class="favs-header">
+                    <a href="#">
+                        Favoritos <i class="far fa-heart"></i> 0
+                    </a>
+                </div>
+            </ul>
+        </div><!-- END Center -->
+    </nav><!-- END Menu -->
+</header><!-- END Header -->

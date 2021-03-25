@@ -1,0 +1,102 @@
+<header>
+    <div class="row-1">
+        <div class="center">
+            <div class="cont-logo">
+                <a href="{{ path('home') }}" class="logo" style="background-image: url({{ '"'~asset('client/'~CLIENT~'/logo.png')~'"' }})">{{ sl.nome_leiloeiro }}</a>
+                <a href="{{ path('home') }}" class="logo-mobile" style="background-image: url({{ '"'~asset('client/'~CLIENT~'/logo-mobile.png')~'"' }})">{{ sl.nome_leiloeiro }}</a>
+            </div><!---->
+
+            <div class="cont-auth">
+                <ul>
+                        <li class="show-logged">
+                            <div class="logged-in-menu">Olá, <strong id="logged-username">{{ app.request.cookies.get('sl_session-person')|split(' ')|first }}</strong>!</div>
+                        </li>
+                        <li class="show-logged">
+                            <a class="btn btn-primary btn-xs" href="{{ path('conta') }}">Minha conta</a>
+                        </li>
+                        {#<li class="show-logged"><a class="btn btn-danger btn-xs btn-logout" href="{{ path('api_logout') }}">Sair</a></li>#}
+
+                        <li class="cadastro hide-logged"><a href="{{ path('cadastro') }}">Cadastre-se</a></li>
+                        <li class="login hide-logged"><a href="{{ path('login') }}">Login</a></li>
+
+                </ul>
+            </div>
+        </div><!-- / END Center -->
+    </div>
+
+    <nav>
+        <div class="center">
+            <div class="btnMenu">
+                <div class="bar1"></div>
+                <div class="bar2"></div>
+                <div class="bar3"></div>
+            </div>
+
+            <ul class="menu">
+                <li class="home"><a href="{{ path('home') }}">Home</a></li>
+                <li class="leiloes"><a href="{{ path('leiloes') }}">Leilões</a></li>
+                <li class="leiloeiro"><a href="{{ path('leiloeiro') }}">Leiloeiro</a></li>
+                <li class="funcionamento"><a href="{{ path('funcionamento') }}">Funcionamento</a></li>
+                {#<li class="duvidas"><a href="{{ path('duvidas') }}">Dúvidas</a></li>
+                <li class="indique"><a href="{{ path('indique') }}">Indique</a></li>#}
+                <li class="contato"><a href="{{ path('contato') }}">Contato</a></li>
+            </ul>
+
+            <ul class="right">
+                <li><a href=""><i class="fas fa-mobile-alt"></i> <span>Baixar App</span></a></li>
+                <li class="n-search" style="height: 45px; display: flex; align-items: center; cursor: pointer;"><a><i
+                                class="fas fa-search"></i></a></li>
+            </ul>
+
+            <div class="cont-search">
+                <div class="center">
+                    <span class="seta"></span>
+                    <form method="get" action="{{path('busca', {busca: '__BUSCA__'})}}" class="site-form-search">
+                        <div class="postion">
+                            <input type="text" name="busca" id="buscaDefault" placeholder="Pesquise por leilões e bens">
+                            <button type="submit">Pesquisar</button>
+                        </div>
+
+                        <ul class="header-categorias">
+                            <li>
+                                <a href="/categoria/Imóveis">
+                                    <div class="cont-icon">
+                                        <i class="fas fa-home"></i>
+                                    </div>
+                                    <span>Imóveis</span>
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="/categoria/Veículos">
+                                    <div class="cont-icon">
+                                        <i class="fas fa-car"></i>
+                                    </div>
+                                    <span>Veículos</span>
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="/categoria/Máquinas">
+                                    <div class="cont-icon">
+                                        <i class="fas fa-tractor"></i>
+                                    </div>
+                                    <span>Máquinas</span>
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="/categoria/Diversos">
+                                    <div class="cont-icon">
+                                        <i class="fas fa-desktop"></i>
+                                    </div>
+                                    <span>Diversos</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </form>
+                </div><!-- / END Center -->
+            </div>
+        </div><!-- / END Center -->
+    </nav>
+</header><!-- END Header -->

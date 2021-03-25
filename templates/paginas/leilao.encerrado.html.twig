@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    <title>Leilão Encerrado | {{ sl.nome_site }}</title>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {#{{ encore_entry_link_tags('favoritos') }}#}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {#{{ encore_entry_script_tags('favoritos') }}#}
+{% endblock %}
+
+{% block body %}
+    <div class="center-1200 wrapper-lg">
+        <br>
+        <br>
+        <br>
+        <h1>Este leilão foi encerrado</h1>
+        <h2>Confira nossos próximos leilões <a href="{{ path('leiloes') }}">clicando aqui</a>.</h2>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+    </div>
+{% endblock %}

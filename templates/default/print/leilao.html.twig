@@ -1,0 +1,172 @@
+{% extends 'base.print.html.twig' %}
+
+{% block title %}
+    {% if tipoNome is not null %}
+        {% set RELATORIO_TITULO = tipoNome ~ ' em leilão' %}
+        <title>{{ tipoNome }} em leilão | {{ sl.nome_site }}</title>
+    {% elseif busca is not null %}
+        {% set RELATORIO_TITULO = 'Pesquisa por ' ~ busca %}
+        <title>Encontre {{ busca }} em leilão | {{ sl.nome_site }}</title>
+    {% else %}
+        {% set RELATORIO_TITULO = leilao.titulo %}
+        <title>{{ leilao.titulo }} | {{ sl.nome_site }}</title>
+    {% endif %}
+{% endblock %}
+
+{% block metas %}
+    {{ parent() }}
+    <meta name="robots" content="noindex">
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('leiloes.print') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script type="text/javascript">
+    </script>
+{% endblock %}
+
+{% block body %}
+    <div class="default-subpage leiloes-print-page v1">
+
+        <div class="r-header hidden-print">
+            {#<div class="header1"><h1>Relatórios Gerenciais de Leilão <!----></h1> <a href="#/website/leiloes/4"
+                                                                                     class="exit active">Sair do modo
+                    relatório</a></div>#}
+            <div class="header2 hidden-print">
+                <div class="r-buttons">
+                    <a href="javascript:print()" class="btn-info2"><i class="fa fa-print m-r-xs"></i> Imprimir</a>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="print-page">
+
+            {% if tipoNome is not null %}
+                {% set RELATORIO_TITULO = tipoNome ~ ' em leilão' %}
+            {% elseif busca is not null %}
+                {% set RELATORIO_TITULO = 'Pesquisa por ' ~ busca %}
+            {% else %}
+                {% set RELATORIO_TITULO = 'Leilão: ' ~ leilao.titulo %}
+            {% endif %}
+            {% include 'default/print/header.html.twig' %}
+
+            <div class="leilao-header">
+                <table>
+                    <tr>
+                        <td style="width: 80px; min-width: 80px; max-width: 80px">
+                            {% if leilao.image %}
+                                {% set urlThumb = leilao.image.thumb is iterable ? leilao.image.thumb.url : leilao.image.thumb %}
+                                <div class="comitente-logo">
+                                    <img src="{{ urlThumb }}" width="60">
+                                </div>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="leilao-info">
+                                {% if lote is defined %}
+                                    <div><small>{{ lote.comitenteTipo }}</small></div>
+                                {% else %}
+                                {% endif %}
+                                <div class="titulo">{{ leilao.titulo }}</div>
+                                <div class="datas font-min">
+                                    {% if leilao.dataPraca2 %}
+                                        <div class="{{ leilao.praca == 2 ? 'encerrado' : '' }}">
+                                            <span>Primeira praça: </span>
+                                            <span>{{ leilao.dataPraca1|date('d/m/Y H:i') }}</span>
+                                        </div>
+                                        <div class="{{ leilao.isEncerrado ? 'encerrado' : '' }}">
+                                            <span>Segunda praça: </span>
+                                            <span>{{ leilao.dataPraca2|date('d/m/Y H:i') }}</span>
+                                        </div>
+                                    {% else %}
+                                        <div class="{{ leilao.isEncerrado ? 'encerrado' : '' }}">
+                                            <span>Abertura: </span>
+                                            <span>{{ leilao.dataPraca1|date('d/m/Y H:i') }}</span>
+                                        </div>
+                                        {% if leilao.dataFimPraca1 %}
+                                            <div class="{{ leilao.isEncerrado ? 'encerrado' : '' }}">
+                                                <span>Encerramento: </span>
+                                                <span>{{ leilao.dataFimPraca1|date('d/m/Y H:i') }}</span>
+                                            </div>
+                                        {% endif %}
+                                    {% endif %}
+                                </div>
+                                <div class="datas extra text-uppercase text-black-50 font-min">
+                                    <div><span>Modalidade:</span>
+                                        <span>{{ leilao.tipoString }}</span>
+                                    </div>
+                                    {% if MOSTRAR_LEILOEIRO_RESUMO %}
+                                        <div><span>Leiloeiro:</span>
+                                            <span>{{ leilao.leiloeiro }}</span></div>
+                                    {% endif %}
+                                    {% if MOSTRAR_LOCAL_RESUMO and leilao.local is not empty %}
+                                        <div><span>Local:</span>
+                                            <span>{{ leilao.local.endereco }}, {{ leilao.local.numero }}, {{ leilao.local.bairro }}, {{ leilao.local.cidade }} - {{ leilao.local.uf }}</span>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </td>
+                        <td>{{ leilao.totalLotes }} lotes</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="leilao" style="margin-top: 30px">
+                <table>
+                    {% for lote in leilao.lotes %}
+                        {% set thumb = lote.foto and lote.foto.thumb ? lote.foto.thumb.url : asset('build/images/sem-foto.jpg') %}
+                        <tr class="{{ lote.retirado ? 'retirado' : '' }}">
+                            <td class="font-destaq font-bold text-nowrap"
+                                style="width: 40px; min-width: 40px; max-width: 40px; text-align: center">
+                                {% if lote.numero %}
+                                    <div class="lote-numero">{{ lote.numero }}</div>
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                            <td><img src="{{ thumb }}" width="40"></td>
+                            <td class="leilao-lote-titulo" style="padding-left: 20px">
+                                <div class="titulo">{{ lote.titulo }}</div>
+                                <div class="desc">{{ lote.descricao|capitalize }}</div>
+                                {% if lote.cidade %}
+                                    <div class="text-black-50"><small>Localização: {{ lote.cidade }}
+                                            / {{ lote.uf }}</small>
+                                    </div>
+                                {% endif %}
+                                {#<div style="font-size: 11px">
+                                    #}{#Comitente: {{ lote.comitenteNome }}#}{#
+                                </div>#}
+                            </td>
+                            <td style="padding: 0 20px; font-size: 12px" class="text-nowrap">
+                                {% if not lote.retirado %}
+                                    <div class="stats lances">
+                                        <span>{{ lote.lances|length }} Lances</span>
+                                    </div>
+
+                                    {% if lote.valorInicial > 0 and not lote.retirado %}
+                                        <div class="stats valorAtual">
+                                            <span>Lance mínimo: R$ {{ lote.valorAtual|number_format(2, ',', '.') }}</span>
+                                        </div>
+                                    {% endif %}
+                                {% else %}
+                                    <strong style="color: red">RETIRADO</strong>
+                                {% endif %}
+                            </td>
+                            {% if lote.comitenteLogo %}
+                                <td class="img-comitente"><img src="{{ lote.comitenteLogo.thumb }}" width="30"></td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}

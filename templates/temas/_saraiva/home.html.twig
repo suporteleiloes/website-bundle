@@ -1,0 +1,274 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('home') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('home') }}
+{% endblock %}
+
+{% block body %}
+	<section class="cont-banner">
+        <div class="slide-home">
+            {% for banner in banners %}
+                <div class="item">
+                    <a href="{{ banner.link }}"><img width="100%" src="{{ asset('build/images/banner1.png') }}" alt=""></a>
+                </div><!-- END Único -->
+            {% endfor %}
+        </div>
+    </section><!-- / END Banner -->
+
+    <section class="show-category">
+		<div class="center">
+			<ul class="lista-category">
+				<li>
+					<a href="/categoria/Imóveis">
+						<img src="{{ asset('build/images/icon-imoves.png') }}" alt="">
+						<span>Imóveis</span>
+					</a>
+				</li><!-- END Único -->
+
+				<li>
+					<a href="/categoria/Veículos">
+						<img src="{{ asset('build/images/icon-automoveis.png') }}" alt="">
+						<span>Automóveis</span>
+					</a>
+				</li><!-- END Único -->
+
+				<li>
+					<a href="/categoria/Máquinas">
+						<img src="{{ asset('build/images/icon-maquinas.png') }}" alt="">
+						<span>Máquinas</span>
+					</a>
+				</li><!-- END Único -->
+
+				<li>
+					<a href="/categoria/Equipamentos">
+						<img src="{{ asset('build/images/icon-equipamentos.png') }}" alt="">
+						<span>Equipamentos</span>
+					</a>
+				</li><!-- END Único -->
+
+				<li>
+					<a href="/categoria/Motocicleta">
+						<img src="{{ asset('build/images/icon-motocicleta.png') }}" alt="">
+						<span>Motocicleta</span>
+					</a>
+				</li><!-- END Único -->
+
+				<li>
+					<a href="/categoria/Ônibus">
+						<img src="{{ asset('build/images/icon-onibus.png') }}" alt="">
+						<span>Ônibus</span>
+					</a>
+				</li><!-- END Único -->
+
+				<li>
+					<a href="/categoria/Caminhões">
+						<img src="{{ asset('build/images/icon-caminhao.png') }}" alt="">
+						<span>Caminhões</span>
+					</a>
+				</li><!-- END Único -->
+
+				<li>
+					<a href="{{ path('leiloes') }}">
+						<img src="{{ asset('build/images/icon-lupa.png') }}" alt="">
+						<span>Busca livre</span>
+					</a>
+				</li><!-- END Único -->
+			</ul>
+		</div><!-- END Center -->
+	</section><!-- END Session Category -->
+
+	<div class="clearfloat"></div>
+
+	<section class="show-lotes">
+		<div class="center">
+			<nav class="navLeiloes">
+                <ul>
+                    <li>
+                        <a class="ativo">Destaques</a>
+                    </li>
+                </ul>
+            </nav>
+
+            <div class="">
+                <div >
+                    <div class="slide-item">
+                    {% for lote in lotes %}
+                        {% set thumb = lote.foto and lote.foto.min ? lote.foto.min.url : asset('build/images/sem-foto.jpg') %}
+                        {% set loteUrl = path('lote', {id: lote.id, slug: lote.slug}) %}
+                    	<article>
+                    		<div class="cont-foto">
+                    			<a href="{{ loteUrl }}">
+                    				<img src="{{ thumb }}" alt="{{ lote.titulo }}<">
+                    				{% if lote.valorInicial %}
+                    				<span>R$ {{ lote.valorInicial|number_format(2, ',', '.') }}</span>
+                    				{% endif %}
+                    			</a>
+                    		</div><!---->
+                    		<div class="cont-info">
+                    			<h3><a href="{{ thumb }}">{{ lote.titulo }}</a></h3>
+                    			<p>Leilão <span>{{ lote.leilao.dataPraca1|date('d/m/Y') }} {{ lote.leilao.dataPraca1|date('H:i') }}</span></p>
+                    		</div>
+                    	</article>
+                    {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section><!-- END Lotes -->
+
+    <div class="clearfloat"></div>
+
+	<section class="show-leiloes">
+		<div class="center">
+			<nav class="navAba">
+                <ul>
+                    <li>
+                        <a class="ativo">Leilões</a>
+                    </li>
+                </ul>
+            </nav>
+
+            <div class="abaContainer">
+                <div class="item-aba ativo">
+                    <div class="flex-leiloes">
+                    {% for leilao in leiloesAtuais %}
+                    	{% set diff = leilao.dataAbertura.diff(date( "now"|date('Y-m-d')~' '~leilao.dataAbertura|date('H:i:s'))).days %}
+                    	<article>
+                    		<a href="{{ path('leilao', {id:leilao.id}) }}">
+                    			{% if leilao.image %}
+								<div class="infos-head">
+                					{% set urlThumb = leilao.image.thumb is iterable ? leilao.image.thumb.url : leilao.image.thumb %}
+                					{% if urlThumb %}
+	                    				<div class="cont-foto">
+	                    					<img src="{{ urlThumb }}" alt="">
+	                    				</div>
+	                    			{% endif %}
+								</div>
+	                    		{% endif %}
+
+	                    		<div class="infos-body">
+		                    		<div class="cont-info">
+		                    			<div class="show-title">
+		                    				<h3>{{ leilao.titulo }}</h3>
+		                    			</div>
+		                    			<div class="show-text">
+		                    				{% if leilao.dataPraca2 %}
+		                    					<div class="data">
+		                    						<p class="praca{{ leilao.praca == 2 ? ' encerrado' : '' }}">1ª leilão: <strong>{{ leilao.dataPraca1|date('d/m/Y') }}</strong> às <strong>{{ leilao.dataPraca1|date('H\\hi') }}</strong></p>
+		                    						<p  class="praca{{ leilao.isEncerrado ? ' encerrado' : '' }}">2ª leilão: <strong>{{ leilao.dataPraca2|date('d/m/Y') }}</strong> às <strong>{{ leilao.dataPraca2|date('H\\hi') }}</strong></p>
+		                    					</div>
+		                    					{% else %}
+			                    				{% if not leilao.isEncerrado %}
+			                    				<div class="data">
+			                    					{% if leilao.dataEncerramento and leilao.dataAberturaOuEncerramento != leilao.dataAbertura %}
+			                    						{% set diff = leilao.dataEncerramento.diff(date( "now"|date('Y-m-d')~' '~leilao.dataEncerramento|date('H:i:s'))).days %}
+								                        {% set dias = diff > 1 ? ' dias' : ' dia' %}
+								                        {% set dia = leilao.dataEncerramento| format_datetime( pattern='EEEE', locale='pt-BR')|capitalize %}
+								                        <img src="{{ asset('build/images/icon-time.png') }}"> {{ diff > 0 ? 'Encerra em '~diff~dias~', ' ~ dia : 'Hoje' }}
+			                    						{% else %}
+			                    							{% set dias = diff > 1 ? ' dias' : ' dia' %}
+	                        								{% set dia = leilao.dataAbertura| format_datetime( pattern='EEEE', locale='pt-BR')|capitalize %}
+	                        								<img src="{{ asset('build/images/icon-time.png') }}"> <strong>{{ leilao.dataAbertura|date('d/m/Y') }}</strong>&nbsp;({{ diff > 0 ? dia : 'Hoje' }})
+			                    					{% endif %}
+			                    				</div>
+			                    				{% endif %}
+			                    				<div class="hora">
+			                    					<img src="{{ asset('build/images/icon-calendar.png') }}"> A partir das&nbsp;<strong>{{ leilao.dataAberturaOuEncerramento|date('H\\hi') }}</strong>
+			                    				</div>
+			                    			{% endif %}
+		                    				<div class="tipo leilao-tipo-{{ leilao.tipo }}">
+		                    					<span{% if leilao.tipoString == 'Online'%} class="online"{% endif %}>{{ leilao.tipoString }}</span>
+		                    				</div>
+		                    			</div>
+		                    		</div>
+		                    	</div>
+
+		                    	<div class="infos-footer">
+		                    		<p>{{leilao.descricao}}</p>
+		                    		<div class="show-btn btn-status-{{ leilao.status }}">
+		                    			<span>{{ leilao.statusMessage }}</span>
+		                    		</div>
+		                    	</div>
+	                    	</a>
+                    	</article><!-- END Único -->
+                    {% endfor %}
+                    {% if not leiloesAtuais|length %}
+                    		Nenhum leilão até o momento.
+                    {% endif %}
+                    </div>
+                </div><!---->
+            </div>
+        </div>
+    </section><!-- END Leilões -->
+
+    <div class="clearfloat"></div>
+
+	<section class="cont-newsletter" id="newsletter">
+		<h2>A gente conectado por e-mail</h2>
+		<div class="center-863">
+			<div class="left">
+				<p>Receba em seu e-mail todos os leilões e informações dos bens com exclusividade!</p>
+			</div>
+			<div class="right">
+				<form method="post" action="{{ path('newsletter-send') }}">
+					<input type="text" name="email" placeholder="Digite seu melhor e-mail...">
+					<button type="submit">Inscrever-se</button>
+				</form>
+			</div>
+		</div>
+	</section><!-- END Session Newsletter -->
+
+	<div class="clearfloat"></div>
+
+	<section class="cont-blog" id="blog">
+		<div class="center">
+			<h2>Confira nossos últimos <span>artigos</span>!</h2>
+			<div class="flex-posts">
+				<article>
+					<div class="cont-foto">
+						<a href="{{ path('funcionamento') }}">
+							<img src="{{ asset('build/images/documentacao-necessaria.png') }}" alt="" class="img-responsive">
+						</a>
+					</div>
+					<div class="cont-info">
+						<h3><a href="{{ path('funcionamento') }}">Documentação Necessária</a></h3>
+						<p>Se seu cadastro já foi validado e permanece bloqueado, para participar dos leilões promovidos, é necessário enviar cópias digitalizadas...</p>
+						<a href="{{ path('funcionamento') }}" class="btn-blog">Continuar lendo <i class="fas fa-angle-right"></i></a>
+					</div>
+				</article><!-- END Único -->
+
+				<article>
+					<div class="cont-foto">
+						<a href="{{ path('funcionamento') }}">
+							<img src="{{ asset('build/images/lance-vencedor.png') }}" alt="" class="img-responsive">
+						</a>
+					</div>
+					<div class="cont-info">
+						<h3><a href="{{ path('funcionamento') }}">E se o meu lance for vencedor?</a></h3>
+						<p>Caso seu lance seja o vencedor, o pagamento deve ser feito em até 24 horas após o leilão (ou após a aprovação dos lances condicionais...</p>
+						<a href="{{ path('funcionamento') }}" class="btn-blog">Continuar lendo <i class="fas fa-angle-right"></i></a>
+					</div>
+				</article><!-- END Único -->
+
+				<article>
+					<div class="cont-foto">
+						<a href="{{ path('funcionamento') }}">
+							<img src="{{ asset('build/images/auditorio-virtual.png') }}" alt="" class="img-responsive">
+						</a>
+					</div>
+					<div class="cont-info">
+						<h3><a href="{{ path('funcionamento') }}">O que é auditório virtual?</a></h3>
+						<p>Auditório Virtual é o ambiente onde são realizados os lances ao vivo, online, nos lotes em leilão em andamento no portal...</p>
+						<a href="{{ path('funcionamento') }}" class="btn-blog">Continuar lendo <i class="fas fa-angle-right"></i></a>
+					</div>
+				</article><!-- END Único -->
+			</div>
+		</div>
+	</section>
+{% endblock %}

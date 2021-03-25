@@ -1,0 +1,136 @@
+{% extends 'base.print.html.twig' %}
+
+{% block title %}
+    <title>Agenda de Leilões | {{ sl.nome_site }}</title>
+{% endblock %}
+
+{% block metas %}
+    {{ parent() }}
+    <meta name="robots" content="noindex">
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('leiloes.print') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script type="text/javascript">
+        var filtro = "{{ filtro }}";
+    </script>
+{% endblock %}
+
+{% block body %}
+    <div class="default-subpage leiloes-print-page v1">
+
+        <div class="r-header hidden-print">
+            {#<div class="header1"><h1>Relatórios Gerenciais de Leilão <!----></h1> <a href="#/website/leiloes/4"
+                                                                                     class="exit active">Sair do modo
+                    relatório</a></div>#}
+            <div class="header2 hidden-print">
+                <div class="r-buttons">
+                    <a href="javascript:print()" class="btn-info2"><i class="fa fa-print m-r-xs"></i> Imprimir</a>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="print-page">
+
+
+            {% set RELATORIO_TITULO = 'Agenda de Leilões' %}
+            {% include 'default/print/header.html.twig' %}
+
+            <div class="center">
+                <div class="agenda-leiloes-print">
+                    {% for leilao in leiloes %}
+                        {% set diff = leilao.dataAbertura.diff(date( "now"|date('Y-m-d')~' '~leilao.dataAbertura|date('H:i:s'))).days %}
+                        <article>
+                            <table>
+                                <tr>
+                                    {% if leilao.image %}
+                                        <td style="min-width: 80px; max-width: 80px; width: 80px">
+                                            {% set urlThumb = leilao.image.thumb is iterable ? leilao.image.thumb.url : leilao.image.thumb %}
+                                            {% if urlThumb %}
+                                                <div class="leilao-image">
+                                                    <img src="{{ urlThumb }}" width="60">
+                                                </div>
+                                            {% endif %}
+                                        </td>
+                                    {% else %}
+                                    {% endif %}
+
+                                    <td class="leilao-desc">
+                                        <div class="titulo font-bold">{{ leilao.titulo }}</div>
+                                        <div class="font-min">
+                                            Tipo: <span class="classe ">{{ leilao.judicialString }}</span> - Realização:
+                                            <span class="tipo leilao-tipo-{{ leilao.tipo }} font-min">{{ leilao.tipoString }}</span>
+                                        </div>
+                                        <div class="btn-leilao btn-status-{{ leilao.status }} font-min">
+                                            <span>Status: {{ leilao.statusMessage }}</span>
+                                        </div>
+                                    </td>
+
+                                    <td class="text-right text-nowrap font-destaq font-bold">
+                                        <div class="leilao-data">
+                                            {% if leilao.dataPraca2 %}
+                                                <span class="praca">{{ leilao.praca }}a praça</span>
+                                            {% else %}
+                                                {% if leilao.dataEncerramento %}
+                                                    {% if leilao.dataAberturaOuEncerramento == leilao.dataEncerramento %}
+                                                        <span class="praca">Encerramento</span>
+                                                    {% else %}
+                                                        <span class="praca">Abertura</span>
+                                                    {% endif %}
+                                                {% endif %}
+                                            {% endif %}
+                                            {{ leilao.dataAberturaOuEncerramento|date('d/m H\\hi') }}
+                                        </div>
+                                        <div class="font-min">
+                                            {% if leilao.dataPraca2 and leilao.praca == 1 %}
+                                                <div class="segundaPraca">2a
+                                                    praça: {{ leilao.dataPraca2|date('d/m') }} {{ leilao.dataPraca2|date('H\\hi') }}</div>
+                                                <div class="segundaPracaMargin"></div>
+                                            {% else %}
+                                                {% if leilao.dataEncerramento %}
+                                                    <div class="segundaPraca">
+                                                        {% if leilao.dataAberturaOuEncerramento == leilao.dataAbertura %}
+                                                            Encerramento: {{ leilao.dataEncerramento|date('d/m') }} {{ leilao.dataEncerramento|date('H\\hi') }}
+                                                        {% else %}
+                                                            Aberto desde {{ leilao.dataAbertura|date('d/m') }} {{ leilao.dataAbertura|date('H\\hi') }}
+                                                        {% endif %}
+                                                    </div>
+                                                    <div class="segundaPracaMargin"></div>
+                                                {% elseif leilao.dataPraca2 and leilao.praca == 2 %}
+                                                    <div class="segundaPraca">
+                                                        Primeira praça
+                                                        realizada {{ leilao.dataPraca1|date('d/m') }} {{ leilao.dataPraca1|date('H\\hi') }}
+                                                    </div>
+                                                    <div class="segundaPracaMargin"></div>
+                                                {% endif %}
+                                            {% endif %}
+                                        </div>
+
+                                        {% if leilao.totalLotes > 0 %}
+                                            <div class="font-min">
+                                                <div class="num-lotes">{{ leilao.totalLotes }}
+                                                    lote{{ leilao.totalLotes > 1 ? 's' : '' }}</div>
+                                            </div>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            </table>
+                        </article>
+                    {% endfor %}
+                    {% if not leiloes|length %}
+                        <div class="m-b-lg">Nenhum leilão</div>
+                        <div class="clearfloat"></div>
+                    {% endif %}
+                </div>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}

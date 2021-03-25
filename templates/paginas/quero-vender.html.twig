@@ -1,0 +1,64 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    <title>Quero Vender | {{sl.nome_site}}</title>
+{% endblock %}
+
+{% block metas %}
+    {{ parent() }}
+    <meta name="description" content=""/>
+    <meta name="keywords" content=""/>
+    <meta property="og:title" content="Quero Vender"/>
+    <meta property="og:description" content=""/>
+    <meta property="og:url" content="{{ url(app.request.get('_route')) }}"/>
+    <meta property="og:image" content=""/>
+    <meta property="og:image:width" content="">
+    <meta property="og:image:height" content="">
+    <meta property="og:phone_number" content="">
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+
+    <style>
+        .show-vender{
+            padding: 50px 20px;
+            text-align: center;
+        }
+        .show-vender h1{
+            font-weight: 600;
+        }
+        .show-vender h4{
+            margin: 8px 0 22px 0;
+        }
+        .show-vender p{
+            margin-bottom: 8px;
+        }
+        .show-vender p a{
+            color: #3b5998;
+        }
+    </style>
+    {{ encore_entry_link_tags('home') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('home') }}
+
+    <script>
+        $(document).ready(function(e) {
+            $('.vender a').addClass('ativo');  
+        });
+    </script>
+{% endblock %}
+
+{% block body %}
+	<div class="show-vender">
+		<div class="center">
+			<h1>Quer vender em leilão?</h1>
+			<h4>Solicite uma avaliação <strong>gratuita!</strong></h4>
+			<p>Atendimento via WhatsApp <a href="https://api.whatsapp.com/send?phone=554133326868" target="_blank">(41) 3332-6868</a> ou <a href="https://api.whatsapp.com/send?phone=5541991645435" target="_blank">(41) 9 9164-5435</a></p>
+			<p>Se preferir nos envie um e-mail: <a href="mailto:contato@milanileiloes.com.br">contato@milanileiloes.com.br</a></p>
+		</div><!-- END Center -->
+	</div>
+{% endblock %}

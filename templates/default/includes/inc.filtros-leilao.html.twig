@@ -1,0 +1,48 @@
+<div class="filtros">
+    {% if leilao.aid is not empty %}
+    <a href="{{ PAINEL_URL }}/#/auditorio/{{ leilao.aid }}" target="_blank" class="icon-auditorio-leilao-filtros">
+        <img width="30" src="{{ asset('build/images/icon-auditorium.svg') }}"/>
+        <div>
+            <div>Auditório Virtual</div>
+            <div><small>Acompanhe em tempo real</small></div>
+        </div>
+    </a>
+    {% endif %}
+
+    {% include 'default/includes/resumo.tipos.html.twig' %}
+
+
+    {% for filtro in filtros %}
+        {% if filtro.values is not empty %}
+            {% if filtro.values|length > 1 %}
+                <div class="filtro">
+                    <span>{{ filtro.tipoNome }}</span>
+                    <ul class="lista">
+                        {% for f in filtro.values %}
+                            <li>
+                                <label for="{{ filtro.tipo }}{{ f.id }}">
+                                    <input name="{{ filtro.tipo }}[]" type="checkbox" class="filter{{ filtro.tipo }}"
+                                           id="{{ filtro.tipo }}{{ f.id }}"
+                                           value="{{ f.id }}" {{ f.id in app.request.get('f') ? 'checked' : '' }}>
+                                    <span class="check"></span>
+                                    <div class="title">
+                                        <div class="title-content">
+                                        <span class="title-limit">
+                                            {% if filtro.tipo == 'status' %}
+                                                {{ LOTE_STATUS[f.nome]| default('Outros') }}
+                                            {% else %}
+                                                {{ f.nome | default('Outros') }}
+                                            {% endif %}
+                                        </span>
+                                        </div>
+                                        <small>({{ f.totalItens }})</small></div>
+                                </label>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+
+</div>

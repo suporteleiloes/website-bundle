@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    <title>Como Funciona | {{sl.nome_site}}</title>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {#{{ encore_entry_link_tags('funcionamento') }}#}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {#{{ encore_entry_script_tags('funcionamento') }}#}
+{% endblock %}
+
+{% block body %}
+	<div class="center-1200 wrapper-lg text-center" style="min-height: 300px">
+        Estamos desenvolvendo um manual interativo e moderno para nossos arrematantes e estará disponível em breve, aguarde.
+    </div>
+{% endblock %}

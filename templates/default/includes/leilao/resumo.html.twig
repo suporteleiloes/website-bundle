@@ -1,0 +1,140 @@
+{% include 'default/includes/leilao/habilitar.html.twig' %}
+{% if leilao.arquivosSemEdital|length %}
+    {% include 'default/includes/leilao/arquivos.html.twig' %}
+{% endif %}
+<div class="resumo-leilao mt-4">
+    {% if lote is defined %}
+        <div class="comitente-logo">
+            {% if lote.comitenteLogo %}
+                {% set urlThumb = lote.comitenteLogo.thumb is iterable ? lote.comitenteLogo.thumb.url : lote.comitenteLogo.thumb %}
+                <div class="lote-image-comitente"
+                     style="background-size: contain; background-position: 50% 50%; background-image: url({{ urlThumb }}); background-repeat: no-repeat"></div>
+            {% elseif leilao.image %}
+                {% set urlThumb = leilao.image.thumb is iterable ? leilao.image.thumb.url : leilao.image.thumb %}
+                <div class="lote-image-comitente"
+                     style="background-size: contain; background-position: 50% 50%; background-image: url({{ urlThumb }}); background-repeat: no-repeat"></div>
+            {% endif %}
+        </div>
+    {% else %}
+        {% if leilao.image %}
+            {% set urlThumb = leilao.image.thumb is iterable ? leilao.image.thumb.url : leilao.image.thumb %}
+            <div class="comitente-logo">
+                <div class="lote-image-comitente"
+                     style="background-size: contain; background-position: 50% 50%; background-image: url({{ urlThumb }}); background-repeat: no-repeat"></div>
+            </div>
+        {% endif %}
+    {% endif %}
+    <div class="leilao-info">
+        {% if lote is defined %}
+            <div><small>{{ lote.comitenteTipo }}</small></div>
+        {% else %}
+        {% endif %}
+        <a href="{{ path('leilao', {id: leilao.id}) }}" class="titulo">{{ leilao.titulo }}</a>
+        <div class="datas">
+            {% if leilao.dataPraca2 %}
+                <div class="{{ leilao.praca == 2 ? 'encerrado' : '' }}">
+                    <span>Primeiro leilão: </span>
+                    <div>{{ leilao.dataPraca1|date('d/m/Y') }} a partir de {{ leilao.dataPraca1|date('H:i') }}</div>
+                </div>
+                <div class="{{ leilao.isEncerrado ? 'encerrado' : '' }}">
+                    <span>Segundo leilão: </span>
+                    <div>{{ leilao.dataPraca2|date('d/m/Y') }} a partir de {{ leilao.dataPraca2|date('H:i') }}</div>
+                </div>
+            {% else %}
+                <div class="{{ leilao.isEncerrado ? 'encerrado' : '' }}">
+                    <span>Encerramento: </span>
+                    <div>{{ leilao.dataPraca1|date('d/m/Y') }} a partir de {{ leilao.dataPraca1|date('H:i') }}</div>
+                </div>
+                {#{% if leilao.dataFimPraca1 %}
+                    <div class="{{ leilao.isEncerrado ? 'encerrado' : '' }}">
+                        <span>Encerramento: </span>
+                        <div>{{ leilao.dataFimPraca1|date('d/m/Y H:i') }}</div>
+                    </div>
+                {% endif %}#}
+            {% endif %}
+        </div>
+        <div class="datas extra text-uppercase text-black-50">
+            <div><span>Modalidade:</span>
+                <div>{{ leilao.tipoString }}</div>
+            </div>
+            {% if MOSTRAR_LEILOEIRO_RESUMO %}
+                <div><span>Leiloeiro:</span>
+                <div>{{ leilao.leiloeiro }}</div></div>
+            {% endif %}
+            {% if MOSTRAR_LOCAL_RESUMO and leilao.local is not empty %}
+                {% if leilao.tipo == 2 or leilao.tipo == 3 %}
+                    <div>
+                        <span>Local:</span>
+                        <div>{{ leilao.local.endereco }}, {{ leilao.local.numero }}, {{ leilao.local.bairro }}, {{ leilao.local.cidade }} - {{ leilao.local.uf }}</div>
+                    </div>
+                    {% endif %}
+            {% endif %}
+        </div>
+    </div>
+    <div class="btns">
+        <div class="btns-line1">
+            {#<a class="btn def btn-secondary btn-md" data-toggle="modal" data-target="#habilitacaoModal">Habilite-se
+                #}{#<small class="ml-1 mt-1">para participar</small>#}{#</a>#}
+            {% if leilao.edital %}
+                <a class="btn def btn-primary btn-md" href="{{ leilao.edital.url }}" target="_blank"><i
+                            class="far fa-file-alt mr-2"></i> <!--Visualizar-->
+                    Edital</a>
+            {% endif %}
+            {% if leilao.arquivosSemEdital|length %}
+                <a class="btn def btn-primary btn-md" data-toggle="modal" data-target="#arquivosModal">Arquivos</a>
+            {% endif %}
+        </div>
+        {% if lote is defined %}
+            {% if prev or next %}
+                <div class="btns-line2">
+                    <div class="lote-nav">
+                                <span class="title">
+                                    <div class="mb-1">Ir para Lote?</div>
+                                    <form action="{{ path('leilao_findlote_numero', {id: leilao.id}) }}">
+                                        <input name="numero" type="text" size="2" value=""
+                                               placeholder="{{ lote.numero }}">
+                                        <button class="btn btn-sm btn-secondary" type="submit">Ir</button>
+                                    </form>
+                                </span>
+                        <div class="lote-nav-nav">
+                            {% if prev %}
+                                <a href="{{ path('lote', {id: prev['id'], slug: prev['slug']}) }}"
+                                   class="nav-action nav-voltar">
+                                    <svg width="1em" height="1em" viewBox="0 0 16 16"
+                                         class="bi bi-arrow-left-circle-fill" fill="currentColor"
+                                         xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd"
+                                              d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-7.646 2.646a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L6.207 7.5H11a.5.5 0 0 1 0 1H6.207l2.147 2.146z"/>
+                                    </svg>
+                                </a>
+                            {% endif %}
+                            {% if next %}
+                                <a href="{{ path('lote', {id: next['id'], slug: next['slug']}) }}"
+                                   class="nav-action nav-avancar">
+                                    <svg width="1em" height="1em" viewBox="0 0 16 16"
+                                         class="bi bi-arrow-right-circle-fill" fill="currentColor"
+                                         xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd"
+                                              d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-8.354 2.646a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L9.793 7.5H5a.5.5 0 0 0 0 1h4.793l-2.147 2.146z"/>
+                                    </svg>
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        {% endif %}
+    </div>
+</div>
+
+{% if leilao.observacoes is not empty %}
+    <div class="mt-2">{{ leilao.observacoes }}</div>
+{% endif %}
+
+<div class="leilao-em-leilao show-leilao-{{ leilao.aid }}{{ leilao.emLeilao ? '' : ' hide' }}">
+    <div class="title">Este leilão está em pregão!</div>
+    <div>
+        <a href="{{ PAINEL_URL }}/#/auditorio/{{ leilao.aid }}" class="btn btn-danger btn-md">Acesse o auditório
+            virtual</a>
+    </div>
+</div>

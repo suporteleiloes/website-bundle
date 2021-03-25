@@ -1,0 +1,281 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('home') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('home') }}
+{% endblock %}
+
+{% block body %}
+    <section class="cont-banner">
+        <div class="slide-home">
+            {% for banner in banners %}
+                <div class="item">
+                    <a href="{{ banner.link }}"><img width="100%" src="{{ banner.image.full.url }}" alt=""></a>
+                </div><!-- END Único -->
+            {% endfor %}
+        </div>
+    </section><!-- / END Banner -->
+
+    <section class="cont-busca tabsBusca">
+        <div class="center">
+            <div class="left">
+                <form method="get" action="{{path('busca', {busca: '__BUSCA__'})}}" class="site-form-search">
+                    <div class="position-btn">
+                        <input type="text" name="busca" id="buscaDefault" placeholder="Buscar no site" tabindex="1">
+                        <button type="submit" tabindex="6"><i class="fas fa-search"></i></button>
+                    </div>
+
+                    <div>
+                        <a href="/categoria/Imóveis">
+                            <span>Imóveis</span>
+                        </a>
+                    </div>
+
+                    <div>
+                        <a href="/categoria/Veículos">
+                            <span>Veículos</span>
+                        </a>
+                    </div>
+
+                    <div>
+                        <a href="/categoria/Máquinas">
+                            <span>Máquinas</span>
+                        </a>
+                    </div>
+
+                    <div>
+                        <a href="/categoria/Diversos">
+                            <span>Diversos</span>
+                        </a>
+                    </div>
+                </form>
+            </div><!---->
+
+            <div class="right">
+                <div class="cont-icon">
+                    <img src="{{ asset('build/images/icon-newsletter.png') }}" alt="Nesletter">
+                </div><!---->
+                <div class="r-newsletter">
+                    <p><strong>Inscreva-se</strong> para receber nossos melhores leilões</p>
+                    <form>
+                        <div>
+                            <label for="email">Digite seu e-mail:</label>
+                            <input id="email" type="" name="" tabindex="1">
+                        </div>
+                    </form>
+                </div><!---->
+            </div><!---->
+        </div><!-- / END Center -->
+    </section><!-- / END Busca -->
+
+    <section class="cont-destaques">
+        <div class="center">
+
+            <ul class="navDestaques navBar">
+                <li>
+                    <a class="ativo">Destaques</a>
+                </li>
+
+                <li>
+                    <a>Abertos para lance</a>
+                </li>
+
+                <li>
+                    <a>Em breve</a>
+                </li>
+
+                <li>
+                    <a>Venda Direta</a>
+                </li>
+
+                <li>
+                    <a>Suspensos</a>
+                </li>
+
+                <li>
+                    <a>Encerrados</a>
+                </li>
+            </ul>
+
+            {% if lotes %}
+                <div class="showInfos">
+                    <div class="home-destaques no-slide">
+                        {# <div class="slide-destaques">#}
+                        {% for lote in lotes %}
+                            <div class="show-destaques lote-image-home">
+                                <article>
+                                    {% set thumb = lote.foto and lote.foto.thumb ? lote.foto.thumb.url : asset('build/images/sem-foto.jpg') %}
+                                    {% set loteUrl = path('lote', {id: lote.id, slug: lote.slug}) %}
+                                    <a href="{{ loteUrl }}">
+                                        <div class="cont-foto lote-image">
+                                            <div class="image"
+                                                 style="background-size: cover; background-position: 50% 50%; background-image: url({{ thumb }}); background-repeat: no-repeat"></div>
+                                        </div>
+                                        <div class="cont-info">
+                                            <h3>{{ lote.titulo }}</h3>
+
+                                            <div class="dados-lote">
+                                                {% if lote.valorAtual %}
+                                                <div class="valor">Inicia por
+                                                    <strong><span>R$</span> {{ lote.valorAtual|number_format(2, ',', '.') }}
+                                                    </strong></div>
+                                                {% endif %}
+                                                <div class="data">Leilão
+                                                    <strong>{{ lote.leilao.dataAbertura|date('d/m/Y H:i') }}</strong>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {#<strong class="btn-lote">Visitar Lote</strong>#}
+                                    </a>
+                                </article><!-- END Único -->
+                            </div><!---->
+                        {% endfor %}
+                        {#</div>#}
+                    </div>
+                </div>
+            {% endif %}
+
+        </div><!-- END Center -->
+    </section>
+
+    <section class="cont-leiloes">
+        <div class="center">
+            <ul class="navLeiloes navBar">
+                <li>
+                    <a class="ativo">Próximos leilões</a>
+                </li>
+
+                <li>
+                    <a>Suspensos</a>
+                </li>
+
+                <li>
+                    <a>Encerrados</a>
+                </li>
+            </ul>
+
+            <div class="showInfos mb-2">
+                <div class="item-aba ativo">
+                    <div class="flex-leiloes">
+                        {% for leilao in leiloesAtuais %}
+                            {% include 'temas/02/includes/inc.leilao-tab.html.twig' %}
+                        {% endfor %}
+                        {% if not leiloesAtuais|length %}
+                            <div class="m-b-lg">Nenhum leilão disponível</div>
+                            <div class="clearfloat"></div>
+                        {% endif %}
+                    </div>
+                </div><!-- / END >Próximos -->
+
+                <div class="item-aba">
+                    Nenhum leilão disponível
+                </div><!-- / END Suspensos -->
+
+                <div class="item-aba">
+                    Nenhum leilão disponível
+                </div><!-- / END Encerrados -->
+            </div>
+        </div><!-- / END Center -->
+    </section><!-- / END Leiloes -->
+
+    {% if MOSTRAR_DEPOIMENTO %}
+    <section class="cont-testemunhos">
+        <div class="center">
+            <h2 class="title-default">10 anos de experiência em leilões</h2>
+
+            <div class="slide-testemunhos">
+                <div>
+                    <div class="cont-foto">
+                        <img src="{{ asset('build/images/foto.jpg') }}" alt="">
+                    </div>
+                    <div class="cont-text">
+                        <img src="{{ asset('build/images/icon-depoimento.png') }}" alt="">
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+                            tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+                            quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+                            consequat. Duis aute irure dolor in reprehenderit in voluptate velit.</p>
+                        <span>Tiago Felipe</span>
+                        <small>Leiloeiro Oficial do Estado de Minas Gerais</small>
+                    </div>
+                </div><!-- END -->
+            </div>
+        </div><!-- END Center -->
+    </section><!-- END Testemunhos -->
+    {% endif %}
+
+    {% if MOSTRAR_NEWSLETTER_FULL %}
+    <section class="cont-newsletter">
+        <div class="center-full">
+            <div class="newsletter">
+                <h4>Newsletter</h4>
+                <p>Receba em seu e-mail todos os nossos leilões e informações dos bens disponíveis e não perca boas
+                    oportunidades.</p>
+                <form>
+                    <div>
+                        <input type="" name="" placeholder="Digite seu melhor e-mail">
+                        <button type="submit">Inscreve</button>
+                    </div>
+                </form>
+            </div>
+        </div><!-- END Full Center -->
+    </section><!-- END Newsletter -->
+    {% endif %}
+
+    {% if MOSTRAR_NOTICIAS %}
+    <section class="cont-informativo">
+        <div class="center-full">
+            <h2 class="title-default">Últimas Notícias e Informativos</h2>
+
+            <div class="flex-noticias">
+                <article>
+                    <a href="#">
+                        <div class="cont-img">
+                            <div class="img" style="background-image: url({{ '"'~asset('build/images/noticia-1.jpg')~'"' }})"></div>
+                        </div>
+
+                        <div class="row-top">
+                            <span>Por Hebley Freitas</span>
+                            <small>|</small>
+                            <span>27 de janeiro 2020</span>
+                        </div><!-- END Row Top -->
+
+                        <div class="row-bottom">
+                            <span class="categoria">Blog</span>
+                            <h3>Aqui fica uma notícia ou destaque do blog</h3>
+                        </div><!-- END Row Bottom -->
+                    </a>
+                </article><!-- END Único -->
+
+                <article>
+                    <a href="#">
+                        <div class="cont-img">
+                            <div class="img" style="background-image: url({{ '"'~asset('build/images/noticia-1.jpg')~'"' }})">
+                        </div>
+
+                        <div class="row-top">
+                            <span>Por Hebley Freitas</span>
+                            <small>|</small>
+                            <span>27 de janeiro 2020</span>
+                        </div><!-- END Row Top -->
+
+                        <div class="row-bottom">
+                            <span class="categoria">Blog</span>
+                            <h3>Conteúdo gera melhor ranking no Google</h3>
+                        </div><!-- END Row Bottom -->
+                    </a>
+                </article><!-- END Único -->
+
+                <div class="cont-btn">
+                    <a href="#">Veja mais Notícias</a>
+                </div>
+            </div>
+        </div><!-- END Center Full -->
+    </section><!-- END Notícias -->
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,30 @@
+<div class="slide-lotes">
+    <div class="cont-img" id="lote-image-container" style="position: relative">
+        <iframe id="video-frame" width="100%" height="100%" src=""
+                allow="autoplay; encrypted-media" allowfullscreen class="hide"></iframe>
+        <a href="#">
+            <img src="{{ lote.fotos|length ? lote.fotos.first.versions.min.url : asset('build/images/sem-foto.jpg') }}"
+                 alt="Default Image" id="lote-image" data-index="0"
+                 data-size="{{ lote.fotos|length ? lote.fotos.first.resolution : '300x300' }}"
+                 class="img-responsive"/>
+        </a>
+    </div>
+</div>
+
+<ul class="lote-thumbs">
+    {% for foto in lote.fotos %}
+        <li class="{{ loop.index == 1 ? 'selected' : '' }}{{ loop.index > 5 ? 'hide' : '' }}">
+            <a data-index="{{ loop.index }}" data-size="{{ foto.resolution and foto.resolution != 'x' ? foto.resolution : '800x600' }}"
+               style="background-size: cover; background-position: 50% 50%; background-image: url({{ foto.url }}); background-repeat: no-repeat"
+               href="{{ foto.url }}">
+                {% if lote.fotos|length > 5 and loop.index == 5 %}
+                    <span class="more">+{{ lote.fotos|length - 5 }}</span>
+                {% endif %}
+                <img src="{{ foto.versions ? foto.versions.min.url : foto.url }}"
+                     alt="{{ foto.nome }}"
+                     class="img-responsive lote-img hide">
+            </a>
+        </li>
+    {% endfor %}
+</ul>
+<div class="clearfloat"></div>

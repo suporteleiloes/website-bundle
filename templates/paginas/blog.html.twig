@@ -1,0 +1,73 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    <title>Blog | {{sl.nome_site}}</title>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('app') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('app') }}
+
+    <script>
+        $(document).ready(function(e) {
+            $('.blog a').addClass('ativo');
+        });
+    </script>
+{% endblock %}
+
+{% block body %}
+    <section class="cont-informativo">
+        <div class="center-full">
+            <h2 class="title-default">Últimas Notícias e Informativos</h2>
+
+            <div class="flex-noticias">
+                <article>
+                    <a href="#">
+                        <div class="cont-img">
+                            <div class="img" style="background-image: url({{ '"'~asset('build/images/noticia-1.jpg')~'"' }})"></div>
+                        </div>
+
+                        <div class="row-top">
+                            <span>Por Hebley Freitas</span>
+                            <small>|</small>
+                            <span>27 de janeiro 2020</span>
+                        </div><!-- END Row Top -->
+
+                        <div class="row-bottom">
+                            <span class="categoria">Blog</span>
+                            <h3>Aqui fica uma notícia ou destaque do blog</h3>
+                        </div><!-- END Row Bottom -->
+                    </a>
+                </article><!-- END Único -->
+
+                <article>
+                    <a href="#">
+                        <div class="cont-img">
+                            <div class="img" style="background-image: url({{ '"'~asset('build/images/noticia-1.jpg')~'"' }})">
+                        </div>
+
+                        <div class="row-top">
+                            <span>Por Hebley Freitas</span>
+                            <small>|</small>
+                            <span>27 de janeiro 2020</span>
+                        </div><!-- END Row Top -->
+
+                        <div class="row-bottom">
+                            <span class="categoria">Blog</span>
+                            <h3>Conteúdo gera melhor ranking no Google</h3>
+                        </div><!-- END Row Bottom -->
+                    </a>
+                </article><!-- END Único -->
+
+                <div class="cont-btn">
+                    <a href="#">Veja mais Notícias</a>
+                </div>
+            </div>
+        </div><!-- END Center Full -->
+    </section><!-- END Notícias -->
+{% endblock %}

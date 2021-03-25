@@ -1,0 +1,84 @@
+<footer>
+    <div class="center-full">
+        <div class="justify-footer">
+            <div class="col col-2">
+                <h3>Instagram Feed</h3>
+                <div>
+                    <a href="https://www.instagram.com/sandrasantosleiloes" target="_blank"><img width="100%" src="{{ asset('client/sandrasantos/instagram_feed.png') }}"/></a>
+                    <div><small><a href="https://www.instagram.com/sandrasantosleiloes" target="_blank" style="color: #c1f0ff">Siga-nos no instagram @sandrasantosleiloes</a></small></div>
+                </div>
+            </div><!-- END Col 1 -->
+
+            <div class="col col-3">
+                <h3>Fale Conosco</h3>
+
+                <ul class="contatos">
+                    <li><i class="fas fa-map-marker-alt"></i> {{ENDERECO}}, {{ENDERECO_CIDADE}} - {{ENDERECO_UF}}</li>
+                    <li><i class="fas fa-phone"></i> {{TELEFONE}}<br>{{ TELEFONE_CELULAR }}</li>
+                    <li><i class="fas fa-envelope-open"></i> {{ EMAIL_CONTATO }}</li>
+                </ul>
+
+                <ul class="social">
+                    {% if SL_FACEBOOK is not empty %}
+                        <li><a href="{{ SL_FACEBOOK }}" target="_blank"><i class="fab fa-facebook-f"></i></a></li>
+                    {% endif %}
+                    {% if SL_TWITTER is not empty %}
+                        <li><a href="{{ SL_TWITTER }}" target="_blank"><i class="fab fa-twitter"></i></a></li>
+                    {% endif %}
+                    {% if SL_INSTAGRAM is not empty %}
+                        <li><a href="{{ SL_INSTAGRAM }}" target="_blank"><i class="fab fa-instagram"></i></a></li>
+                    {% endif %}
+                    {% if SL_LINKEDIN is not empty %}
+                        <li><a href="{{ SL_LINKEDIN }}" target="_blank"><i class="fab fa-linkedin-in"></i></a></li>
+                    {% endif %}
+                    {% if SL_YOUTUBE is not empty %}
+                        <li><a href="{{ SL_YOUTUBE }}" target="_blank"><i class="fab fa-youtube"></i></a></li>
+                    {% endif %}
+                    {% if SL_WHATSAPP is not empty %}
+                        <li><a href="{{ SL_WHATSAPP }}" target="_blank"><i class="fab fa-whatsapp"></i></a></li>
+                    {% endif %}
+                </ul>
+            </div><!-- END Col 3 -->
+
+            <div class="col col-4">
+                <h3>Newsletter</h3>
+                <p>Receba em seu e-mail todos os nossos leilões e informações dos bens disponíveis e não perca boas oportunidades.</p>
+                
+                <form>
+                    <div>
+                        <input type="" name="" placeholder="Digite seu melhor e-mail">
+                        <button type="submit">Inscrever</button>
+                    </div>
+                </form>
+
+                <a href="https://www.suporteleiloes.com/" target="_blank"><img src="{{ asset('build/images/selo.png') }}" alt="Selo Suporte Leilões"></a>
+            </div><!-- END Col 4 -->
+        </div>
+
+        <div class="end-row">
+            <div class="left">
+                <ul>
+                    <li><a href="{{ path('home') }}">Home</a></li>
+                    <li><a href="{{ path('leiloes') }}">Leilões</a></li>
+                    <li><a href="{{ path('funcionamento') }}">Como Participar</a></li>
+                    <li><a href="{{ path('leiloeiro') }}">Leiloeiro</a></li>
+                    <li><a href="#">Blog</a></li>
+                    <li><a href="{{ path('contato') }}">Fale Conosco</a></li>
+                    <li class="cadastro show-logged">
+                        <small class="logged-in-menu">Olá, <strong id="logged-username">{{ app.request.cookies.get('sl_session-person')|split(' ')|first }}</strong>!</small>
+                    </li>
+                    <li class="login show-logged">
+                        <a href="{{ path('conta') }}">Minha conta</a>
+                    </li>
+
+                    <li class="cadastro hide-logged"><a href="{{ path('cadastro') }}">Cadastre-se</a></li>
+                    <li class="login hide-logged"><a href="{{ path('login') }}">Login</a></li>
+                </ul>
+            </div>
+            
+            <div class="right">
+                <p class="copy">&copy; 2020 Todos os direitos reservados <a href="#">Termos de Uso</a> <a href="">Política de Privacidade</a></p>
+            </div>
+        </div>
+    </div><!-- END Center Full -->
+</footer>

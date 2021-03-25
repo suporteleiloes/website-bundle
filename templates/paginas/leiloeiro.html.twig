@@ -1,0 +1,122 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    <title>Leiloeiro | {{sl.nome_site}}</title>
+{% endblock %}
+
+{% block metas %}
+    {{ parent() }}
+    <meta name="description" content=""/>
+    <meta name="keywords" content=""/>
+    <meta property="og:title" content="Leiloeiro | {{sl.nome_site}}"/>
+    <meta property="og:description" content=""/>
+    <meta property="og:url" content="{{ url(app.request.get('_route')) }}"/>
+    <meta property="og:image" content=""/>
+    <meta property="og:image:width" content="">
+    <meta property="og:image:height" content="">
+    <meta property="og:phone_number" content="">
+{% endblock %}
+
+{% block stylesheets %}
+	{{ parent() }}
+    {{ encore_entry_link_tags('leiloeiro') }}
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+	{{ encore_entry_script_tags('leiloeiro') }}
+
+	{#<script>
+        $(document).ready(function(e) {
+            $('.leiloeiro a').addClass('ativo');  
+        });
+    </script>#}
+{% endblock %}
+
+{% block body %}
+	<section class="cont-sobre">
+            <div class="row-1">
+                <div class="center">
+                    <p>A <strong>SARAIVA LEILÕES</strong> iniciou suas atividades em 2001 com a Leiloeira Pública Oficial Angela Saraiva, que é hoje referência no mercado por sua expertise e dedicação aos leilões judiciais e extrajudiciais.</p>
+                    <p>A capacitação técnica da equipe de um leiloeiro é o seu maior ativo e o que há de mais importante em sua estrutura. Por isso a equipe da <strong>SARAIVA LEILÕES</strong>, além de possuir larga experiência em leilões judiciais e extrajudiciais, está sempre atualizando os seus conhecimentos afim de melhor atender aos seus clientes.</p>
+                    <p>Desde o início, o objetivo foi conquistar a confiança dos Arrematantes, Judiciário, Advogados, e Comitentes através do bom trabalho e da transparência. Por esta razão, a <strong>SARAIVA LEILÕES</strong> se tornou a mais respeitada Organização de Leilões judiciais de Minas Gerais.</p>
+                </div><!-- / END Center -->
+            </div>
+            <div class="row-2">
+                <div class="center">
+                    <ul class="mvv">
+                        <li>
+                            <div class="cont-icon">
+                                <img src="{{ asset('build/images/icon-missao.png') }}" alt="">
+                            </div>
+
+                            <h4>Missão</h4>
+                            <p>Levar aos consumidores, <strong>EXCELENTES</strong> oportunidades de negócios e investimentos provenientes de Leilões Judiciais e Extrajudiciais.</p>
+                        </li><!-- END Missão -->
+
+                        <li>
+                            <div class="cont-icon">
+                                <img src="{{ asset('build/images/icon-visao.png') }}" alt="">
+                            </div>
+
+                            <h4>Visão</h4>
+                            <p style="text-align: justify;">Nosso objetivo é ser referência no mundo dos Leilões e fornecedor das <strong>melhores oportunidades em aquisição de bens moveis e imóveis</strong>. Buscamos atender às expectativas e necessidades dos nossos clientes. Criando valor para nossos parceiros e diferentes públicos com os quais nos relacionamos.</p>
+                        </li><!-- END Visão -->
+
+                        <li>
+                            <div class="cont-icon">
+                                <img src="{{ asset('build/images/icon-valores.png') }}" alt="">
+                            </div>
+
+                            <h4>Valores</h4>
+                            <p><strong>Satisfação</strong> do cliente, <strong>Valorização</strong> e <strong>respeito</strong> às pessoas, Atuar como parte integrante da empresa, Responsabilidade social</p>
+                        </li><!-- END Valores -->
+                    </ul>
+
+                    <div class="overflow"></div>
+
+                    <div style="float: left; width: 100%; margin-top: 40px;">
+                        <h2>Nossos Serviços</h2>
+                        <p style="margin-bottom: 22px; font-size: 15px; line-height: 1.4; text-align: justify;">A <strong>SARAIVA LEILÕES</strong> possui estrutura física e digital para executar leilões Presenciais, Online e Simultâneos. Com capacidade de atendimento em grande escala. Atendemos os seguintes comitentes e clientes:</p>
+                        <ul class="li-servicos">
+                            <li>Leilões do TJMG - Tribunal de Justiça de Minas Gerais.</li>
+                            <li>Leilões do TRT e Justiça Federal.</li>
+                            <li>Leilões de Alienação Fiduciária para Instituições Financeiras.</li>
+                            <li>Leilões da Caixa Econômica Federal.</li>
+                            <li>Leilões de imóveis para grandes empresas e particulares.</li>
+                            <li>Leilões da administração federal direta e indireta.</li>
+                            <li>Leilões de prefeituras municipais.</li>
+                        </ul>
+                    </div>
+
+                    <div style="float: left; width: 100%; margin: 40px 0 22px 0;">
+                        <h2 style="margin-bottom: 17px;">Angela Saraiva</h2>
+                        <div class="sobre-angela">
+                            <div class="cont-foto">
+                                <img src="{{ asset('build/images/foto-leiloeira.jpg') }}" alt="Angela Saraiva Leiloeira">
+                            </div>
+                            <div class="txt">
+                                <p style="margin-bottom: 22px; font-size: 15px; line-height: 1.4; text-align: justify;"><strong>Angela Saraiva</strong> iniciou suas atividades em 2001 como Leiloeira Pública Oficial, regularmente matriculada na Junta Comercial de Minas Gerais, sob nº 441. </p>
+
+                                <p style="margin-bottom: 22px; font-size: 15px; line-height: 1.4; text-align: justify;">Durante sua carreira se fez referência no mercado por sua expertise e dedicação aos leilões judiciais e extrajudiciais.</p>
+
+                                <p style="margin-bottom: 22px; font-size: 15px; line-height: 1.4; text-align: justify;">Com muita dedicação, a Leiloeira conquistou a confiança e respeito dos Arrematantes, Judiciário, Advogados e Comitentes através do bom trabalho e da transparência. Sempre prezando pela honestidade e compromisso com ambas as partes.</p>
+
+                                <p style="margin-bottom: 22px; font-size: 15px; line-height: 1.4; text-align: justify;">Seu comprometimento com a Justiça e sua vasta experiência levou a SARAIVA LEILÕES a ser referência em leilões judiciais de Minas Gerais.</p>
+
+                                <h5 style="margin: 28px 0 20px 0; font-size: 23px; font-weight: bold;">Formação Acadêmica</h5>
+                                <ul class="li-servicos">
+                                    <li><strong>BACHAREL EM DIREITO</strong> - Escola Superior Dom Helder Câmara, Belo Horizonte/MG - 2007.</li>
+                                    <li><strong>CURSO TÉCNICO EM TRANSAÇÕES IMOBILIÁRIAS</strong> - Colégio Arnaldo Prieto. Niterói/RJ - 2008.</li>
+                                    <li><strong>ARQUITETURA</strong> - Fundação Educacional Rosemar Pimentel - FERP Barra do Piraí / RJ - 1980.</li>
+                                    <li><strong>ADMINISTRAÇÃO DE EMPRESA</strong> - Até o 6º período - Centro Universitário da Barra Mansa Barra Mansa/RJ – 1973</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    
+                </div><!-- / END Center -->
+            </div>
+        </section><!-- / END Sobre -->
+{% endblock %}

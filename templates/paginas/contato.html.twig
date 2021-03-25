@@ -1,0 +1,150 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    <title>Fale Conosco | {{ sl.nome_site }}</title>
+{% endblock %}
+
+{% block metas %}
+    {{ parent() }}
+    <meta name="description" content=""/>
+    <meta name="keywords" content=""/>
+    <meta property="og:title" content="Fale Conosco | {{ sl.nome_site }}"/>
+    <meta property="og:description" content=""/>
+    <meta property="og:url" content="{{ url(app.request.get('_route')) }}"/>
+    <meta property="og:image" content=""/>
+    <meta property="og:image:width" content="">
+    <meta property="og:image:height" content="">
+    <meta property="og:phone_number" content="">
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('contato') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('contato') }}
+
+    <script>
+        $(document).ready(function(e) {
+            $('.contato a').addClass('ativo');
+        });
+    </script>
+{% endblock %}
+
+{% block body %}
+    {# TODO: COLOCAR NO ERP (PAGINAS) #}
+    <section class="show-contatos">
+        <div class="center">
+            <p style="color: #FFFFFF; text-align: center; font-style: 15px;
+             margin-bottom: 13px;">Entre em contato conosco, estamos à disposição!</p>
+            <ul class="lista-contatos"> 
+                <li>
+                    <p>(31) 3207-3900</p>
+                    <p style="position: relative; right: -16px;">(31) 99397-3900 <i class="fab fa-whatsapp" style="color: #FFFFFF;"></i></p>
+                    <p>contato@saraivaleiloes.com.br</p>
+                </li>
+            </ul>
+
+            <ul class="lista-social">
+                {% if SL_FACEBOOK is not empty %}
+                <li>
+                    <a class="azul" href="{{ SL_FACEBOOK }}" target="_blank">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                </li>
+                {% endif %}
+
+                {% if SL_TWITTER is not empty %}
+                <li>
+                    <a class="azul" href="{{ SL_TWITTER }}" target="_blank">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                </li>
+                {% endif %}
+
+                {% if SL_INSTAGRAM is not empty %}
+                <li>
+                    <a class="insta" href="{{ SL_INSTAGRAM }}" target="_blank">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                </li>
+                {% endif %}
+
+                {% if SL_YOUTUBE is not empty %}
+                    <li>
+                        <a class="insta" href="{{ SL_YOUTUBE }}" target="_blank">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                    </li>
+                {% endif %}
+
+                {% if SL_LINKEDIN is not empty %}
+                <li>
+                    <a class="azul" href="{{ SL_LINKEDIN }}" target="_blank">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                </li>
+                {% endif %}
+
+                {% if SL_WHATSAPP is not empty %}
+                    <li>
+                        <a class="whats" href="{{ SL_WHATSAPP }}" target="_blank">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </section>
+
+    <section class="form-contato">
+        <div class="center">
+            <h2><span>Fale Conosco</span></h2>
+            <p>Valorizamos nossos clientes, aprimoramos cada vez mais nosso atendimento.</p>
+
+            <div class="right">
+                <form method="post" action="{{ path('contato-send') }}">
+                    <div>
+                        <select>
+                            <option>Setor</option>
+                            <option>Cadastro</option>
+                            <option>Leilões</option>
+                            <option>Documentos</option>
+                            <option>Outros</option>
+                        </select>
+                    </div><!---->
+
+                    <div>
+                        <input type="text" name="nome" placeholder="Nome Completo" required>
+                    </div><!---->
+
+                    <div>
+                        <input type="text" name="email" placeholder="E-mail">
+                    </div><!---->
+
+                    <div>
+                        <input type="text" name="telefone" placeholder="(DDD) + Telefone">
+                    </div><!---->
+
+                    <div>
+                        <input type="text" name="assunto" placeholder="Assunto">
+                    </div><!---->
+
+                    <div>
+                        <textarea name="mensagem" rows="5" placeholder="Mensagem"></textarea>
+                    </div><!---->
+
+                    <div style="display: flex; justify-content: center;">
+                        <button type="submit">Enviar Mensagem</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <div style="text-align: center; font-size: 14px;">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3750.779855053832!2d-43.95453978508553!3d-19.933679686601636!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xa6976546a62b85%3A0x3e6e70c301520bb8!2sR.%20Araguari%2C%201750%20-%206%C2%BA%20andar%20-%20Santo%20Agostinho%2C%20Belo%20Horizonte%20-%20MG%2C%2030190-111!5e0!3m2!1spt-BR!2sbr!4v1610990121355!5m2!1spt-BR!2sbr" width="100%" height="450" frameborder="0" style="border:0;" allowfullscreen="" aria-hidden="false" tabindex="0"></iframe>
+    </div>
+{% endblock %}

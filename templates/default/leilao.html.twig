@@ -1,0 +1,126 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {% if tipoNome is not null %}
+        <title>{{ tipoNome }} em leilão | {{ sl.nome_site }}</title>
+    {% elseif busca is not null %}
+        <title>Encontre {{ busca }} em leilão | {{ sl.nome_site }}</title>
+    {% else %}
+        <title>{{ leilao.titulo }} | {{ sl.nome_site }}</title>
+    {% endif %}
+{% endblock %}
+
+{% block metas %}
+    {{ parent() }}
+    {#<meta name="description" content=""/>
+    <meta name="keywords" content=""/>
+    <meta property="og:title" content="{{ leilao.titulo }} | {{ sl.nome_site }}"/>
+    <meta property="og:description" content=""/>
+    <meta property="og:url" content="{{ url(app.request.get('_route'), {id:1}) }}"/>
+    <meta property="og:image" content=""/>
+    <meta property="og:image:width" content="">
+    <meta property="og:image:height" content="">
+    <meta property="og:phone_number" content="">#}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+
+    {#<link rel="stylesheet" href="{{ asset('assets/css/paginas/leiloes.css') }}">#}
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        $(document).ready(function(e) {
+            $('.leiloes a').addClass('ativo');
+        });
+    </script>
+
+    <script type="text/javascript">
+        var _LEILAO = {
+            id: {{ leilao.aid is not empty ? leilao.aid : 'null' }},
+            status: {{ leilao.status is not empty ? leilao.status : 'null' }}
+        };
+    </script>
+    {{ parent() }}
+    {{ encore_entry_script_tags('leilao') }}
+{% endblock %}
+
+{% block body %}
+    <div id="app">
+        {% if leilao.id %}
+            <div class="center-1200 mt-4 mb-4">
+                {% include "default/includes/leilao/resumo.html.twig" %}
+            </div>
+        {% endif %}
+        <div class="leilao center-1200">
+            <div class="options">
+                <div class="left">
+                    <form class="form-inline">
+                        <div class="form-group">
+                            <input name="busca" size="28"
+                                   placeholder="{% if leilao.id %}Buscar neste leilão{% else %}Buscar no site{% endif %}"
+                                   value="{{ busca }}" class="form-control form-control-sm">
+                            <button class="btn btn-sm"><i class="fas fa-search"></i></button>
+                        </div>
+                    </form>
+                </div>
+                <div class="exibicao right">
+                    <div>
+                        <a href="{{ path('print_leilao', {id: leilao.id}) }}" target="_blank" class="btn btn-md mr-2"><i class="fas fa-print"></i> Imprimir</a>
+                    </div>
+                    <div class="hidden-mobile">
+                        <span class="mr-2">Forma de exibição:</span>
+                        <a class="exibicao-ico selected" data-type="lista">
+                            <svg
+                                    width="1em" height="1em" class="bi bi-grid-3x3-gap-fill"
+                                    role="img" xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 512 512">
+                                <path fill="currentColor"
+                                      d="M149.333 216v80c0 13.255-10.745 24-24 24H24c-13.255 0-24-10.745-24-24v-80c0-13.255 10.745-24 24-24h101.333c13.255 0 24 10.745 24 24zM0 376v80c0 13.255 10.745 24 24 24h101.333c13.255 0 24-10.745 24-24v-80c0-13.255-10.745-24-24-24H24c-13.255 0-24 10.745-24 24zM125.333 32H24C10.745 32 0 42.745 0 56v80c0 13.255 10.745 24 24 24h101.333c13.255 0 24-10.745 24-24V56c0-13.255-10.745-24-24-24zm80 448H488c13.255 0 24-10.745 24-24v-80c0-13.255-10.745-24-24-24H205.333c-13.255 0-24 10.745-24 24v80c0 13.255 10.745 24 24 24zm-24-424v80c0 13.255 10.745 24 24 24H488c13.255 0 24-10.745 24-24V56c0-13.255-10.745-24-24-24H205.333c-13.255 0-24 10.745-24 24zm24 264H488c13.255 0 24-10.745 24-24v-80c0-13.255-10.745-24-24-24H205.333c-13.255 0-24 10.745-24 24v80c0 13.255 10.745 24 24 24z"></path>
+                            </svg>
+                        </a>
+                        <a class="exibicao-ico" data-type="grade">
+                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-grid-3x3-gap-fill"
+                                 fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M1 2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2zm5 0a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V2zm5 0a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1V2zM1 7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V7zm5 0a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7zm5 0a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1V7zM1 12a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1v-2zm5 0a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1v-2zm5 0a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-2z"/>
+                            </svg>
+                        </a>
+                        {#<a class="exibicao-ico" data-type="lista-table">
+                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-card-list"
+                                 fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd"
+                                      d="M14.5 3h-13a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 .5.5h13a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5zm-13-1A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-13z"/>
+                                <path fill-rule="evenodd"
+                                      d="M5 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 5 8zm0-2.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0 5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5z"/>
+                                <circle cx="3.5" cy="5.5" r=".5"/>
+                                <circle cx="3.5" cy="8" r=".5"/>
+                                <circle cx="3.5" cy="10.5" r=".5"/>
+                            </svg>
+                        </a>#}
+                    </div>
+                    <div class="ml-4 ordering">
+                        <span>Ordenar por:</span>
+                        <select class="ml-2" style="width: auto;">
+                            <option value="lotNumber:asc;subLotNumber:asc">Número de Lote</option>
+                            <option value="price:desc">Maior Valor</option>
+                            <option value="price:asc">Menor Valor</option>
+                            <option value="visits:desc">Mais Visitados</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="leilao center-1200">
+            <!-- FILTROS -->
+            {% include 'default/includes/inc.filtros-leilao.html.twig' %}
+
+            <!-- LISTA -->
+            <div class="lotes-container">
+                {% set lotes = leilao.lotes %}
+                {% include 'default/includes/inc.lista-lotes.html.twig' %}
+            </div>
+        </div>
+        {% include "default/includes/toast.html.twig" %}
+    </div>
+{% endblock %}

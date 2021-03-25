@@ -1,0 +1,459 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    <title>{{ lote.titulo }} | {{ sl.nome_site }}</title>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+
+    {{ encore_entry_link_tags('lote') }}
+
+    {#<link rel="stylesheet" href="{{ asset('assets/css/paginas/lote.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/paginas/leiloes.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/paginas/lances.css') }}">
+    <link rel="stylesheet" href="{{ asset('vendors/photoswipe/photoswipe.css') }}">
+    <link rel="stylesheet" href="{{ asset('vendors/photoswipe/default-skin/default-skin.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/carousel-lote.css') }}">#}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $(document).ready(function(e) {
+            $('.leiloes a').addClass('ativo');
+        });
+    </script>
+
+    <script type="text/javascript">
+        // var leilao = {#{{ leilaoJson|raw }}#};
+        var leilaoService = {
+            lance: "#",
+            ultimosLances: "#",
+            pushLance: "#"
+        };
+        {#var AudioNotificationFiles = {
+            lance: "{{ absolute_url(asset('audios/lance.mp3')) }}",
+            meuLance: "{{ absolute_url(asset('audios/meulance.mp3')) }}",
+            err: "{{ absolute_url(asset('audios/error.mp3')) }}",
+            vendido: "{{ asset('audios/vendido.mp3') }}"
+        };#}
+        var __THISPAGE__ = "{{ path('lote', {id: lote.id, slug: lote.slug}) }}";
+        // var pregao = {# pregaoJson|raw #};
+        var leilao = {{ leilaoJson|raw }};
+        var lote = {{ loteJson|raw }};
+        var lances = {{ lancesJson|raw }};
+        var __LEILAO__ = {{ leilao.id }};
+        {% if is_granted('ROLE_USER') %}
+        var __USERID__ = {{ app.user.id }};
+        var __ARREMATANTEID__ = {{ app.user.pessoa.arrematante.id }};
+        {% else %}
+        var __USERID__ = null;
+        var __ARREMATANTEID__ = null
+        {% endif %}
+        {% if permitidoLances %}
+        var permitidoLances = true
+        {% else %}
+        var permitidoLances = false
+        {% endif %}
+    </script>
+    {{ encore_entry_script_tags('lote') }}
+    <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5f4a2e08c1d253c4"></script>
+    {#<script type="text/javascript" src="{{ asset('assets/js/vendor/php-js/number_format.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('vendors/photoswipe/photoswipe.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('vendors/photoswipe/photoswipe-ui-default.min.js') }}"></script>
+    <script src="{{ asset('assets/js/vendor/vue.js') }}"></script>
+    <script src="{{ asset('assets/js/lote.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/js/vendor/moment.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/js/pregao/moment.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/js/vendor/v-money.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/js/pregao/mixins.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/js/pregao/directives.js') }}"></script>
+    <script src="{{ asset('assets/js/lote-lances.js') }}"></script>
+    <script src="{{ asset('assets/js/carousel-lote.js') }}"></script>#}
+{% endblock %}
+
+{% block body %}
+    {% include 'default/includes/photoswipe/theme.html.twig' %}
+
+    <div class="center-1200">
+        {% include "default/includes/leilao/resumo.html.twig" %}
+        <div class="clearfloat"></div>
+
+        {#<div class="lote-nav">
+            <div class="mt-1"><small><a href="{{ path('leilao', {id: leilao.id}) }}">Voltar para o leilão</a></small></div>
+        </div>#}
+
+        {% if lote.retirado %}
+            <div class="alert alert-warning text-center mt-4"><strong>Este lote foi retirado</strong></div>
+        {% endif %}
+        <div class="center-1200 share-opts">
+            {% set diff = leilao.dataAberturaOuEncerramento.diff(date( "now"|date('Y-m-d')~' '~leilao.dataAberturaOuEncerramento|date('H:i:s'))).days %}
+            {% set dias = diff > 1 ? ' dias' : ' dia' %}
+            {% set dia = leilao.dataAberturaOuEncerramento| format_datetime( pattern='EEEE', locale='pt-BR')|capitalize %}
+            <div class="leilao-desc">Visualizando lote do leilão
+                que {% if date(lote.leilao.dataAberturaOuEncerramento) < date() %} foi realizado
+                    <strong>{{ lote.leilao.dataAberturaOuEncerramento|date('d/m/Y') }}
+                    ,</strong>{% else %} será realizado <strong>{{ diff > 0 ? 'daqui '~diff~dias~', ' ~ dia : 'hoje' }}
+                    ,</strong>{% endif %}
+                <strong>
+                    às {{ leilao.dataAberturaOuEncerramento|date('H\\hi') }}</strong>, de forma
+                <strong>{{ leilao.tipoString }}</strong></div>
+            <div class="addthis_inline_share_toolbox"></div>
+        </div>
+
+        <div class="box-lote">
+            <div class="box-left">
+                {% include 'default/includes/lote/fotos.html.twig' %}
+                {% if lote.localizacaoUrlGoogleMaps or lote.localizacaoUrlStreetView %}
+                    <div class="text-center">
+                        {% if lote.localizacaoUrlGoogleMaps %}
+                            <a href="{{ lote.localizacaoUrlGoogleMaps }}" target="_blank" class="btn btn-white">
+                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                                     width="32" height="32" viewBox="0 0 32 32">
+                                    <defs>
+                                        <path id="map"
+                                              d="M6.683 15.525a9.825 9.825 0 0 1-.183-1.894C6.5 8.321 10.787 4 16.051 4c5.267 0 9.551 4.324 9.531 9.631 0 .713-.067 1.393-.202 1.993 0 .038-.006.07-.016.108l-.01.057c-.262 1.16-.922 2.52-1.917 4.045a36.462 36.462 0 0 1-2.339 3.15 63.229 63.229 0 0 1-4.351 4.743 1.061 1.061 0 0 1-.696.273.962.962 0 0 1-.7-.277 59.18 59.18 0 0 1-4.037-4.346c-2.473-2.955-4.146-5.607-4.612-7.733a.164.164 0 0 0-.005-.036.475.475 0 0 1-.014-.083zm16.687-.145v-.061l.005-.043c.118-.534.177-1.09.177-1.665 0-4.175-3.38-7.57-7.521-7.57-4.13 0-7.501 3.404-7.501 7.57 0 .491.054 1.002.141 1.498.018.037.03.07.036.107.005.05.005.05 0 .04.59 2.657 3.676 6.564 7.344 10.275 3.614-3.657 6.733-7.598 7.32-10.151zm-7.575-4.987a3.383 3.383 0 0 1 3.394 3.394 3.396 3.396 0 0 1-3.394 3.393 3.41 3.41 0 0 1-3.393-3.393 3.396 3.396 0 0 1 3.393-3.394zm0 4.723c.737 0 1.33-.592 1.33-1.33 0-.736-.593-1.329-1.33-1.329-.737 0-1.33.593-1.33 1.33 0 .737.593 1.33 1.33 1.33z"></path>
+                                    </defs>
+                                    <g fill="none" fill-rule="evenodd">
+                                        <mask id="b">
+                                            <use xlink:href="#map"></use>
+                                        </mask>
+                                        <use class="svg_lote_color" xlink:href="#map"></use>
+                                        <g mask="url(#b)">
+                                            <path d="M0 0h32v32H0z"></path>
+                                        </g>
+                                    </g>
+                                </svg>
+                                <span>Mapa</span>
+                            </a>
+                        {% endif %}
+                        {% if lote.localizacaoUrlStreetView %}
+                            <a href="{{ lote.localizacaoUrlStreetView }}" target="_blank" class="btn btn-white">
+                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                                     width="32" height="32" viewBox="0 0 32 32">
+                                    <defs>
+                                        <path id="streetView"
+                                              d="M14.04 14.552v9.398c0 .675.432 1.222.965 1.222h1.931c.533 0 .966-.547.966-1.222v-9.398h1.931v3.79h.965v-5.266c-1.4-.349-3.03-.527-4.887-.527-1.836 0-3.426.174-4.768.514v5.28h.966v-3.791h1.93zm5.793 5.722v3.933c0 1.6-1.297 2.896-2.897 2.896h-1.93a2.897 2.897 0 0 1-2.897-2.896v-3.933h-.966a1.931 1.931 0 0 1-1.93-1.931v-5.28c0-.884.6-1.655 1.456-1.872 1.508-.382 3.255-.573 5.242-.573 2.006 0 3.791.195 5.354.584.86.215 1.464.988 1.464 1.874v5.267a1.931 1.931 0 0 1-1.93 1.93h-.966zm-9.655 1.67v2.008c-.25.07-.488.145-.716.225-1.45.507-2.181 1.113-2.181 1.478 0 .366.731.97 2.181 1.478 1.69.592 4.016.936 6.509.936 2.493 0 4.819-.344 6.508-.936 1.45-.507 2.181-1.112 2.181-1.478 0-.365-.731-.97-2.181-1.478-.227-.08-.466-.155-.715-.225v-2.007c2.903.718 4.827 2.011 4.827 3.71 0 2.675-4.77 4.345-10.62 4.345S5.35 28.33 5.35 25.655c0-1.699 1.924-2.992 4.828-3.71zm5.793-12.22a3.862 3.862 0 1 1 0-7.724 3.862 3.862 0 0 1 0 7.724zm0-1.93a1.931 1.931 0 1 0 0-3.863 1.931 1.931 0 0 0 0 3.862z"></path>
+                                    </defs>
+                                    <g fill="none" fill-rule="evenodd">
+                                        <mask id="b">
+                                            <use xlink:href="#streetView"></use>
+                                        </mask>
+                                        <use class="svg_lote_color" xlink:href="#streetView"></use>
+                                        <g mask="url(#b)">
+                                            <path d="M0 0h32v32H0z"></path>
+                                        </g>
+                                    </g>
+                                </svg>
+                                <span>Vista da rua</span>
+                            </a>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="box-right">
+                <div class="position-relative">
+                    <a href="#adicionar-favorito"
+                       title="Clique para adicionar este lote na sua lista de favoritos"
+                       class="item-favorite-btn hovered" data-toggle="tooltip" data-placement="top"
+                       data-id="{{ lote.id }}">
+                        <div class="hide-hover">
+                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-suit-heart"
+                                 fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd"
+                                      d="M8 6.236l.894-1.789c.222-.443.607-1.08 1.152-1.595C10.582 2.345 11.224 2 12 2c1.676 0 3 1.326 3 2.92 0 1.211-.554 2.066-1.868 3.37-.337.334-.721.695-1.146 1.093C10.878 10.423 9.5 11.717 8 13.447c-1.5-1.73-2.878-3.024-3.986-4.064-.425-.398-.81-.76-1.146-1.093C1.554 6.986 1 6.131 1 4.92 1 3.326 2.324 2 4 2c.776 0 1.418.345 1.954.852.545.515.93 1.152 1.152 1.595L8 6.236zm.392 8.292a.513.513 0 0 1-.784 0c-1.601-1.902-3.05-3.262-4.243-4.381C1.3 8.208 0 6.989 0 4.92 0 2.755 1.79 1 4 1c1.6 0 2.719 1.05 3.404 2.008.26.365.458.716.596.992a7.55 7.55 0 0 1 .596-.992C9.281 2.049 10.4 1 12 1c2.21 0 4 1.755 4 3.92 0 2.069-1.3 3.288-3.365 5.227-1.193 1.12-2.642 2.48-4.243 4.38z"/>
+                            </svg>
+                        </div>
+                        <div class="show-hover text-danger">
+                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-suit-heart-fill"
+                                 fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M4 1c2.21 0 4 1.755 4 3.92C8 2.755 9.79 1 12 1s4 1.755 4 3.92c0 3.263-3.234 4.414-7.608 9.608a.513.513 0 0 1-.784 0C3.234 9.334 0 8.183 0 4.92 0 2.755 1.79 1 4 1z"/>
+                            </svg>
+                        </div>
+                    </a>
+                </div>
+                <div class="def-padding">
+                    {% if lote.numero %}
+                        <div class="numero-lote m-b-md">
+                            <!--Novo/Sucata (Condição) - -->Lote: <strong>{{ lote.numero }}</strong>
+                        </div>
+                    {% endif %}
+                    <div class="clearfloat"></div>
+                    <h1 class="item-title">
+                        {{ lote.titulo }}
+                    </h1>
+                    <div class="item-date">
+                        <a href="{{ path('leilao', {id: lote.leilao.id}) }}"><i
+                                    class="fa fa-calendar item-ico"></i>
+                            {% set tipoEncerramento = 'às' %}
+                            {% if date(lote.leilao.dataAberturaOuEncerramento) < date() %}
+                                Leilão realizado
+                            {% else %}
+                                {% if lote.leilao.dataEncerramento %}
+                                    {% set tipoEncerramento = 'a partir de' %}
+                                    {% if lote.leilao.dataEncerramento == lote.leilao.dataAberturaOuEncerramento %}
+                                        O leilão encerrará
+                                    {% else %}
+                                        O leilão será aberto
+                                    {% endif %}
+                                {% else %}
+                                    O leilão ocorrerá
+                                {% endif %}
+                            {% endif %}
+                            <strong>
+                                {% if "now"|date|date_modify("+1 day")|date("Y-m-d") == lote.leilao.dataAberturaOuEncerramento|date("Y-m-d") %}
+                                    {% set dia = 'Amanhã' %}
+                                {% elseif "now"|date("Y-m-d") == lote.leilao.dataAberturaOuEncerramento|date("Y-m-d") %}
+                                    {% set dia = 'Hoje' %}
+                                {% else %}
+                                    {% set dia = lote.leilao.dataAberturaOuEncerramento|date('N') %}
+                                    {% if dia < 6 %}
+                                        {% set dia = 'na '~(dia+1)~'a Feira' %}
+                                    {% else %}
+                                        {% if dia == 6 %}
+                                            {% set dia = 'no Sábado' %}
+                                        {% else %}
+                                            {% set dia = 'no Domingo' %}
+                                        {% endif %}
+                                    {% endif %}
+                                {% endif %}
+                                {{ dia }}, {{ lote.leilao.dataAberturaOuEncerramento|date('d/m') }},
+                                {{ tipoEncerramento }} {{ lote.leilao.dataAberturaOuEncerramento|date('H\\hi') }} {# TODO: Endereço. #} {# \\hi #}
+                            </strong>
+                            {#<strong>{{ lote.leilao.dataAberturaOuEncerramento| localizeddate('full', 'none', 'pt-BR' ) }}
+                                às {{ lote.leilao.dataAberturaOuEncerramento| date('H:i') }}</strong>#}
+                        </a>
+                    </div>
+
+                    <div class="item-descritivos">
+                        {% if not leilao.encerrado %}
+                            <div class="item-descricao">
+                                {% if lote.processo %}
+                                    <div class="subitem-title">Processo</div>
+                                    {{ lote.processo }}<br>
+                                {% endif %}
+                                {% if lote.exequente %}
+                                    Exequente: {{ lote.exequente }}<br>
+                                {% endif %}
+                                {% if lote.executado %}
+                                    Executado: {{ lote.executado }}<br>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+
+                        {% if lote.descricao is not empty %}
+                            <div class="item-descricao">
+                                <div class="subitem-title">Descrição</div>
+                                {{ lote.descricao }}
+                            </div>
+                        {% endif %}
+
+                        {#{% if lote.observacao is not empty %}
+                            <div class="item-descricao">
+                                <div class="subitem-title">Observações</div>
+                                {{ lote.observacao|capitalize }}
+                            </div>
+                        {% endif %}#}
+
+                        {#{% if lote.valorInicial > 0 and lote.leilao.status != 99 %}
+                            <div class="item-descricao">
+                                <div class="subitem-title">Valor inicial</div>
+                                R$ {{ lote.valorInicial|number_format(2,',','.') }}
+                            </div>
+                        {% endif %}#}
+                        {% if not leilao.encerrado %}
+                            <div class="lote-stats">
+                                {#{% if lote.comitenteLogo %}
+                                    <div class="img-comitente"><img src="{{ lote.comitenteLogo.thumb }}"></div>
+                                {% endif %}#}
+                                {% if lote.valorInicial > 0 and lote.leilao.status != 99 %}
+                                    <div class="stats valorAtual ml-0">
+                                        <span>R$ {{ lote.valorAtual|number_format(2, ',', '.') }}</span>
+                                        <p>Lance Mínimo</p>
+                                    </div>
+                                {% endif %}
+                                {#<div class="stats visitas">
+                                    <span>0</span>
+                                    <p>Visitas</p>
+                                </div>#}
+                                <div class="stats lances">
+                                    <span>{{ lote.lances|length }}</span>
+                                    <p>Lances</p>
+                                </div>
+                                {% if lote.diferencaAvaliacao and lote.valorAtual > 0 %}
+                                    <div class="desconto">
+                                        <p class="label">Você economiza</p>
+                                        <p class="price">R$ {{ lote.diferencaAvaliacao|number_format(2, ',', '.') }}</p>
+                                        {% if lote.diferencaAvaliacaoPorcentagem > 0 %}
+                                            <div class="discount">{{ lote.diferencaAvaliacaoPorcentagem }}%</div>
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
+                                {#<div class="stats btn-lance flex-grow-1 text-right">
+                                    {% if lote.permitidoLance %}
+                                        <a class="btn btn-sm btn-secondary">Efetuar lance</a>
+                                    {% endif %}
+                                </div>#}
+                            </div>
+                            {% if lote.valorInicial2 > 0 and lote.leilao.praca == 1 and lote.leilao.status != 99 %}
+                                <div class="lote-stats m-t-none">
+                                    <div class="stats valorAtual ml-0">
+                                        <span>R$ {{ lote.valorInicial2|number_format(2, ',', '.') }}</span>
+                                        <p>Lance Mínimo 2° leilão</p>
+                                    </div>
+                                </div>
+                            {% endif %}
+                            {% if lote.valorAvaliacao > 0 and lote.leilao.status != 99 %}
+                                <div class="lote-stats m-t-none">
+                                    <div class="stats ml-0">
+                                        <span>R$ {{ lote.valorAvaliacao|number_format(2, ',', '.') }}</span>
+                                        <p>Valor da Avaliação</p>
+                                    </div>
+                                </div>
+                            {% endif %}
+
+                        {% endif %}
+
+                        {#{% if lote.leilao.infoRetirada is not empty %}
+                            <div>
+                                <div class="subitem-title">Informações de Retirada</div>
+                                {{ lote.leilao.infoRetirada }}
+                            </div>
+                        {% endif %}#}
+
+                    </div>
+                    {% if lote.leilao.infoVisitacao %}
+                        <div class="item-descricao">
+                            <div class="subitem-title">Informações sobre visitação</div>
+                            {{ lote.leilao.infoVisitacao }}
+                        </div>
+                    {% endif %}
+                    {#{% if lote.conservacao is not null %}
+                        <div class="item-descricao">
+                            <div class="subitem-title">Conservação</div>
+                            {{ lote.conservacao }}
+                        </div>
+                    {% endif %}#}
+
+                </div>
+            </div>
+
+            {#{% if permitidoLances %}
+                <div class="clearfloat"></div>
+                <a id="lances"></a>
+                {% include 'default/includes/lote/inc.lances.html.twig' %}
+            {% endif %}#}
+        </div>
+
+        {% if lote.permitidoLance %}
+            <div id="lances" class="lances">
+                {#{% include "default/includes/lote/inc.lances.html.twig" %}#}
+                <iframe width="100%" height="300"
+                        src="{{ PAINEL_URL }}/#/lances/{{ lote.aid }}?origin=__{{ absolute_url('/') }}__"
+                        frameborder="0"
+                        allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen></iframe>
+            </div>
+        {% endif %}
+
+        {% if lote.observacao %}
+            <div class="lote-descricao">
+                <div class="lote-subtitulo">
+                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-card-text" fill="currentColor"
+                         xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd"
+                              d="M14.5 3h-13a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 .5.5h13a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5zm-13-1A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-13z"/>
+                        <path fill-rule="evenodd"
+                              d="M3 5.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zM3 8a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9A.5.5 0 0 1 3 8zm0 2.5a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5z"/>
+                    </svg>
+                    Informações adicionais
+                </div>
+                <div class="lote-texto">{{ lote.observacao|raw }}</div>
+            </div>
+        {% endif %}
+
+        <div class="lote-descricao">
+            <div class="lote-subtitulo">
+                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-cash" fill="currentColor"
+                     xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd"
+                          d="M15 4H1v8h14V4zM1 3a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H1z"/>
+                    <path d="M13 4a2 2 0 0 0 2 2V4h-2zM3 4a2 2 0 0 1-2 2V4h2zm10 8a2 2 0 0 1 2-2v2h-2zM3 12a2 2 0 0 0-2-2v2h2zm7-4a2 2 0 1 1-4 0 2 2 0 0 1 4 0z"/>
+                </svg>
+                Formas de Pagamento
+            </div>
+            {% if lote.formasPagamento is not empty %}
+                <div class="lote-texto">{{ lote.formasPagamento }}</div>
+            {% else %}
+                <div class="lote-texto">Consulte o edital.</div>
+            {% endif %}
+        </div>
+
+        <div class="lote-descricao">
+            <div class="lote-subtitulo">
+                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-files" fill="currentColor"
+                     xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd"
+                          d="M3 2h8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm0 1a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H3z"/>
+                    <path d="M5 0h8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2v-1a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1H3a2 2 0 0 1 2-2z"/>
+                </svg>
+                Documentos
+            </div>
+            {% set docCount = 0 %}
+            {% if lote.documentos is not empty %}
+                <div class="lote-texto documentos">
+                    <ul>
+                        {% for doc in lote.documentos %}
+                            {% if doc.permissao == 0 and doc.tipo.nome|lower != 'foto site' %}
+                                {% set docCount = docCount + 1 %}
+                                <li>
+                                    <a href="{{ doc.url }}" target="_blank">
+                                        <div class="ico">
+                                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-file-text"
+                                                 fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                                <path fill-rule="evenodd"
+                                                      d="M4 1h8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2zm0 1a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1H4z"/>
+                                                <path fill-rule="evenodd"
+                                                      d="M4.5 10.5A.5.5 0 0 1 5 10h3a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5zm0-2A.5.5 0 0 1 5 8h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5zm0-2A.5.5 0 0 1 5 6h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5zm0-2A.5.5 0 0 1 5 4h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5z"/>
+                                            </svg>
+                                        </div>
+                                        <div class="desc">{{ doc.nome }}</div>
+                                    </a>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+            {% if docCount == 0 %}
+                <div class="lote-texto">Nenhum documento disponível para este lote no momento.</div>
+            {% endif %}
+        </div>
+
+        <div class="lote-descricao">
+            <div class="lote-subtitulo">
+                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-map" fill="currentColor"
+                     xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd"
+                          d="M15.817.613A.5.5 0 0 1 16 1v13a.5.5 0 0 1-.402.49l-5 1a.502.502 0 0 1-.196 0L5.5 14.51l-4.902.98A.5.5 0 0 1 0 15V2a.5.5 0 0 1 .402-.49l5-1a.5.5 0 0 1 .196 0l4.902.98 4.902-.98a.5.5 0 0 1 .415.103zM10 2.41l-4-.8v11.98l4 .8V2.41zm1 11.98l4-.8V1.61l-4 .8v11.98zm-6-.8V1.61l-4 .8v11.98l4-.8z"/>
+                </svg>
+                Localização
+            </div>
+            {% if lote.localizacaoMapEmbed %}
+                <div class="text-center">
+                    <div class="lote-texto localizacao">
+                        <iframe frameborder="0" width="100%" height="400" src="{{ lote.localizacaoMapEmbed }}"></iframe>
+                    </div>
+                </div>
+            {% else %}
+                <div class="lote-texto">Não disponível.</div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="mt-2 mb-2 lote-erp-info">
+        Ref. Interna: #{{ lote.aid }}. Leilão: #{{ lote.leilao.aid }}
+    </div>
+
+{% endblock %}

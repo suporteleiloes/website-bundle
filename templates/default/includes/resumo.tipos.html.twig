@@ -1,0 +1,25 @@
+<div class="lotes-tipo">
+    <div class="title">Pesquise em nossos leilões</div>
+    <ul>
+        {% for tipo in lotesTipo %}
+            {% set icon = 'fa fa-list-alt' %}
+            {% if tipo.tipo == 'Veículos' %}
+                {% set icon = 'fa fa-car' %}
+            {% endif %}
+            {% if tipo.tipo == 'Imóveis' %}
+                {% set icon = 'fa fa-home' %}
+            {% endif %}
+            <li>
+                <a href="{{ path('busca_tipo', {tipoId: tipo.tipoId, tipoNome: tipo.tipo}) }}" class="{{ tipoId == tipo.tipoId ? 'selected' : '' }}">
+                    <div class="icon">
+                        <i class="{{ icon }}"></i>
+                    </div>
+                    <div class="content">
+                        {{ tipo.tipo }}
+                    </div>
+                    <div class="total">{{ tipo.total }}</div>
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+</div>

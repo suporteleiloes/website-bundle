@@ -1,0 +1,61 @@
+{% if _loop is not defined %}
+    {% set _loop = loop %}
+{% endif %}
+<article>
+    {#<div class="cont-fav">
+        <form>
+            <button type="submit"><i class="far fa-star"></i></button>
+            <span>Adicionar aos Favoritos</span>
+        </form>
+    </div>
+#}
+    <a href="{{ path('leilao', {id:leilao.id}) }}">
+        <div class="cont-padd">
+            <strong class="data">{{ leilao.dataAberturaOuEncerramento|date('d/m') }} {{ leilao.dataAberturaOuEncerramento|date('H\\hi') }}</strong>
+            <h3>{{ leilao.titulo }}</h3>
+        </div>
+
+        <div class="logo-leilao">
+            {% if leilao.image %}
+                {% set urlThumb = leilao.image.thumb is iterable ? leilao.image.thumb.url : leilao.image.thumb %}
+                {% if urlThumb %}
+                    <div class="leilao-image position-relative"
+                         style="background-size: contain; background-position: 50% 50%; background-image: url({{ urlThumb }}); background-repeat: no-repeat">
+                    </div>
+                {% endif %}
+            {% else %}
+                <div class="leilao-comitentes">
+                    <div id="comitente-anim{{ _loop.index }}" class="leilao-comitente-images">
+                        {% if leilao.comitentes|length %}
+                            {% for comitente in leilao.comitentes %}
+                                {% if comitente.image %}
+                                    {% set urlThumb = comitente.image.thumb is iterable ? comitente.image.thumb.url : comitente.image.thumb %}
+                                    <div class="leilao-image leilao-image-comitente {{ loop.index==1 ? 'show' : '' }}"
+                                         style="background-size: contain; background-position: 50% 50%; background-image: url({{ urlThumb }}); background-repeat: no-repeat"></div>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+
+        {#<div class="cont-edital">
+            <img src="{{ asset('build/images/icon-edital.png') }}"> Acessar Leilão
+        </div>#}
+
+        <div class="infos">
+            {% if leilao.dataPraca2 %}
+            <span class="praca{{ leilao.praca == 2 ? ' encerrado' : '' }}">1o leilão: <strong>{{ leilao.dataPraca1|date('d/m/Y H:i') }}</strong></span>
+            <span class="praca{{ leilao.isEncerrado ? ' encerrado' : '' }}">2o leilão: <strong>{{ leilao.dataPraca2|date('d/m/Y H:i') }}</strong></span>
+            {% else %}
+            <span class="praca">Leilão único: <strong>{{ leilao.dataPraca1|date('d/m/Y H:i') }}</strong></span>
+            {% endif %}
+            <span class="tipo leilao-tipo-{{ leilao.tipo }}">{{ leilao.tipoString }}</span>
+        </div>
+
+        <div class="btn-leilao btn-status-{{ leilao.status }}">
+            <span>{{ leilao.statusMessage }}</span>
+        </div>
+    </a>
+</article><!-- END Único -->

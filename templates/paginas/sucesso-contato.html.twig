@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    <title>Mensagem Enviada :)</title>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('app') }}
+
+    <style>
+        header nav .menu li.contato a:after{
+            width: 100% !important;
+        }
+        .show-msg{
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            padding: 50px 0 70px 0;
+        }
+        .show-msg p{
+            text-align: center;
+            width: 100%;
+        }
+        .show-msg p a{
+            color: #b17575;
+            margin-top: 4px;
+            display: block;
+        }
+    </style>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('app') }}
+{% endblock %}
+
+{% block body %}
+    <div class="show-msg">
+        <h4 class="site-title1">Olá, recebemos sua mensagem com <span style="color: #45c126;">sucesso</span>!</h4>
+        <p>Fique atento no e-mail digitado, costumamos responder bem rápido :)</p>
+        <p><a href="mailto:{{ EMAIL_CONTATO }}"><i class="fas fa-envelope-open"></i> {{ EMAIL_CONTATO }}</a></p>
+    </div>
+{% endblock %}

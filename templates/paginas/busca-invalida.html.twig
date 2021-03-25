@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    <title>{{ sl.nome_site }}</title>
+{% endblock %}
+
+{% block metas %}
+    {{ parent() }}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+{% endblock %}
+
+{% block body %}
+    <div class="busca-container busca-invalida">
+
+        <h3>Ops :/</h3><br><br>
+        Você precisa digitar ao menos três letras para podermos tentar buscar algo para você.
+        <br>
+        Tente novamente :)
+
+    </div>
+
+{% endblock %}

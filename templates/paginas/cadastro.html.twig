@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {#{{ encore_entry_script_tags('home') }}#}
+
+    <script>
+        $(document).ready(function(e) {
+            $('.cadastro a').addClass('ativo');
+        });
+    </script>
+{% endblock %}
+
+{% block body %}
+    {{ tipo }}
+{% endblock %}

@@ -1,0 +1,98 @@
+{% set diff = leilao.dataAbertura.diff(date( "now"|date('Y-m-d')~' '~leilao.dataAbertura|date('H:i:s'))).days %}
+<article>
+    {% if leilao.isEncerrado and not MOSTRAR_LEILAO_ENCERRADO %}
+    <a href="#">
+    {% else %}
+    <a href="{{ path('leilao', {id:leilao.id}) }}">
+    {% endif %}
+        <div class="data">
+            <div class="data-content">
+                {{ leilao.dataAberturaOuEncerramento|date('d/m') }}
+                <small>{{ leilao.dataAberturaOuEncerramento|date('H\\hi') }}</small>
+                {% if leilao.dataPraca2 %}
+                    <span class="praca">{{ leilao.praca }}a praça</span>
+                {% else %}
+                    {% if leilao.dataEncerramento %}
+                        {% if leilao.dataAberturaOuEncerramento == leilao.dataEncerramento %}
+                            <span class="praca">Encerramento</span>
+                        {% else %}
+                            <span class="praca">Abertura</span>
+                        {% endif %}
+                    {% endif %}
+                {% endif %}
+            </div>
+            {% if not leilao.isEncerrado %}
+            <div class="data-previsao">
+                {% if leilao.dataEncerramento and leilao.dataAberturaOuEncerramento != leilao.dataAbertura %}
+                    {% set diff = leilao.dataEncerramento.diff(date( "now"|date('Y-m-d')~' '~leilao.dataEncerramento|date('H:i:s'))).days %}
+                    {% set dias = diff > 1 ? ' dias' : ' dia' %}
+                    {% set dia = leilao.dataEncerramento| format_datetime( pattern='EEEE', locale='pt-BR')|capitalize %}
+                    <small>{{ diff > 0 ? 'Encerra em '~diff~dias~', ' ~ dia : 'Hoje' }}</small>
+                {% else %}
+                    {% set dias = diff > 1 ? ' dias' : ' dia' %}
+                    {% set dia = leilao.dataAbertura| format_datetime( pattern='EEEE', locale='pt-BR')|capitalize %}
+                    {{ diff > 0 ? 'Daqui '~diff~dias~', ' ~ dia : 'Hoje' }}
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+        <div class="content">
+            {% if leilao.dataPraca2 and leilao.praca == 1 %}
+                <div class="segundaPraca">2a
+                    praça: {{ leilao.dataPraca2|date('d/m') }} {{ leilao.dataPraca2|date('H\\hi') }}</div>
+                <div class="segundaPracaMargin"></div>
+            {% else %}
+                {% if leilao.dataEncerramento %}
+                    <div class="segundaPraca">
+                        {% if leilao.dataAberturaOuEncerramento == leilao.dataAbertura %}
+                            Encerramento: {{ leilao.dataEncerramento|date('d/m') }} {{ leilao.dataEncerramento|date('H\\hi') }}
+                        {% else %}
+                            Aberto desde {{ leilao.dataAbertura|date('d/m') }} {{ leilao.dataAbertura|date('H\\hi') }}
+                        {% endif %}
+                    </div>
+                    <div class="segundaPracaMargin"></div>
+                {% elseif leilao.dataPraca2 and leilao.praca == 2 %}
+                    <div class="segundaPraca">
+                        Primeira praça realizada {{ leilao.dataPraca1|date('d/m') }} {{ leilao.dataPraca1|date('H\\hi') }}
+                    </div>
+                    <div class="segundaPracaMargin"></div>
+                {% endif %}
+            {% endif %}
+            <div class="classe">{{ leilao.judicialString }}</div>
+            <div class="tipo leilao-tipo-{{ leilao.tipo }}">{{ leilao.tipoString }}</div>
+            <div class="titulo">{{ leilao.titulo }}</div>
+            {% if leilao.image %}
+                {% set urlThumb = leilao.image.thumb is iterable ? leilao.image.thumb.url : leilao.image.thumb %}
+                {% if urlThumb %}
+                    <div class="leilao-image position-relative"
+                         style="background-size: contain; background-position: 50% 50%; background-image: url({{ urlThumb }}); background-repeat: no-repeat">
+                    </div>
+                {% endif %}
+            {% else %}
+                <div class="leilao-comitentes">
+                    <div id="comitente-anim{{ _loop.index }}" class="leilao-comitente-images">
+                        {% if leilao.comitentes|length %}
+                            {% for comitente in leilao.comitentes %}
+                                {% if comitente.image %}
+                                    {% set urlThumb = comitente.image.thumb is iterable ? comitente.image.thumb.url : comitente.image.thumb %}
+                                    <div class="leilao-image leilao-image-comitente {{ loop.index==1 ? 'show' : '' }}"
+                                         style="background-size: contain; background-position: 50% 50%; background-image: url({{ urlThumb }}); background-repeat: no-repeat"></div>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+
+            {% if leilao.totalLotes > 0 %}
+                <div class="text-center">
+                    <div class="num-lotes">{{ leilao.totalLotes }} lote{{ leilao.totalLotes > 1 ? 's' : '' }}</div>
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="btn-leilao btn-status-{{ leilao.status }}">
+            <span>{{ leilao.statusMessage }}</span>
+        </div>
+    </a>
+</article>

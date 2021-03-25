@@ -1,0 +1,92 @@
+<div class="clearfloat"></div>
+<footer>
+    <div class="center">
+        <div class="cont-colunas">
+            <div>
+                <h6>Nossa Empresa</h6>
+                <ul>
+                    <li>
+                        <a href="{{ path('leiloeiro') }}">Leiloeiro</a>
+                    </li>
+                    <li>
+                        <li><a href="{{ path('leiloes') }}">Leilões</a></li>
+                    </li>
+                    <li>
+                        <li><a href="{{ path('funcionamento') }}">Dúvidas</a></li>
+                    </li>
+                    <li>
+                        <li><a href="{{ path('contato') }}">Contato</a></li>
+                    </li>
+                </ul>
+            </div><!-- END col -->
+
+            <div>
+                <h6>Informações</h6>
+                <ul>
+                    <li>
+                        <a href="#">Política de Privacidade</a>
+                    </li>
+                    <li>
+                        <a href="#">Termos de Uso</a>
+                    </li>
+                    <li>
+                        <a href="#">Documentos</a>
+                    </li>
+                    <li>
+                        <a href="#">Mapa do site</a>
+                    </li>
+                </ul>
+            </div><!-- END col -->
+
+            <div>
+                <h6>Fale Conosco</h6>
+
+                <ul>
+                    <li>{{ENDERECO}}
+                        <div class="break"></div>
+                        {{ENDERECO_CIDADE}}/{{ENDERECO_UF}} - CEP: {{ENDERECO_CEP}}
+                    </li>
+                    <li><a href="tel:{{TELEFONE}}">{{TELEFONE}}</a>
+                        {#<div class="break"></div>
+                        {{ TELEFONE_CELULAR }}#}
+                    </li>
+                    <li><a href="mailto:{{ EMAIL_CONTATO }}">{{ EMAIL_CONTATO }}</a></li>
+                </ul>
+            </div><!-- END col -->
+
+            <div>
+                <h6>Siga-nos</h6>
+                <ul class="lista-social">
+                    {% if SL_FACEBOOK is not empty %}
+                        <li><a href="{{ SL_FACEBOOK }}" target="_blank"><i class="fab fa-facebook-f"></i></a></li>
+                    {% endif %}
+                    {% if SL_TWITTER is not empty %}
+                        <li><a href="{{ SL_TWITTER }}" target="_blank"><i class="fab fa-twitter"></i></a></li>
+                    {% endif %}
+                    {% if SL_INSTAGRAM is not empty %}
+                        <li><a href="{{ SL_INSTAGRAM }}" target="_blank"><i class="fab fa-instagram"></i></a></li>
+                    {% endif %}
+                    {% if SL_LINKEDIN is not empty %}
+                        <li><a href="{{ SL_LINKEDIN }}" target="_blank"><i class="fab fa-linkedin-in"></i></a></li>
+                    {% endif %}
+                    {% if SL_YOUTUBE is not empty %}
+                        <li><a href="{{ SL_YOUTUBE }}" target="_blank"><i class="fab fa-youtube"></i></a></li>
+                    {% endif %}
+                    {% if SL_WHATSAPP is not empty %}
+                        <li><a href="{{ SL_WHATSAPP }}" target="_blank"><i class="fab fa-whatsapp"></i></a></li>
+                    {% endif %}
+                </ul>
+
+                <div class="selo">
+                    <a href="https://www.suporteleiloes.com/" target="_blank"><img src="{{ asset('build/images/selo.png') }}" alt="Selo Suporte Leilões"></a>
+                </div>
+            </div><!-- END col -->
+
+        </div>
+    </div><!-- / END Center -->
+
+    <div class="copy">
+        <p>2020 &copy; {{ sl.nome_site }}. <span>Desenvolvido pela <a href="http://suporteleiloes.com/" target="_blank">Suporte Leilões</a></span>
+        </p>
+    </div><!-- / END Copy -->
+</footer>
