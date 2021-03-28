@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Entity;
+namespace SL\WebsiteBundle\Entity;
 
-use App\Repository\ContentRepository;
+use SL\WebsiteBundle\Repository\ContentRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**

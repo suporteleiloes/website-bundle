@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Repository;
+namespace SL\WebsiteBundle\Repository;
 
-use App\Entity\Lote;
+use SL\WebsiteBundle\Entity\Lote;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\Persistence\ManagerRegistry;
-use App\Entity\Leilao;
-use App\Entity\Lance;
+use SL\WebsiteBundle\Entity\Leilao;
+use SL\WebsiteBundle\Entity\Lance;
 
 /**
  * @method Lote|null find($id, $lockMode = null, $lockVersion = null)

@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Controller;
+namespace SL\WebsiteBundle\Controller;
 
-use App\Entity\Banner;
-use App\Entity\Content;
-use App\Entity\Lance;
-use App\Entity\Leilao;
-use App\Entity\LeilaoCache;
-use App\Entity\Lote;
-use App\Entity\LoteTipoCache;
-use App\Services\DatabaseOperationsService;
+use SL\WebsiteBundle\Entity\Banner;
+use SL\WebsiteBundle\Entity\Content;
+use SL\WebsiteBundle\Entity\Lance;
+use SL\WebsiteBundle\Entity\Leilao;
+use SL\WebsiteBundle\Entity\LeilaoCache;
+use SL\WebsiteBundle\Entity\Lote;
+use SL\WebsiteBundle\Entity\LoteTipoCache;
+use SL\WebsiteBundle\Services\DatabaseOperationsService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\JsonResponse;

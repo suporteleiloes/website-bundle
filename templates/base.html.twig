@@ -45,11 +45,11 @@
     </div>
 </div>
 
-{% include "temas/"~tema~"/header.html.twig" %}
+{% include "@SLWebsite/temas/"~tema~"/header.html.twig" %}
 
 {% block body %}{% endblock %}
 
-{% include "temas/"~tema~"/footer.html.twig" %}
+{% include "@SLWebsite/temas/"~tema~"/footer.html.twig" %}
 
 <script type="text/javascript">
     var SL_API = "{{ SL_API }}";

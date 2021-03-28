@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Entity;
+namespace SL\WebsiteBundle\Entity;
 
-use App\Repository\LoteRepository;
+use SL\WebsiteBundle\Repository\LoteRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -344,13 +344,13 @@ class Lote extends ApiSync
     private $textoTaxas;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Lance", mappedBy="lote", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="SL\WebsiteBundle\Entity\Lance", mappedBy="lote", orphanRemoval=true)
      * @ORM\OrderBy({"valor" = "DESC", "data" = "ASC"})
      */
     private $lances;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Leilao", inversedBy="lotes")
+     * @ORM\ManyToOne(targetEntity="SL\WebsiteBundle\Entity\Leilao", inversedBy="lotes")
      * @ORM\JoinColumn(nullable=false)
      */
     private $leilao;

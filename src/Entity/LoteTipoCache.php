@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Entity;
+namespace SL\WebsiteBundle\Entity;
 
-use App\Repository\LoteTipoCacheRepository;
+use SL\WebsiteBundle\Repository\LoteTipoCacheRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**

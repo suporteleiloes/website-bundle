@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Repository;
+namespace SL\WebsiteBundle\Repository;
 
-use App\Entity\Banner;
+use SL\WebsiteBundle\Entity\Banner;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 

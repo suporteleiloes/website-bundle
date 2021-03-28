@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Repository;
+namespace SL\WebsiteBundle\Repository;
 
-use App\Entity\Contato;
+use SL\WebsiteBundle\Entity\Contato;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 

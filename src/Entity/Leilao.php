@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Entity;
+namespace SL\WebsiteBundle\Entity;
 
-use App\Repository\LeilaoRepository;
+use SL\WebsiteBundle\Repository\LeilaoRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -315,13 +315,13 @@ class Leilao extends ApiSync
     private $textoPropostas;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Lote", mappedBy="leilao", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="SL\WebsiteBundle\Entity\Lote", mappedBy="leilao", orphanRemoval=true)
      * @ORM\OrderBy({"numero" = "ASC", "id" = "ASC"})
      */
     private $lotes;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\LeilaoCache", mappedBy="leilao")
+     * @ORM\OneToOne(targetEntity="SL\WebsiteBundle\Entity\LeilaoCache", mappedBy="leilao")
      */
     private $cache;
 

@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Entity;
+namespace SL\WebsiteBundle\Entity;
 
-use App\Repository\NewsletterRepository;
+use SL\WebsiteBundle\Repository\NewsletterRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**

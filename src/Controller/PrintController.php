@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Controller;
+namespace SL\WebsiteBundle\Controller;
 
-use App\Controller\Extra\SLAbstractController;
-use App\Entity\Lote;
-use App\Entity\Lance;
-use App\Entity\Leilao;
+use SL\WebsiteBundle\Controller\Extra\SLAbstractController;
+use SL\WebsiteBundle\Entity\Lote;
+use SL\WebsiteBundle\Entity\Lance;
+use SL\WebsiteBundle\Entity\Leilao;
 
-use App\Entity\LoteTipoCache;
+use SL\WebsiteBundle\Entity\LoteTipoCache;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;

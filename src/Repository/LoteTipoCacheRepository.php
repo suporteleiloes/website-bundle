@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Repository;
+namespace SL\WebsiteBundle\Repository;
 
-use App\Entity\LoteTipoCache;
+use SL\WebsiteBundle\Entity\LoteTipoCache;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\Persistence\ManagerRegistry;

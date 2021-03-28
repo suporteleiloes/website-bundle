@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Entity;
+namespace SL\WebsiteBundle\Entity;
 
-use App\Repository\BannerRepository;
+use SL\WebsiteBundle\Repository\BannerRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**

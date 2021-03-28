@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Entity;
+namespace SL\WebsiteBundle\Entity;
 
-use App\Repository\MenuRepository;
+use SL\WebsiteBundle\Repository\MenuRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**

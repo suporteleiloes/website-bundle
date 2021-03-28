@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Services;
+namespace SL\WebsiteBundle\Services;
 
 
 use Doctrine\DBAL\Connection;

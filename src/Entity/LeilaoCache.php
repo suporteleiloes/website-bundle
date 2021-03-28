@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Entity;
+namespace SL\WebsiteBundle\Entity;
 
-use App\Repository\LeilaoCacheRepository;
+use SL\WebsiteBundle\Repository\LeilaoCacheRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -23,7 +23,7 @@ class LeilaoCache
     private $filtros = [];
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Leilao", inversedBy="cache")
+     * @ORM\OneToOne(targetEntity="SL\WebsiteBundle\Entity\Leilao", inversedBy="cache")
      * @ORM\JoinColumn(name="leilao_id", referencedColumnName="id")
      */
     private $leilao;

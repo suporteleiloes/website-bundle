@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Entity;
+namespace SL\WebsiteBundle\Entity;
 
-use App\Repository\LanceRepository;
+use SL\WebsiteBundle\Repository\LanceRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -49,7 +49,7 @@ class Lance extends ApiSync
     private $valor;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Lote", inversedBy="lances")
+     * @ORM\ManyToOne(targetEntity="SL\WebsiteBundle\Entity\Lote", inversedBy="lances")
      * @ORM\JoinColumn(nullable=false)
      */
     private $lote;

@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Controller;
+namespace SL\WebsiteBundle\Controller;
 
-use App\Entity\Lote;
+use SL\WebsiteBundle\Entity\Lote;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;

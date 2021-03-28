@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Entity;
+namespace SL\WebsiteBundle\Entity;
 
-use App\Repository\ContatoRepository;
+use SL\WebsiteBundle\Repository\ContatoRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**

@@ -1,11 +1,11 @@
 <?php
 
 
-namespace App\Controller\Extra;
+namespace SL\WebsiteBundle\Controller\Extra;
 
 
-use App\Entity\Content;
-use App\Entity\Leilao;
+use SL\WebsiteBundle\Entity\Content;
+use SL\WebsiteBundle\Entity\Leilao;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class SLAbstractController extends AbstractController
@@ -25,7 +25,7 @@ class SLAbstractController extends AbstractController
         $em = $this->getDoctrine()->getManager();
         $response = [];
         foreach ($textos as $texto) {
-            /* @var \App\Entity\Content $textoEntity */
+            /* @var \SL\WebsiteBundle\Entity\Content $textoEntity */
             $textoEntity = $em->getRepository(Content::class)->findOneByPageName($texto);
             if (!$textoEntity) {
                 $response[$texto] = ['title' => '', 'pageName' => $texto, 'pageDescription' => '', 'template' => ''];

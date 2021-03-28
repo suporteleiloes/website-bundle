@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Controller;
+namespace SL\WebsiteBundle\Controller;
 
-use App\Controller\Extra\SLAbstractController;
-use App\Entity\Banner;
-use App\Entity\Lote;
-use App\Entity\Leilao;
+use SL\WebsiteBundle\Controller\Extra\SLAbstractController;
+use SL\WebsiteBundle\Entity\Banner;
+use SL\WebsiteBundle\Entity\Lote;
+use SL\WebsiteBundle\Entity\Leilao;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Routing\Annotation\Route;
@@ -27,7 +27,7 @@ class HomeController extends SLAbstractController
 
         /*$leiloesAtuais = new ArrayCollection();
         $leiloesEncerrados = new ArrayCollection();
-        /* @var \App\Entity\Leilao $leilao *1/
+        /* @var \SL\WebsiteBundle\Entity\Leilao $leilao *1/
         foreach ($leiloes as $leilao) {
             if ($leilao->getDataPraca1() > (new \DateTime())->modify('-2 days')) {
                 $leiloesAtuais->add($leilao);
