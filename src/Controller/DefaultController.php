@@ -10,6 +10,7 @@ use SL\WebsiteBundle\Entity\Leilao;
 use SL\WebsiteBundle\Entity\LoteTipoCache;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 class DefaultController extends SLAbstractController
@@ -52,7 +53,7 @@ class DefaultController extends SLAbstractController
      */
     public function leilao(Request $request, Leilao $leilao = null, $busca = null, $tipoId = null, $tipoNome = null)
     {
-        if($leilao) {
+        if ($leilao) {
             if ($leilao->isEncerrado() && !$_ENV['MOSTRAR_LEILAO_ENCERRADO']) {
                 return $this->redirectToRoute('leilao_encerrado', ['id' => $leilao->getId()]);
             }
@@ -114,6 +115,8 @@ class DefaultController extends SLAbstractController
                 }
             }
 
+        } else {
+            throw new NotFoundHttpException('Leilão não encontrado.');
         }
 
         $template = $request->attributes->get('_route') === 'print_leilao'
@@ -146,25 +149,25 @@ class DefaultController extends SLAbstractController
             // Loteado
             $proximo = $lote->getNumero() + 1;
             $anterior = $lote->getNumero() - 1;
-            $next = $em->createQuery("SELECT l.id, l.slug FROM App:Lote l WHERE l.leilao = :leilao and l.numero = :numero")
+            $next = $em->createQuery("SELECT l.id, l.slug FROM SLWebsiteBundle:Lote l WHERE l.leilao = :leilao and l.numero = :numero")
                 ->setParameter('leilao', $lote->getLeilao()->getId())
                 ->setParameter('numero', $proximo)
                 ->setMaxResults(1)
                 ->getOneOrNullResult();
 
-            $prev = $em->createQuery("SELECT l.id, l.slug FROM App:Lote l WHERE l.leilao = :leilao and l.numero = :numero")
+            $prev = $em->createQuery("SELECT l.id, l.slug FROM SLWebsiteBundle:Lote l WHERE l.leilao = :leilao and l.numero = :numero")
                 ->setParameter('leilao', $lote->getLeilao()->getId())
                 ->setParameter('numero', $anterior)
                 ->setMaxResults(1)
                 ->getOneOrNullResult();
         } else {
-            $next = $em->createQuery("SELECT l.id, l.slug FROM App:Lote l WHERE l.leilao = :leilao and l.id > :lote ORDER BY l.id ASC")
+            $next = $em->createQuery("SELECT l.id, l.slug FROM SLWebsiteBundle:Lote l WHERE l.leilao = :leilao and l.id > :lote ORDER BY l.id ASC")
                 ->setParameter('leilao', $lote->getLeilao()->getId())
                 ->setParameter('lote', $lote->getId())
                 ->setMaxResults(1)
                 ->getOneOrNullResult();
 
-            $prev = $em->createQuery("SELECT l.id, l.slug FROM App:Lote l WHERE l.leilao = :leilao and l.id < :lote ORDER BY l.id DESC")
+            $prev = $em->createQuery("SELECT l.id, l.slug FROM SLWebsiteBundle:Lote l WHERE l.leilao = :leilao and l.id < :lote ORDER BY l.id DESC")
                 ->setParameter('leilao', $lote->getLeilao()->getId())
                 ->setParameter('lote', $lote->getId())
                 ->setMaxResults(1)
@@ -204,7 +207,7 @@ class DefaultController extends SLAbstractController
      */
     public function funcionamento()
     {
-        
+
 
         return $this->render('paginas/funcionamento.html.twig');
     }
@@ -246,7 +249,7 @@ class DefaultController extends SLAbstractController
 
     /**
      * @Route("/contato-send", name="contato-send")
-    */
+     */
     public function contatoSendAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
@@ -257,7 +260,7 @@ class DefaultController extends SLAbstractController
 
         $erros = array();
 
-        if (0 === count($erros)){
+        if (0 === count($erros)) {
             $contato = new \SL\WebsiteBundle\Entity\Contato;
 
             $contato->setNome($request->get('nome'));
@@ -270,15 +273,15 @@ class DefaultController extends SLAbstractController
             $contato->setData($data);
 
             $em->persist($contato);
-            $em->flush();  
+            $em->flush();
         }
 
-        return $this->redirectToRoute("sucesso-contato"); 
+        return $this->redirectToRoute("sucesso-contato");
     }
 
     /**
      * @Route("/sucesso-contato", name="sucesso-contato")
-    */
+     */
     public function sucessoContatoAction(Request $request)
     {
         return $this->render('paginas/sucesso-contato.html.twig');
@@ -340,7 +343,7 @@ class DefaultController extends SLAbstractController
 
     /**
      * @Route("/newsletter-send", name="newsletter-send")
-    */
+     */
     public function newsletterSendAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
@@ -351,7 +354,7 @@ class DefaultController extends SLAbstractController
 
         $erros = array();
 
-        if (0 === count($erros)){
+        if (0 === count($erros)) {
             $newsletter = new \SL\WebsiteBundle\Entity\Newsletter;
 
             $newsletter->setEmail($request->get('email'));
@@ -359,15 +362,15 @@ class DefaultController extends SLAbstractController
             $newsletter->setData($data);
 
             $em->persist($newsletter);
-            $em->flush();  
+            $em->flush();
         }
 
-        return $this->redirectToRoute("sucesso-newsletter"); 
+        return $this->redirectToRoute("sucesso-newsletter");
     }
 
     /**
      * @Route("/sucesso-newsletter", name="sucesso-newsletter")
-    */
+     */
     public function sucessoNewsletterAction(Request $request)
     {
         return $this->render('paginas/sucesso-newsletter.html.twig');

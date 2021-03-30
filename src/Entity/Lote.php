@@ -344,7 +344,7 @@ class Lote extends ApiSync
     private $textoTaxas;
 
     /**
-     * @ORM\OneToMany(targetEntity="SL\WebsiteBundle\Entity\Lance", mappedBy="lote", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="SL\WebsiteBundle\Entity\Lance", mappedBy="lote", orphanRemoval=true, cascade={"persist", "remove"})
      * @ORM\OrderBy({"valor" = "DESC", "data" = "ASC"})
      */
     private $lances;

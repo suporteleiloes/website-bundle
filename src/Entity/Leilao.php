@@ -315,13 +315,13 @@ class Leilao extends ApiSync
     private $textoPropostas;
 
     /**
-     * @ORM\OneToMany(targetEntity="SL\WebsiteBundle\Entity\Lote", mappedBy="leilao", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="SL\WebsiteBundle\Entity\Lote", mappedBy="leilao", orphanRemoval=true, cascade={"persist", "remove"})
      * @ORM\OrderBy({"numero" = "ASC", "id" = "ASC"})
      */
     private $lotes;
 
     /**
-     * @ORM\OneToOne(targetEntity="SL\WebsiteBundle\Entity\LeilaoCache", mappedBy="leilao")
+     * @ORM\OneToOne(targetEntity="SL\WebsiteBundle\Entity\LeilaoCache", mappedBy="leilao", orphanRemoval=true, cascade={"persist", "remove"})
      */
     private $cache;
 

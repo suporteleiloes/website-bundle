@@ -150,6 +150,7 @@ class ApiController extends AbstractController
             case "banner":
                 $this->processBanner($hook);
                 break;
+                //@TODO: Blog Post
             default:
                 throw new \Exception('Tipo de dados a ser processado não é compatível com este website');
         }
@@ -162,6 +163,9 @@ class ApiController extends AbstractController
         $em = $this->getDoctrine()->getManager();
         $leilao = $em->getRepository(Leilao::class)->findOneByAid($entityId);
         if (!$leilao) {
+            if (@$data['data']['deleted']) {
+                return;
+            }
             $leilao = new Leilao();
         }
 
@@ -169,6 +173,11 @@ class ApiController extends AbstractController
 
         $leilao->setAid($entityId);
         if ($leilao->getId()) {
+            if ($data['deleted']) {
+                $em->remove($leilao);
+                $em->flush();
+                return;
+            }
             $leilao->setAlastUpdate(new \DateTime());
         } else {
             $leilao->setAcreatedAt(new \DateTime());
@@ -257,19 +266,27 @@ class ApiController extends AbstractController
         $em = $this->getDoctrine()->getManager();
         $lote = $em->getRepository(Lote::class)->findOneByAid($entityId);
         if (!$lote) {
+            if (@$data['data']['deleted']) {
+                return;
+            }
             $lote = new Lote();
         }
 
         if ($data['remove']) {
             $em->remove($lote);
             $em->flush();
-
+            return;
         } else {
 
             $data = $data['data'];
 
             $lote->setAid($entityId);
             if ($lote->getId()) {
+                if ($data['deleted']) {
+                    $em->remove($lote);
+                    $em->flush();
+                    return;
+                }
                 $lote->setAlastUpdate(new \DateTime());
             } else {
                 $lote->setAcreatedAt(new \DateTime());
@@ -345,15 +362,25 @@ class ApiController extends AbstractController
         $entityId = $data['entityId'];
         // Verifica se já existe o lance. Se não existir, cria um.
         $em = $this->getDoctrine()->getManager();
-        $lance = $em->getRepository(Lance::class)->findOneByAid($entityId);
-        if (!$lance) {
-            $lance = new Lance();
-        }
 
         $data = $data['data'];
 
+        $lance = $em->getRepository(Lance::class)->findOneByAid($entityId);
+        if (!$lance) {
+            if ($data['deleted']) {
+                return;
+            }
+            $lance = new Lance();
+        }
+
+
         $lance->setAid($entityId);
         if ($lance->getId()) {
+            if ($data['deleted']) {
+                $em->remove($lance);
+                $em->flush();
+                return;
+            }
             $lance->setAlastUpdate(new \DateTime());
         } else {
             $lance->setAcreatedAt(new \DateTime());
