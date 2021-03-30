@@ -172,8 +172,13 @@ class ApiController extends AbstractController
         $data = $data['data'];
 
         $leilao->setAid($entityId);
+        $is_true = function ($val, $return_null=false){
+            $boolval = ( is_string($val) ? filter_var($val, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) : (bool) $val );
+            return ( $boolval===null && !$return_null ? false : $boolval );
+        };
         if ($leilao->getId()) {
-            if ($data['deleted']) {
+            if ($data['deleted'] || !$is_true($data['publicarSite'])) {
+                dump('Excluir');
                 $em->remove($leilao);
                 $em->flush();
                 return;
@@ -292,7 +297,7 @@ class ApiController extends AbstractController
                 $lote->setAcreatedAt(new \DateTime());
             }
 
-            $lote->setSlug($data['slug']);
+            $lote->setSlug(!empty($data['slug']) ? $data['slug'] : 'lote');
             $lote->setNumero($data['numero']);
             $lote->setTitulo($data['bem']['siteTitulo']);
             $lote->setDescricao($data['bem']['siteDescricao']);
