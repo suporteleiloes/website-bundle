@@ -8,7 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Table(indexes={@ORM\Index(name="aid", columns={"aid"}), @ORM\Index(name="status", columns={"status"})})
+ * @ORM\Table(indexes={@ORM\Index(name="aid", columns={"aid"}), @ORM\Index(name="status", columns={"status"}), @ORM\Index(name="tipo", columns={"tipo"}), @ORM\Index(name="judicial", columns={"judicial"})})
  * @ORM\Entity(repositoryClass=LeilaoRepository::class)
  */
 class Leilao extends ApiSync
