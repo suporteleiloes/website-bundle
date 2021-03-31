@@ -8,7 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Table(indexes={@ORM\Index(name="aid", columns={"aid"}), @ORM\Index(name="status", columns={"status"}), @ORM\Index(name="numero", columns={"numero"}), @ORM\Index(name="tipo_id", columns={"tipo_id"}), @ORM\Index(name="tipo", columns={"tipo"}), @ORM\Index(name="tipo_pai_id", columns={"tipo_pai_id"}), @ORM\Index(name="tipo_pai", columns={"tipo_pai"})})
+ * @ORM\Table(indexes={@ORM\Index(name="aid", columns={"aid"}), @ORM\Index(name="status", columns={"status"}), @ORM\Index(name="numero", columns={"numero"}), @ORM\Index(name="tipo_id", columns={"tipo_id"}), @ORM\Index(name="tipo", columns={"tipo"}), @ORM\Index(name="tipo_pai_id", columns={"tipo_pai_id"}), @ORM\Index(name="tipo_pai", columns={"tipo_pai"}), @ORM\Index(name="cidade", columns={"cidade"}), @ORM\Index(name="uf", columns={"uf"})})
  * @ORM\Entity(repositoryClass=LoteRepository::class)
  */
 class Lote extends ApiSync
