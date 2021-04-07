@@ -86,7 +86,7 @@ class DefaultController extends SLAbstractController
                     }
                 }
             }
-        } elseif (!empty($busca) || !empty($tipoId) || !empty($tipoNome) || $request->get('bf')) {
+        } elseif (!empty($busca) || !empty($tipoId) || !empty($tipoNome)) {
             $leilao = new Leilao();
 
             // $busca = $request->get('s');
@@ -116,6 +116,14 @@ class DefaultController extends SLAbstractController
                 }
             }
 
+        } elseif ($request->get('bf')) {
+            $filtros = [];
+            $lotes = $em->getRepository(Lote::class)->findAllSimpleBasic(null, $limit, $offset, $filtros, $busca);
+            if (!empty($lotes['result'])) {
+                foreach ($lotes['result'] as $lote) {
+                    $leilao->addLote($lote);
+                }
+            }
         } else {
             throw new NotFoundHttpException('Leilão não encontrado.');
         }
