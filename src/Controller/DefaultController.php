@@ -48,6 +48,7 @@ class DefaultController extends SLAbstractController
      * @Route("/leiloes/{id}", name="leilao")
      * @Route("/print/leiloes/{id}", name="print_leilao")
      * @Route("/busca/{busca}", name="busca")
+     * @Route("/busca")
      * @Route("/busca-tipo/{tipoId}/{tipoNome}", name="busca_tipo")
      * @Route("/categoria/{tipoNome}", name="busca_categoria")
      */
