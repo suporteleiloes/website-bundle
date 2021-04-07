@@ -86,7 +86,7 @@ class DefaultController extends SLAbstractController
                     }
                 }
             }
-        } elseif (!empty($busca) || !empty($tipoId) || !empty($tipoNome)) {
+        } elseif (!empty($busca) || !empty($tipoId) || !empty($tipoNome) || !empty($request->get('busca'))) {
             $leilao = new Leilao();
 
             // $busca = $request->get('s');
