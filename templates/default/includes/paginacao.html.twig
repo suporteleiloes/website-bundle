@@ -1,0 +1,27 @@
+{% if totalPages > 0 %}
+<nav aria-label="Paginação">
+    <ul class="pagination-default">
+        {# <li class="page-item"><a class="page-link" href="#">Anterior</a></li> #}
+        {% for i in 1..totalPages %}
+            {% if app.request.get('_route') == 'busca_tipo' %}
+                {% set url = url(app.request.get('_route'), app.request.query.all|merge({tipoId: app.request.get('tipoId'), tipoNome: app.request.get('tipoNome'), page: i})) %}
+            {% else %}
+                {% set url = url(app.request.get('_route'), app.request.query.all|merge({id: leilao.id, page: i})) %}
+            {% endif %}
+
+            <li class="upage-item {{ paginaAtual==i ? 'disabled' : '' }}">
+                    <a class="upage-link"
+                       href="{{ url }}">
+                        {{ i }}
+                    </a>
+            </li>
+        {% endfor %}
+        {# <li class="page-item page-all {{ paginaAtual==0 ? 'disabled' : '' }}">
+            <a class="page-link" href="{{ url('leilao', app.request.query.all|merge({id: leilao.id, page: 'all'})) }}">
+                ver tudo
+            </a>
+        </li> #}
+        {# <li class="page-item"><a class="page-link" href="#">Próxima</a></li> #}
+    </ul>
+</nav>
+{% endif %}

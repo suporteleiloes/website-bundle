@@ -48,18 +48,12 @@ class LoteRepository extends ServiceEntityRepository
             ->from(Lote::class, "l")
             ->join("l.leilao", "leilao");
 
-        if ($tipoId !== null) {
-            $query->where('l.tipoPaiId = :tipo')->setParameter('tipo', $tipoId);
-            $query->andWhere('l.status < :status')->setParameter('status', Lote::STATUS_HOMOLOGANDO);
-        } elseif (intval($leilao) > 0) {
-            $query->where('l.leilao = :leilao')->setParameter('leilao', $leilao);
-        }
-        if (!$busca) {
+        /*if (!$busca) {
             // $query->where('l.leilao = :leilao')->setParameter('leilao', $leilao);
         } else {
             // $query->where('l.titulo LIKE :busca or l.descricao LIKE :busca')->setParameter('busca', "%$busca%");
             // $query->andWhere('l.status = :status')->setParameter('status', Lote::STATUS_ABERTO_PARA_LANCES);
-        }
+        }*/
 
 
         $queryCount = $this->getEntityManager()->createQueryBuilder()
@@ -67,12 +61,28 @@ class LoteRepository extends ServiceEntityRepository
             ->from(Lote::class, "l")
             ->join("l.leilao", "leilao");
 
-        if (!$busca) {
+        if ($tipoId !== null) {
+            $filtroInicialCriteria = Criteria::create()
+                ->where(Criteria::expr()->eq('l.tipoPaiId', $tipoId))
+                ->andWhere(Criteria::expr()->lt('l.status', Lote::STATUS_HOMOLOGANDO));
+            $query->addCriteria($filtroInicialCriteria);
+            $queryCount->addCriteria($filtroInicialCriteria);
+            #$query->where('l.tipoPaiId = :tipo')->setParameter('tipo', $tipoId);
+            #$query->andWhere('l.status < :status')->setParameter('status', Lote::STATUS_HOMOLOGANDO);
+        } elseif (intval($leilao) > 0) {
+            $filtroInicialCriteria = Criteria::create()
+                ->where(Criteria::expr()->eq('l.leilao', $leilao));
+            $query->addCriteria($filtroInicialCriteria);
+            $queryCount->addCriteria($filtroInicialCriteria);
+            #$query->where('l.leilao = :leilao')->setParameter('leilao', $leilao);
+        }
+
+        /*if (!$busca) {
             // $queryCount->where('l.leilao = :leilao')->setParameter('leilao', $leilao);
         } else {
             // $queryCount->where('l.titulo LIKE :busca or l.descricao LIKE :busca')->setParameter('busca', "%$busca%");
             // $queryCount->andWhere('l.status = :status')->setParameter('status', Lote::STATUS_ABERTO_PARA_LANCES);
-        }
+        }*/
 
         if ($busca) {
             $filtroBuscaCriteria = Criteria::create()
@@ -119,17 +129,27 @@ class LoteRepository extends ServiceEntityRepository
         }
 
         //Filtro por Tipo
-        if (isset($filtros['tipo'])) {
+        if (!empty($filtros['tipo'])) {
             $filtroTipoCriteria = Criteria::create()
-                ->where(Criteria::expr()->in('l.tipo', $filtros['tipo']));
+                ->where(Criteria::expr()->in('l.tipo', is_array($filtros['tipo']) ? $filtros['tipo'] : [$filtros['tipo']]));
+            $query->addCriteria($filtroTipoCriteria);
+            $queryCount->addCriteria($filtroTipoCriteria);
+        }
+
+        if (!empty($filtros['tipoId']) || !empty($filtros['f-tipo'])) {
+            if (!empty($filtros['f-tipo'])) {
+                $filtros['tipoId'] = $filtros['f-tipo'];
+            }
+            $filtroTipoCriteria = Criteria::create()
+                ->where(Criteria::expr()->in('l.tipoId', is_array($filtros['tipoId']) ? $filtros['tipoId'] : [$filtros['tipoId']]));
             $query->addCriteria($filtroTipoCriteria);
             $queryCount->addCriteria($filtroTipoCriteria);
         }
 
         //Filtro por Marca
-        if (isset($filtros['marca'])) {
+        if (!empty($filtros['marca'])) {
             $filtroMarcaCriteria = Criteria::create()
-                ->where(Criteria::expr()->in('l.marca', $filtros['marca']));
+                ->where(Criteria::expr()->in('l.marca', is_array($filtros['marca']) ? $filtros['marca'] : [$filtros['marca']]));
             $query->addCriteria($filtroMarcaCriteria);
             $queryCount->addCriteria($filtroMarcaCriteria);
             //$query->andWhere('l.marca = :marca')->setParameter('marca', $filtros['marca']);
@@ -167,13 +187,31 @@ class LoteRepository extends ServiceEntityRepository
         }
 
         //Filtro por Comitente
-        /*if (isset($filtros['comitente'])) {
+        if (isset($filtros['f-comitente'])) {
             $filtroComitenteCriteria = Criteria::create()
-                ->where(Criteria::expr()->eq('l.comitente', $filtros['comitente']));
+                ->where(Criteria::expr()->in('l.comitenteId', $filtros['f-comitente']));
             $query->addCriteria($filtroComitenteCriteria);
             $queryCount->addCriteria($filtroComitenteCriteria);
             //$query->andWhere('l.comitente = :comitente')->setParameter('comitente', $filtros['comitente']);
-        }*/
+        }
+
+        //Filtro por UF
+        if (isset($filtros['f-uf'])) {
+            $filtroUFCriteria = Criteria::create()
+                ->where(Criteria::expr()->in('l.uf', $filtros['f-uf']));
+            $query->addCriteria($filtroUFCriteria);
+            $queryCount->addCriteria($filtroUFCriteria);
+            //$query->andWhere('l.comitente = :comitente')->setParameter('comitente', $filtros['comitente']);
+        }
+
+        //Filtro por Cidade
+        if (isset($filtros['f-cidade'])) {
+            $filtroCidadeCriteria = Criteria::create()
+                ->where(Criteria::expr()->in('l.cidade', $filtros['f-cidade']));
+            $query->addCriteria($filtroCidadeCriteria);
+            $queryCount->addCriteria($filtroCidadeCriteria);
+            //$query->andWhere('l.comitente = :comitente')->setParameter('comitente', $filtros['comitente']);
+        }
 
         //Filtro por Status
         if (isset($filtros['naoExibirRascunho'])) {

@@ -61,9 +61,12 @@ class DefaultController extends SLAbstractController
         }
 
         $filtros = [];
+        $filtros2 = [];
+        $filtros2 = array_merge_recursive($filtros2, $request->query->all());
+        $filtros2 = array_merge_recursive($filtros2, $request->request->all());
         $page = $request->query->getInt('page', 1);
         $page = $page === 0 ? 1 : $page;
-        $limit = 20;
+        $limit = 10;
         $offset = ($page * $limit) - $limit;
         $em = $this->getDoctrine()->getManager();
 
@@ -79,15 +82,13 @@ class DefaultController extends SLAbstractController
                 if (strlen($busca) > 3) {
                     $lotes = $em->getRepository(Lote::class)->findAllSimpleBasic($leilao->getId(), $limit, $offset, null, $busca);
                     $leilao->setLotesManual(new ArrayCollection());
-                    if (!empty($lotes['result'])) {
-                        foreach ($lotes['result'] as $lote) {
-                            $leilao->addLote($lote);
-                        }
-                    }
                 }
+            } else{
+                $lotes = $em->getRepository(Lote::class)->findAllSimpleBasic($leilao->getId(), $limit, $offset, $filtros2);
             }
         } elseif (!empty($busca) || !empty($tipoId) || !empty($tipoNome)) {
             $leilao = new Leilao();
+            $leilao->setTitulo('Buscador');
 
             // $busca = $request->get('s');
 
@@ -110,20 +111,11 @@ class DefaultController extends SLAbstractController
                 }
                 $lotes = $em->getRepository(Lote::class)->findAllSimpleBasic(null, $limit, $offset, null, $busca);
             }
-            if (!empty($lotes['result'])) {
-                foreach ($lotes['result'] as $lote) {
-                    $leilao->addLote($lote);
-                }
-            }
 
         } elseif ($request->get('bf')) {
-            $filtros = [];
-            $lotes = $em->getRepository(Lote::class)->findAllSimpleBasic(null, $limit, $offset, $filtros, $busca);
-            if (!empty($lotes['result'])) {
-                foreach ($lotes['result'] as $lote) {
-                    $leilao->addLote($lote);
-                }
-            }
+            $leilao = new Leilao();
+            $leilao->setTitulo('Buscador');
+            $lotes = $em->getRepository(Lote::class)->findAllSimpleBasic(null, $limit, $offset, $filtros2, $busca);
         } else {
             throw new NotFoundHttpException('Leilão não encontrado.');
         }
@@ -133,11 +125,15 @@ class DefaultController extends SLAbstractController
             : 'default/leilao.html.twig';
         return $this->render($template, [
             'leilao' => $leilao,
+            'lotes' => $lotes['result'],
             'filtros' => $filtros,
             'busca' => $busca,
             'lotesTipo' => $em->getRepository(LoteTipoCache::class)->findBy([], ['tipo' => 'ASC']),
             'tipoId' => $tipoId,
             'tipoNome' => $tipoNome,
+            "totalLotes" => intval($lotes['total']),
+            "totalPages" => ceil(intval($lotes['total']) / $limit),
+            "paginaAtual" => $page,
         ]);
     }
 
