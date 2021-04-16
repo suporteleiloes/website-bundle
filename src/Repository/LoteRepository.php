@@ -75,6 +75,11 @@ class LoteRepository extends ServiceEntityRepository
             $query->addCriteria($filtroInicialCriteria);
             $queryCount->addCriteria($filtroInicialCriteria);
             #$query->where('l.leilao = :leilao')->setParameter('leilao', $leilao);
+        } else {
+            $filtroInicialCriteria = Criteria::create()
+                ->where(Criteria::expr()->lt('l.status', Lote::STATUS_HOMOLOGANDO));
+            $query->addCriteria($filtroInicialCriteria);
+            $queryCount->addCriteria($filtroInicialCriteria);
         }
 
         /*if (!$busca) {
