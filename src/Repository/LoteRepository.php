@@ -89,25 +89,17 @@ class LoteRepository extends ServiceEntityRepository
             // $queryCount->andWhere('l.status = :status')->setParameter('status', Lote::STATUS_ABERTO_PARA_LANCES);
         }*/
 
-        if ($busca) {
-            $filtroBuscaCriteria = Criteria::create()
-                ->where(Criteria::expr()->orX(
-                    Criteria::expr()->contains('l.descricao', $busca),
-                    Criteria::expr()->contains('l.tipo', $busca),
-                    Criteria::expr()->contains('l.titulo', $busca)
-                ));
-            $query->addCriteria($filtroBuscaCriteria);
-            $queryCount->addCriteria($filtroBuscaCriteria);
-        }
-
         //Busca
-        if (isset($filtros['busca'])) {
-            $busca = $filtros['busca'];
+        if (isset($filtros['busca']) || $busca) {
+            $busca = $busca ?: $filtros['busca'];
             $filtroBuscaCriteria = Criteria::create()
                 ->where(Criteria::expr()->orX(
                     Criteria::expr()->contains('l.descricao', $busca),
                     Criteria::expr()->contains('l.tipo', $busca),
-                    Criteria::expr()->contains('l.titulo', $busca)
+                    Criteria::expr()->contains('l.titulo', $busca),
+                    Criteria::expr()->contains('l.processo', $busca),
+                    Criteria::expr()->contains('l.executado', $busca),
+                    Criteria::expr()->contains('l.exequente', $busca)
                 ));
             $query->addCriteria($filtroBuscaCriteria);
             $queryCount->addCriteria($filtroBuscaCriteria);
