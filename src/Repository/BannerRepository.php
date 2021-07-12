@@ -18,4 +18,14 @@ class BannerRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Banner::class);
     }
+
+    /**
+     * @return mixed
+     */
+    public function findAtivos(){
+
+        $dql = 'SELECT b FROM SL\WebsiteBundle\Entity\Banner b WHERE b.dateStartExhibition <= :dataatual AND b.dateStartExhibition >= :dataatual order by b.position'; // AND b.situacao = true
+        $query = $this->getEntityManager()->createQuery($dql)->setParameter('dataatual', new \DateTime());
+        return $query->getResult();
+    }
 }

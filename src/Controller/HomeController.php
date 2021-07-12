@@ -40,7 +40,7 @@ class HomeController extends SLAbstractController
 
         $textos = $this->getTextos(['pag-leiloeiro-title', 'pag-leiloeiro-subtitulo', 'missao', 'visao', 'valores', 'aviso-home']);
 
-        $banners = $em->getRepository(Banner::class)->findAll(); // TODO
+        $banners = $em->getRepository(Banner::class)->findAtivos(); // TODO
 
         return $this->render('home.html.twig', [
             'lotes' => $destaques,
