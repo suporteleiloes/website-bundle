@@ -24,7 +24,7 @@ class BannerRepository extends ServiceEntityRepository
      */
     public function findAtivos(){
 
-        $dql = 'SELECT b FROM SL\WebsiteBundle\Entity\Banner b WHERE b.dateStartExhibition <= :dataatual AND b.dateEndtExhibition >= :dataatual order by b.position'; // AND b.situacao = true
+        $dql = 'SELECT b FROM SL\WebsiteBundle\Entity\Banner b WHERE b.dateStartExhibition <= :dataatual AND b.dateEndExhibition >= :dataatual order by b.position'; // AND b.situacao = true
         $query = $this->getEntityManager()->createQuery($dql)->setParameter('dataatual', new \DateTime());
         return $query->getResult();
     }
