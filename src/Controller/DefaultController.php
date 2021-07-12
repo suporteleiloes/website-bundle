@@ -66,7 +66,7 @@ class DefaultController extends SLAbstractController
         $filtros2 = array_merge_recursive($filtros2, $request->request->all());
         $page = $request->query->getInt('page', 1);
         $page = $page === 0 ? 1 : $page;
-        $limit = 10;
+        $limit = 100;
         $offset = ($page * $limit) - $limit;
         $em = $this->getDoctrine()->getManager();
 
