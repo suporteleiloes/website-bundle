@@ -9,6 +9,7 @@ use SL\WebsiteBundle\Entity\Leilao;
 use SL\WebsiteBundle\Entity\LeilaoCache;
 use SL\WebsiteBundle\Entity\Lote;
 use SL\WebsiteBundle\Entity\LoteTipoCache;
+use SL\WebsiteBundle\Entity\Post;
 use SL\WebsiteBundle\Services\DatabaseOperationsService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Cookie;
@@ -150,7 +151,9 @@ class ApiController extends AbstractController
             case "banner":
                 $this->processBanner($hook);
                 break;
-                //@TODO: Blog Post
+            case "post":
+                $this->processPost($hook);
+                break;
             default:
                 throw new \Exception('Tipo de dados a ser processado não é compatível com este website');
         }
@@ -172,9 +175,9 @@ class ApiController extends AbstractController
         $data = $data['data'];
 
         $leilao->setAid($entityId);
-        $is_true = function ($val, $return_null=false){
-            $boolval = ( is_string($val) ? filter_var($val, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) : (bool) $val );
-            return ( $boolval===null && !$return_null ? false : $boolval );
+        $is_true = function ($val, $return_null = false) {
+            $boolval = (is_string($val) ? filter_var($val, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) : (bool)$val);
+            return ($boolval === null && !$return_null ? false : $boolval);
         };
         if ($leilao->getId()) {
             if ($data['deleted'] || !$is_true($data['publicarSite'])) {
@@ -475,6 +478,38 @@ class ApiController extends AbstractController
         $banner->setLink(@$data['link']);
 
         $em->persist($banner);
+        $em->flush();
+    }
+
+    private function processPost($data)
+    {
+        $entityId = $data['entityId'];
+        $em = $this->getDoctrine()->getManager();
+        $entity = $em->getRepository(Post::class)->findOneByAid($entityId);
+        if (!$entity) {
+            $entity = new Post();
+        }
+
+        $data = $data['data'];
+
+        $entity->setAid($entityId);
+        if ($entity->getId()) {
+            $entity->setAlastUpdate(new \DateTime());
+        } else {
+            $entity->setAcreatedAt(new \DateTime());
+        }
+
+        $entity->setTitle(@$data['title']);
+        $entity->setImage(@$data['image']);
+        $entity->setDescription(@$data['description']);
+        $entity->setTemplate(@$data['template']);
+        $entity->setUrl(@$data['url']);
+        if (isset($data['category'])) {
+            $entity->setCategoryId(@$data['category']['id']);
+            $entity->setCategory(@$data['category']['name']);
+        }
+
+        $em->persist($entity);
         $em->flush();
     }
 
