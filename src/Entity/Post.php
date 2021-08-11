@@ -65,7 +65,7 @@ class Post extends ApiSync
     private $active = true;
 
     /**
-     * @ORM\Column(type="smallint", nullable=true)
+     * @ORM\Column(type="smallint", name="ordering", nullable=true)
      */
     private $order = 100;
 
@@ -201,7 +201,7 @@ class Post extends ApiSync
     /**
      * @param bool $active
      */
-    public function setActive(bool $active): void
+    public function setActive($active): void
     {
         $this->active = $active;
     }
@@ -209,7 +209,7 @@ class Post extends ApiSync
     /**
      * @return int
      */
-    public function getOrder(): int
+    public function getOrder()
     {
         return $this->order;
     }
@@ -217,7 +217,7 @@ class Post extends ApiSync
     /**
      * @param int $order
      */
-    public function setOrder(int $order): void
+    public function setOrder($order)
     {
         $this->order = $order;
     }
