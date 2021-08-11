@@ -547,6 +547,24 @@ class ApiController extends AbstractController
             $item->setTipoId($total['tipo_pai_id']);
             $item->setTipo($total['tipo_pai']);
             $item->setTotal($total['total']);
+            $item->setSubtipo(false);
+            $em->persist($item);
+        }
+
+        $totaisFilho = $this->getDoctrine()->getRepository(Lote::class)->totalLotesByTipoFilho(); // @TODO: Melhorar este código para reduzir linhas
+        if (count($totaisFilho) < 1) {
+            return;
+        }
+        foreach ($totaisFilho as $total) {
+            $item = new LoteTipoCache();
+            // }
+            if (empty($total['tipo_id']) || empty($total['tipo'])) {
+                continue;
+            }
+            $item->setTipoId($total['tipo_id']);
+            $item->setTipo($total['tipo']);
+            $item->setTotal($total['total']);
+            $item->setSubtipo(true);
             $em->persist($item);
         }
         $em->flush();

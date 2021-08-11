@@ -258,6 +258,21 @@ class LoteRepository extends ServiceEntityRepository
         return $query->getResult();
     }
 
+    public function totalLotesByTipoFilho()
+    {
+        $rsm = (new ResultSetMapping())
+            ->addScalarResult('tipo', 'tipo')
+            ->addScalarResult('tipo_id', 'tipo_id')
+            ->addScalarResult('total', 'total');
+
+        $query = $this->getEntityManager()
+            ->createNativeQuery('select distinct tipo_id, tipo, (select count(1) from lote l2 where l2.tipo_id = lote.tipo_id and l2.status < 5) total from lote where lote.status < 5',
+                $rsm
+            );
+
+        return $query->getResult();
+    }
+
     // /**
     //  * @return Lote[] Returns an array of Lote objects
     //  */

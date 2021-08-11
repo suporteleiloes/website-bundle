@@ -27,6 +27,11 @@ class LoteTipoCache
      */
     private $total;
 
+    /**
+     * @ORM\Column(type="subtipo", options={"default": 0})
+     */
+    private $subtipo = false;
+
     public function getId(): ?int
     {
         return $this->tipoId;
@@ -66,5 +71,21 @@ class LoteTipoCache
         $this->total = $total;
 
         return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSubtipo(): bool
+    {
+        return $this->subtipo;
+    }
+
+    /**
+     * @param bool $subtipo
+     */
+    public function setSubtipo(bool $subtipo): void
+    {
+        $this->subtipo = $subtipo;
     }
 }
