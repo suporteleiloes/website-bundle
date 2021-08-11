@@ -59,6 +59,16 @@ class Post extends ApiSync
      */
     private $author;
 
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $active = true;
+
+    /**
+     * @ORM\Column(type="smallint", nullable=true)
+     */
+    private $order = 100;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -178,5 +188,37 @@ class Post extends ApiSync
     public function setUrl($url): void
     {
         $this->url = $url;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isActive(): bool
+    {
+        return $this->active;
+    }
+
+    /**
+     * @param bool $active
+     */
+    public function setActive(bool $active): void
+    {
+        $this->active = $active;
+    }
+
+    /**
+     * @return int
+     */
+    public function getOrder(): int
+    {
+        return $this->order;
+    }
+
+    /**
+     * @param int $order
+     */
+    public function setOrder(int $order): void
+    {
+        $this->order = $order;
     }
 }
