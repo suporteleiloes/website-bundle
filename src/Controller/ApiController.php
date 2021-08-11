@@ -532,6 +532,7 @@ class ApiController extends AbstractController
         $em = $this->getDoctrine()->getManager();
         $em->getRepository(LoteTipoCache::class)->flushData();
         $em->flush();
+        $check = [];
         $totais = $this->getDoctrine()->getRepository(Lote::class)->totalLotesByTipo();
         if (count($totais) < 1) {
             return;
@@ -544,6 +545,7 @@ class ApiController extends AbstractController
             if (empty($total['tipo_pai_id']) || empty($total['tipo_pai'])) {
                 continue;
             }
+            $check[] = $total['tipo_pai_id'];
             $item->setTipoId($total['tipo_pai_id']);
             $item->setTipo($total['tipo_pai']);
             $item->setTotal($total['total']);
@@ -558,7 +560,7 @@ class ApiController extends AbstractController
         foreach ($totaisFilho as $total) {
             $item = new LoteTipoCache();
             // }
-            if (empty($total['tipo_id']) || empty($total['tipo'])) {
+            if (empty($total['tipo_id']) || empty($total['tipo']) || in_array($total['tipo_id'], $check)) {
                 continue;
             }
             $item->setTipoId($total['tipo_id']);
