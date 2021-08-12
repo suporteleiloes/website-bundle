@@ -128,7 +128,7 @@ class DefaultController extends SLAbstractController
             'lotes' => $lotes['result'],
             'filtros' => $filtros,
             'busca' => $busca,
-            'lotesTipo' => $em->getRepository(LoteTipoCache::class)->findBy(['isSubtipo' => false], ['tipo' => 'ASC']),
+            'lotesTipo' => $em->getRepository(LoteTipoCache::class)->findBy(['subtipo' => false], ['tipo' => 'ASC']),
             'tipoId' => $tipoId,
             'tipoNome' => $tipoNome,
             "totalLotes" => intval($lotes['total']),
