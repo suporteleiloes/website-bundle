@@ -263,10 +263,11 @@ class LoteRepository extends ServiceEntityRepository
         $rsm = (new ResultSetMapping())
             ->addScalarResult('tipo', 'tipo')
             ->addScalarResult('tipo_id', 'tipo_id')
+            ->addScalarResult('tipo_pai_id', 'tipo_pai_id')
             ->addScalarResult('total', 'total');
 
         $query = $this->getEntityManager()
-            ->createNativeQuery('select distinct tipo_id, tipo, (select count(1) from lote l2 where l2.tipo_id = lote.tipo_id and l2.status < 5) total from lote where lote.status < 5',
+            ->createNativeQuery('select distinct tipo_id, tipo, tipo_pai_id (select count(1) from lote l2 where l2.tipo_id = lote.tipo_id and l2.status < 5) total from lote where lote.status < 5',
                 $rsm
             );
 

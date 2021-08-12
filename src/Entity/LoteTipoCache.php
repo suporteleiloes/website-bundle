@@ -18,6 +18,11 @@ class LoteTipoCache
     private $tipoId;
 
     /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $tipoPaiId;
+
+    /**
      * @ORM\Column(type="string", length=255)
      */
     private $tipo;
@@ -87,5 +92,21 @@ class LoteTipoCache
     public function setSubtipo(bool $subtipo): void
     {
         $this->subtipo = $subtipo;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTipoPaiId()
+    {
+        return $this->tipoPaiId;
+    }
+
+    /**
+     * @param mixed $tipoPaiId
+     */
+    public function setTipoPaiId($tipoPaiId): void
+    {
+        $this->tipoPaiId = $tipoPaiId;
     }
 }
