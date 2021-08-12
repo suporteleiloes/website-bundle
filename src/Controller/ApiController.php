@@ -564,6 +564,7 @@ class ApiController extends AbstractController
                 continue;
             }
             $item->setTipoId($total['tipo_id']);
+            $item->setTipoPaiId($total['tipo_pai_id']);
             $item->setTipo($total['tipo']);
             $item->setTotal($total['total']);
             $item->setSubtipo(true);
