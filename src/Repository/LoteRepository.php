@@ -9,6 +9,7 @@ use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\Persistence\ManagerRegistry;
 use SL\WebsiteBundle\Entity\Leilao;
 use SL\WebsiteBundle\Entity\Lance;
+use SL\WebsiteBundle\Entity\LoteTipoCache;
 
 /**
  * @method Lote|null find($id, $lockMode = null, $lockVersion = null)
@@ -59,11 +60,19 @@ class LoteRepository extends ServiceEntityRepository
         $queryCount = $this->getEntityManager()->createQueryBuilder()
             ->select('COUNT(1) total')
             ->from(Lote::class, "l")
-            ->join("l.leilao", "leilao");
+            ->join("l.leilao", "leilao")
+        ;
 
         if ($tipoId !== null) {
+            $tipoFieldName = 'tipoPaiId';
+            $entityTipo = $this->getEntityManager()->getRepository(LoteTipoCache::class)->findOneByTipoId($tipoId);
+            if ($entityTipo) {
+                if ($entityTipo->isSubtipo()) {
+                    $tipoFieldName = 'tipoId';
+                }
+            }
             $filtroInicialCriteria = Criteria::create()
-                ->where(Criteria::expr()->eq('l.tipoPaiId', $tipoId))
+                ->where(Criteria::expr()->eq('l.' . $tipoFieldName, $tipoId))
                 ->andWhere(Criteria::expr()->lt('l.status', Lote::STATUS_HOMOLOGANDO));
             $query->addCriteria($filtroInicialCriteria);
             $queryCount->addCriteria($filtroInicialCriteria);
