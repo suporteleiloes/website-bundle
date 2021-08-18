@@ -434,8 +434,12 @@ class ApiController extends AbstractController
 
         $data = $data['data'];
 
-        $entity->setAid($entityId);
         if ($entity->getId()) {
+            if ($data['deleted']) {
+                $em->remove($entity);
+                $em->flush();
+                return;
+            }
             $entity->setAlastUpdate(new \DateTime());
         } else {
             $entity->setAcreatedAt(new \DateTime());
@@ -463,6 +467,11 @@ class ApiController extends AbstractController
 
         $banner->setAid($entityId);
         if ($banner->getId()) {
+            if ($data['deleted']) {
+                $em->remove($banner);
+                $em->flush();
+                return;
+            }
             $banner->setAlastUpdate(new \DateTime());
         } else {
             $banner->setAcreatedAt(new \DateTime());
@@ -494,6 +503,11 @@ class ApiController extends AbstractController
 
         $entity->setAid($entityId);
         if ($entity->getId()) {
+            if ($data['deleted']) {
+                $em->remove($entity);
+                $em->flush();
+                return;
+            }
             $entity->setAlastUpdate(new \DateTime());
         } else {
             $entity->setAcreatedAt(new \DateTime());
