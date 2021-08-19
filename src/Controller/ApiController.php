@@ -206,7 +206,11 @@ class ApiController extends AbstractController
         $leilao->setDataFimPraca1($dataFimPraca1);
         $leilao->setDataFimPraca2($dataFimPraca2);
 
-        if ($praca === 2) {
+        if ($praca === 3) {
+            $extra = $leilao->getExtra();
+            $abertura = new \DateTime($extra['terceiraData']);
+            $encerramento = $abertura;
+        } elseif ($praca === 2) {
             $abertura = $dataPraca2;
             $encerramento = $dataFimPraca2;
         } else {
