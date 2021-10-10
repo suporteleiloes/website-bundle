@@ -100,32 +100,32 @@ class Lote extends ApiSync
     private $descricao;
 
     /**
-     * @ORM\Column(type="decimal", precision=10, scale=2, nullable=true)
+     * @ORM\Column(type="decimal", precision=15, scale=2, nullable=true)
      */
     private $valorInicial;
 
     /**
-     * @ORM\Column(type="decimal", precision=10, scale=2, nullable=true)
+     * @ORM\Column(type="decimal", precision=15, scale=2, nullable=true)
      */
     private $valorInicial2;
 
     /**
-     * @ORM\Column(type="decimal", precision=10, scale=2, nullable=true)
+     * @ORM\Column(type="decimal", precision=15, scale=2, nullable=true)
      */
     private $valorIncremento = 200.00;
 
     /**
-     * @ORM\Column(type="decimal", precision=10, scale=2, nullable=true)
+     * @ORM\Column(type="decimal", precision=15, scale=2, nullable=true)
      */
     private $valorMercado = 0.00;
 
     /**
-     * @ORM\Column(type="decimal", precision=10, scale=2, nullable=true)
+     * @ORM\Column(type="decimal", precision=15, scale=2, nullable=true)
      */
     private $valorAvaliacao = 0.00;
 
     /**
-     * @ORM\Column(type="decimal", precision=10, scale=2, nullable=true)
+     * @ORM\Column(type="decimal", precision=15, scale=2, nullable=true)
      */
     private $valorMinimo = 0.00;
 

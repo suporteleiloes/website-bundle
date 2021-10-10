@@ -44,7 +44,7 @@ class Lance extends ApiSync
     private $uf;
 
     /**
-     * @ORM\Column(type="decimal", precision=10, scale=2)
+     * @ORM\Column(type="decimal", precision=15, scale=2)
      */
     private $valor;
 
