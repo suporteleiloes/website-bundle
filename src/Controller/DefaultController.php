@@ -60,6 +60,10 @@ class DefaultController extends SLAbstractController
             }
         }
 
+        if (!empty($tipoNome)) {
+            $tipoNome = str_replace(['__b__', '__i__', '__e__'], ['/', '?', '&'], $tipoNome);
+        }
+
         $filtros = [];
         $filtros2 = [];
         $filtros2 = array_merge_recursive($filtros2, $request->query->all());
