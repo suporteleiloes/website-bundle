@@ -814,7 +814,7 @@ class Lote extends ApiSync
             $foto = $this->getFoto();
             $fotos->add([
                 'url' => $foto['full']['url'],
-                'resolution' => $foto['full']['resolution']['width'] . 'x' . $foto['full']['resolution']['height'],
+                'resolution' => @$foto['full']['resolution']['width'] . 'x' . @$foto['full']['resolution']['height'],
                 'versions' => $foto,
                 'nome' => null
             ]);
