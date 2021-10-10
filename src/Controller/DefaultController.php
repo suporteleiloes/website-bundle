@@ -150,8 +150,8 @@ class DefaultController extends SLAbstractController
             'lotesTipoAll' => $tipos,
             'tipoId' => $tipoId,
             'tipoNome' => $tipoNome,
-            "totalLotes" => intval($lotes['total']),
-            "totalPages" => ceil(intval($lotes['total']) / $limit),
+            "totalLotes" => intval(@$lotes['total']),
+            "totalPages" => ceil(intval(@$lotes['total']) / $limit),
             "paginaAtual" => $page,
         ]);
     }
