@@ -87,7 +87,7 @@ class DefaultController extends SLAbstractController
                     $lotes = $em->getRepository(Lote::class)->findAllSimpleBasic($leilao->getId(), $limit, $offset, null, $busca);
                     $leilao->setLotesManual(new ArrayCollection());
                 }
-            } else{
+            } else {
                 $lotes = $em->getRepository(Lote::class)->findAllSimpleBasic($leilao->getId(), $limit, $offset, $filtros2);
             }
         } elseif (!empty($busca) || !empty($tipoId) || !empty($tipoNome)) {
@@ -127,12 +127,21 @@ class DefaultController extends SLAbstractController
         $template = $request->attributes->get('_route') === 'print_leilao'
             ? 'default/print/leilao.html.twig'
             : 'default/leilao.html.twig';
+
+        $tipos = $em->getRepository(LoteTipoCache::class)->findBy([], ['tipo' => 'ASC']);
+        $subtipos = [];
+        if (count($tipos)) {
+            $subtipos = array_filter($tipos, function ($t) {
+                return $t->isSubtipo();
+            });
+        }
         return $this->render($template, [
             'leilao' => $leilao,
             'lotes' => $lotes['result'],
             'filtros' => $filtros,
             'busca' => $busca,
-            'lotesTipo' => $em->getRepository(LoteTipoCache::class)->findBy(['subtipo' => false], ['tipo' => 'ASC']),
+            'lotesTipo' => $subtipos,
+            'lotesTipoAll' => $tipos,
             'tipoId' => $tipoId,
             'tipoNome' => $tipoNome,
             "totalLotes" => intval($lotes['total']),
