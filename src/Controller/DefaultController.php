@@ -138,7 +138,7 @@ class DefaultController extends SLAbstractController
         $tiposPrincipais = [];
         if (count($tipos)) {
             $tiposPrincipais = array_filter($tipos, function ($t) {
-                return $t->isSubtipo() === false;
+                return !$t->isSubtipo();
             });
         }
         return $this->render($template, [
