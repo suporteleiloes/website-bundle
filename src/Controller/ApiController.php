@@ -33,7 +33,7 @@ class ApiController extends AbstractController
             return $this->json(['status' => 'KO'], Response::HTTP_BAD_REQUEST);
         }
 
-        #try {
+        try {
             // dump($data);
             $token = $data['session'];
             if (empty($token)) {
@@ -68,9 +68,9 @@ class ApiController extends AbstractController
             $response->headers->setCookie($cookiePerson);
             $response->headers->setCookie($cookieUsername);
             return $response;
-        #} catch (\Exception $e) {
-         #   return $this->json(['status' => 'KO', 'error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
-        #}
+        } catch (\Exception $e) {
+            return $this->json(['status' => 'KO', 'error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
+        }
     }
 
     /**
