@@ -143,7 +143,7 @@ class DefaultController extends SLAbstractController
         }
         return $this->render($template, [
             'leilao' => $leilao,
-            'lotes' => $lotes['result'],
+            'lotes' => @$lotes['result'],
             'filtros' => $filtros,
             'busca' => $busca,
             'lotesTipo' => $tiposPrincipais,
