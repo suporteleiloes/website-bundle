@@ -48,7 +48,7 @@ class DefaultController extends SLAbstractController
      * @Route("/leiloes/{id}", name="leilao")
      * @Route("/print/leiloes/{id}", name="print_leilao")
      * @Route("/busca/{busca}", name="busca")
-     * @Route("/busca")
+     * @Route("/busca", name="busca_simples")
      * @Route("/busca-tipo/{tipoId}/{tipoNome}", name="busca_tipo")
      * @Route("/categoria/{tipoNome}", name="busca_categoria")
      */
@@ -73,6 +73,12 @@ class DefaultController extends SLAbstractController
         $limit = 100;
         $offset = ($page * $limit) - $limit;
         $em = $this->getDoctrine()->getManager();
+
+        if (!empty($request->get('busca')) && !$busca) {
+            $busca = $request->get('busca');
+        } elseif (empty($request->get('busca'))  && !$busca){
+            $busca = 'nd';
+        }
 
         if ($leilao) {
             $cache = $leilao->getCache();

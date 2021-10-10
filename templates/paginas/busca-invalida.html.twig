@@ -17,13 +17,18 @@
 {% endblock %}
 
 {% block body %}
+<div class="show-vender">
+    <div class="center">
     <div class="busca-container busca-invalida">
 
-        <h3>Ops :/</h3><br><br>
-        Você precisa digitar ao menos três letras para podermos tentar buscar algo para você.
-        <br>
-        Tente novamente :)
+        <h3 style="margin-top: 50px; text-align: center; display: block">Busque no site</h3><br><br>
+
+        <form action="{{ path('busca') }}" method="get">
+            <input autofocus name="busca" id="busca" class="form-control" />
+            <button class="btn btn-success btn-block m-t m-b" style="margin: 10px auto 20px">Buscar</button>
+        </form>
 
     </div>
-
+    </div>
+</div>
 {% endblock %}
