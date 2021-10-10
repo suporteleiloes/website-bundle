@@ -197,7 +197,7 @@ class ApiController extends AbstractController
         $dataFimPraca1 = isset($data['dataFimPraca1']) ? \DateTime::createFromFormat('Y-m-d H:i:s+', $data['dataFimPraca1']['date']) : null;
         $dataFimPraca2 = isset($data['dataFimPraca2']) ? \DateTime::createFromFormat('Y-m-d H:i:s+', $data['dataFimPraca2']['date']) : null;
 
-        $leilao->setSlug($data['slug']);
+        $leilao->setSlug(substr($data['slug'], 0, 254));
         $leilao->setTitulo($data['titulo']);
         $leilao->setDescricao(@$data['descricao']);
         $leilao->setTipo($data['tipo']);
@@ -304,7 +304,7 @@ class ApiController extends AbstractController
                 $lote->setAcreatedAt(new \DateTime());
             }
 
-            $lote->setSlug(!empty($data['slug']) ? $data['slug'] : 'lote');
+            $lote->setSlug(!empty($data['slug']) ? substr($data['slug'], 0, 254) : 'lote');
             $lote->setNumero($data['numero']);
             $lote->setTitulo($data['bem']['siteTitulo']);
             $lote->setDescricao($data['bem']['siteDescricao']);
