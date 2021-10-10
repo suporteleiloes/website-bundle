@@ -135,10 +135,10 @@ class DefaultController extends SLAbstractController
             : 'default/leilao.html.twig';
 
         $tipos = $em->getRepository(LoteTipoCache::class)->findBy([], ['tipo' => 'ASC']);
-        $subtipos = [];
+        $tiposPrincipais = [];
         if (count($tipos)) {
-            $subtipos = array_filter($tipos, function ($t) {
-                return $t->isSubtipo();
+            $tiposPrincipais = array_filter($tipos, function ($t) {
+                return $t->isSubtipo() === false;
             });
         }
         return $this->render($template, [
@@ -146,7 +146,7 @@ class DefaultController extends SLAbstractController
             'lotes' => $lotes['result'],
             'filtros' => $filtros,
             'busca' => $busca,
-            'lotesTipo' => $subtipos,
+            'lotesTipo' => $tiposPrincipais,
             'lotesTipoAll' => $tipos,
             'tipoId' => $tipoId,
             'tipoNome' => $tipoNome,
