@@ -235,8 +235,9 @@ class LoteRepository extends ServiceEntityRepository
                 ->setParameter('blindado', '%blindado%');
         }
 
-        // $query->andWhere('leilao.status IN (:statusLeilao)')->setParameter('statusLeilao', [Leilao::STATUS_EM_BREVE, Leilao::STATUS_EM_LOTEAMENTO, /*Leilao::STATUS_VER_MAIS,*/ Leilao::STATUS_ABERTO_PARA_LANCES]);
-        // $queryCount->andWhere('leilao.status IN (:statusLeilao)')->setParameter('statusLeilao', [Leilao::STATUS_EM_BREVE, Leilao::STATUS_EM_LOTEAMENTO, /*Leilao::STATUS_VER_MAIS,*/ Leilao::STATUS_ABERTO_PARA_LANCES]);
+        $statusPermitidosBusca = [Leilao::STATUS_EM_BREVE, Leilao::STATUS_EM_LOTEAMENTO, /*Leilao::STATUS_VER_MAIS,*/ Leilao::STATUS_ABERTO_PARA_LANCES];
+        $query->andWhere('leilao.status IN (:statusLeilao)')->setParameter('statusLeilao', $statusPermitidosBusca);
+        $queryCount->andWhere('leilao.status IN (:statusLeilao)')->setParameter('statusLeilao', $statusPermitidosBusca);
 
         $query->addOrderBy('l.numero', 'ASC');
 
