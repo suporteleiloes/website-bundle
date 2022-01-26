@@ -2,7 +2,7 @@
     "devDependencies": {
         "@symfony/webpack-encore": "^0.30.2",
         "bootstrap": "^4.5.1",
-        "comunicator": "git+https://tiagofelipe:FzWHHJy8m3mYMAPcyxxU@git.wtis.com.br/suporteleiloes/comunicator.git",
+        "comunicator": "git+https://github.com/suporteleiloes/comunicator.git",
         "core-js": "^3.0.0",
         "jquery": "^3.5.1",
         "node-sass": "^4.14.1",
