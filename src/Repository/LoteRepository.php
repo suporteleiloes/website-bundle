@@ -28,10 +28,13 @@ class LoteRepository extends ServiceEntityRepository
     {
         $qb = $this->createQueryBuilder('l');
         $qb
+            ->join('l.leilao', 'leilao')
             ->where('l.destaque = :destaque')
             ->andWhere('l.status <= :status')
+            ->andWhere('leilao.status IN (:statusLeilao)')
             ->setParameter('destaque', true)
-            ->setParameter('status', Lote::STATUS_ABERTO_PARA_LANCES);
+            ->setParameter('status', Lote::STATUS_ABERTO_PARA_LANCES)
+            ->setParameter('statusLeilao', [Leilao::STATUS_ABERTO_PARA_LANCES, Leilao::STATUS_EM_BREVE, Leilao::STATUS_EM_LEILAO, Leilao::STATUS_EM_LOTEAMENTO]);
 
         if (is_array($notIds) && @count($notIds) > 0) {
             $qb->andWhere('l.id NOT IN (:ids)')->setParameter('ids', $notIds);
