@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\MappedSuperclass()
+ * * @ORM\Table(indexes={@ORM\Index(name="aid", columns={"aid"}), @ORM\Index(name="active", columns={"active"})})
  */
 class ApiSync
 {
@@ -24,6 +25,21 @@ class ApiSync
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $alastUpdate;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $version;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $deleted = false;
+
+    /**
+     * @ORM\Column(type="boolean", options={"unsigned":true, "default":1})
+     */
+    private $active;
 
     public function getId(): ?int
     {
@@ -64,5 +80,53 @@ class ApiSync
         $this->alastUpdate = $date;
 
         return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getVersion()
+    {
+        return $this->version;
+    }
+
+    /**
+     * @param mixed $version
+     */
+    public function setVersion($version): void
+    {
+        $this->version = $version;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getActive()
+    {
+        return $this->active;
+    }
+
+    /**
+     * @param mixed $active
+     */
+    public function setActive($active): void
+    {
+        $this->active = $active;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDeleted(): bool
+    {
+        return $this->deleted;
+    }
+
+    /**
+     * @param bool $deleted
+     */
+    public function setDeleted(bool $deleted): void
+    {
+        $this->deleted = $deleted;
     }
 }

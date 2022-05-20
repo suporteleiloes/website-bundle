@@ -65,11 +65,6 @@ class Post extends ApiSync
     private $author;
 
     /**
-     * @ORM\Column(type="boolean", nullable=true)
-     */
-    private $active = true;
-
-    /**
      * @ORM\Column(type="smallint", name="ordering", nullable=true)
      */
     private $order = 100;

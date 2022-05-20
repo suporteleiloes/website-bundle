@@ -8,69 +8,24 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Table(indexes={@ORM\Index(name="aid", columns={"aid"}), @ORM\Index(name="status", columns={"status"}), @ORM\Index(name="numero", columns={"numero"}), @ORM\Index(name="tipo_id", columns={"tipo_id"}), @ORM\Index(name="tipo", columns={"tipo"}), @ORM\Index(name="tipo_pai_id", columns={"tipo_pai_id"}), @ORM\Index(name="tipo_pai", columns={"tipo_pai"}), @ORM\Index(name="cidade", columns={"cidade"}), @ORM\Index(name="uf", columns={"uf"}), @ORM\Index(name="marca_id", columns={"marca_id"}), @ORM\Index(name="marca", columns={"marca"}), @ORM\Index(name="modelo_id", columns={"modelo_id"}), @ORM\Index(name="modelo", columns={"modelo"})})
+ * @ORM\Table(indexes={
+ *     @ORM\Index(name="aid", columns={"aid"}),
+ *     @ORM\Index(name="status", columns={"status"}),
+ *     @ORM\Index(name="numero", columns={"numero"}),
+ *     @ORM\Index(name="tipo_id", columns={"tipo_id"}),
+ *     @ORM\Index(name="tipo", columns={"tipo"}),
+ *     @ORM\Index(name="tipo_pai_id", columns={"tipo_pai_id"}),
+ *     @ORM\Index(name="tipo_pai", columns={"tipo_pai"}),
+ *     @ORM\Index(name="cidade", columns={"cidade"}),
+ *     @ORM\Index(name="uf", columns={"uf"}),
+ *     @ORM\Index(name="marca_id", columns={"marca_id"}),
+ *     @ORM\Index(name="marca", columns={"marca"}),
+ *     @ORM\Index(name="modelo_id", columns={"modelo_id"}),
+ *     @ORM\Index(name="modelo", columns={"modelo"})})
  * @ORM\Entity(repositoryClass=LoteRepository::class)
  */
 class Lote extends ApiSync
 {
-    const STATUS_RASCUNHO = 0;
-    const STATUS_ABERTO_PARA_LANCES = 1;
-    const STATUS_EM_PREGAO = 2;
-    const STATUS_HOMOLOGANDO = 5;
-    const STATUS_VENDIDO = 100;
-    const STATUS_CONDICIONAL = 7;
-    const STATUS_SEM_LICITANTES = 8;
-    const STATUS_BAIXA_OFERTA = 9;
-    const STATUS_RETIRADO = 10;
-    const STATUS_CANCELADO = 11;
-
-    const LIST_STATUS_PERMITIDO_LANCE = [
-        self::STATUS_ABERTO_PARA_LANCES,
-        self::STATUS_EM_PREGAO,
-    ];
-
-    const LIST_STATUS_VENDA = [
-        self::STATUS_CONDICIONAL,
-        self::STATUS_VENDIDO,
-    ];
-
-    const LIST_STATUS_PERMITIDO_ARREMATE = [
-        self::STATUS_HOMOLOGANDO,
-        self::STATUS_VENDIDO,
-        self::STATUS_CONDICIONAL,
-        self::STATUS_BAIXA_OFERTA,
-        self::STATUS_RETIRADO,
-        self::STATUS_CANCELADO,
-    ];
-
-    public static $statusTitles = array(
-        self::STATUS_RASCUNHO => 'Rascunho',
-        self::STATUS_ABERTO_PARA_LANCES => 'Aberto para Lances',
-        self::STATUS_EM_PREGAO => 'Em leilão',
-        self::STATUS_HOMOLOGANDO => 'Homologando',
-        self::STATUS_VENDIDO => 'Vendido',
-        self::STATUS_CONDICIONAL => 'Condicional',
-        self::STATUS_SEM_LICITANTES => 'Sem Licitantes',
-        self::STATUS_BAIXA_OFERTA => 'Baixa Oferta',
-        self::STATUS_RETIRADO => 'Retirado',
-        self::STATUS_CANCELADO => 'Cancelado',
-    );
-
-    public function getStatusMessage($code = null)
-    {
-        if ($code === null) {
-            $code = $this->status;
-        }
-        $message = isset(self::$statusTitles[$code])
-            ? self::$statusTitles[$code]
-            : 'Unknown status code :(';
-        return $message;
-    }
-
-    public function permitidoLance()
-    {
-        return in_array($this->status, self::LIST_STATUS_PERMITIDO_LANCE);
-    }
 
     /**
      * @ORM\Id()
@@ -88,6 +43,11 @@ class Lote extends ApiSync
      * @ORM\Column(type="smallint", nullable=true)
      */
     private $numero;
+
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $numeroRotulo;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -160,9 +120,29 @@ class Lote extends ApiSync
     private $ultimoLance = [];
 
     /**
+     * @ORM\Column(type="array", nullable=true)
+     */
+    private $acessorios = [];
+
+    /**
      * @ORM\Column(type="smallint")
      */
     private $status;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $statusString;
+
+    /**
+     * @ORM\Column(type="string", length=10, nullable=true)
+     */
+    private $statusCor;
+
+    /**
+     * @ORM\Column(type="boolean", options={"default": 1})
+     */
+    private $permitirLance = true;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
@@ -285,7 +265,7 @@ class Lote extends ApiSync
     private $exequente;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="text", nullable=true)
      */
     private $formasPagamento;
 
@@ -345,6 +325,16 @@ class Lote extends ApiSync
     private $textoTaxas;
 
     /**
+     * @ORM\Column(type="integer", options={"default": 0})
+     */
+    private $visitas = 0;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $ocupado;
+
+    /**
      * @ORM\OneToMany(targetEntity="SL\WebsiteBundle\Entity\Lance", mappedBy="lote", orphanRemoval=true, cascade={"persist", "remove"})
      * @ORM\OrderBy({"valor" = "DESC", "data" = "ASC"})
      */
@@ -352,7 +342,7 @@ class Lote extends ApiSync
 
     /**
      * @ORM\ManyToOne(targetEntity="SL\WebsiteBundle\Entity\Leilao", inversedBy="lotes")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
      */
     private $leilao;
 
@@ -392,7 +382,7 @@ class Lote extends ApiSync
 
     public function getDescricao(): ?string
     {
-        return $this->descricao;
+        return $this->o;
     }
 
     public function setDescricao(?string $descricao): self
@@ -786,7 +776,7 @@ class Lote extends ApiSync
     /**
      * @param Leilao $leilao
      */
-    public function setLeilao(Leilao $leilao): void
+    public function setLeilao(?Leilao $leilao): void
     {
         $this->leilao = $leilao;
     }
@@ -1213,8 +1203,116 @@ class Lote extends ApiSync
         $this->camposExtras = $camposExtras;
     }
 
-    public function isRetirado () {
-        return $this->getStatus() === self::STATUS_RETIRADO || $this->getStatus() === self::STATUS_CANCELADO;
+    /**
+     * @return mixed
+     */
+    public function getNumeroRotulo()
+    {
+        return $this->numeroRotulo;
+    }
+
+    /**
+     * @param mixed $numeroRotulo
+     */
+    public function setNumeroRotulo($numeroRotulo): void
+    {
+        $this->numeroRotulo = $numeroRotulo;
+    }
+
+    /**
+     * @return array
+     */
+    public function getAcessorios(): array
+    {
+        return $this->acessorios;
+    }
+
+    /**
+     * @param array $acessorios
+     */
+    public function setAcessorios(array $acessorios): void
+    {
+        $this->acessorios = $acessorios;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getStatusString()
+    {
+        return $this->statusString;
+    }
+
+    /**
+     * @param mixed $statusString
+     */
+    public function setStatusString($statusString): void
+    {
+        $this->statusString = $statusString;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getStatusCor()
+    {
+        return $this->statusCor;
+    }
+
+    /**
+     * @param mixed $statusCor
+     */
+    public function setStatusCor($statusCor): void
+    {
+        $this->statusCor = $statusCor;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isPermitirLance(): bool
+    {
+        return $this->permitirLance;
+    }
+
+    /**
+     * @param bool $permitirLance
+     */
+    public function setPermitirLance(bool $permitirLance): void
+    {
+        $this->permitirLance = $permitirLance;
+    }
+
+    /**
+     * @return int
+     */
+    public function getVisitas(): int
+    {
+        return $this->visitas;
+    }
+
+    /**
+     * @param int $visitas
+     */
+    public function setVisitas(int $visitas): void
+    {
+        $this->visitas = $visitas;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function isOcupado(): ?bool
+    {
+        return $this->ocupado;
+    }
+
+    /**
+     * @param mixed $ocupado
+     */
+    public function setOcupado($ocupado): void
+    {
+        $this->ocupado = $ocupado;
     }
 
     public function getDadosParaJsonSite()

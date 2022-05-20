@@ -8,7 +8,11 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Table(indexes={@ORM\Index(name="aid", columns={"aid"}), @ORM\Index(name="status", columns={"status"}), @ORM\Index(name="tipo", columns={"tipo"}), @ORM\Index(name="judicial", columns={"judicial"})})
+ * @ORM\Table(indexes={
+ *     @ORM\Index(name="status", columns={"status"}),
+ *     @ORM\Index(name="tipo", columns={"tipo"}),
+ *     @ORM\Index(name="judicial", columns={"judicial"})
+ * })
  * @ORM\Entity(repositoryClass=LeilaoRepository::class)
  */
 class Leilao extends ApiSync
@@ -18,54 +22,10 @@ class Leilao extends ApiSync
     const LEILAO_PRESENCIAL = 2;
     const LEILAO_ONLINE_PRESENCIAL = 3;
 
-    const STATUS_RASCUNHO = 0;
-    const STATUS_EM_BREVE = 1;
-    const STATUS_EM_LOTEAMENTO = 2;
-    const STATUS_ABERTO_PARA_LANCES = 3;
-    const STATUS_EM_LEILAO = 4;
-    const STATUS_CANCELADO = 96;
-    const STATUS_ADIADO = 97;
-    const STATUS_SUSPENSO = 98;
-    const STATUS_ENCERRADO = 99;
+    const STATUS_TIPO_ABERTO = 1;
+    const STATUS_TIPO_EM_LEILAO = 2;
+    const STATUS_TIPO_ENCERRADO = 100;
 
-    const STATUS_INTERNO_EM_PREPARACAO = 0;
-    const STATUS_INTERNO_PREPARADO = 1;
-    const STATUS_INTERNO_EM_LEILAO = 2;
-    const STATUS_INTERNO_EM_RECEBIMENTO = 3;
-    const STATUS_INTERNO_ENCERRADO = 100;
-
-    const LIST_STATUS_PERMITIDO_LANCE = [3, 4];
-
-    public static $statusTitles = array(
-        self::STATUS_RASCUNHO => 'Rascunho',
-        self::STATUS_EM_BREVE => 'Em breve',
-        self::STATUS_EM_LOTEAMENTO => 'Em loteamento',
-        self::STATUS_ABERTO_PARA_LANCES => 'Aberto para lances',
-        self::STATUS_EM_LEILAO => 'Em leilão',
-        self::STATUS_CANCELADO => 'Cancelado',
-        self::STATUS_ADIADO => 'Adiado',
-        self::STATUS_SUSPENSO => 'Suspenso',
-        self::STATUS_ENCERRADO => 'Encerrado'
-    );
-
-    public static $statusInternoTitles = array(
-        self::STATUS_INTERNO_EM_PREPARACAO => 'Em preparação',
-        self::STATUS_INTERNO_PREPARADO => 'Preparado',
-        self::STATUS_INTERNO_EM_LEILAO => 'Em leilão',
-        self::STATUS_INTERNO_EM_RECEBIMENTO => 'Em recebimento',
-        self::STATUS_INTERNO_ENCERRADO => 'Fechado',
-    );
-
-    public function getStatusMessage($code = null)
-    {
-        if ($code === null) {
-            $code = $this->status;
-        }
-        $message = isset(self::$statusTitles[$code])
-            ? self::$statusTitles[$code]
-            : 'Unknown status code :(';
-        return $message;
-    }
 
     public function getTipoString()
     {
@@ -78,11 +38,6 @@ class Leilao extends ApiSync
             return 'Online e Presencial';
         }
         return '?';
-    }
-
-    public function getJudicialString()
-    {
-        return $this->judicial ? 'Judicial' : 'Extrajudicial';
     }
 
     /**
@@ -113,26 +68,6 @@ class Leilao extends ApiSync
     private $tipo;
 
     /**
-     * @ORM\Column(type="datetime", nullable=true)
-     */
-    private $dataPraca1;
-
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     */
-    private $dataFimPraca1;
-
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     */
-    private $dataPraca2;
-
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     */
-    private $dataFimPraca2;
-
-    /**
      * // Atualizado automaticamente para ordenação das datas
      * @ORM\Column(type="datetime", nullable=true)
      */
@@ -154,14 +89,19 @@ class Leilao extends ApiSync
     private $status;
 
     /**
-     * @ORM\Column(type="smallint", nullable=true)
+     * @ORM\Column(type="string", length=255)
      */
-    private $praca = 1;
+    private $statusString;
 
     /**
-     * @ORM\Column(type="smallint", nullable=true, options={"default": 1})
+     * @ORM\Column(type="string", length=10, nullable=true)
      */
-    private $instancia = 1;
+    private $statusCor;
+
+    /**
+     * @ORM\Column(type="smallint", options={"default": 1})
+     */
+    private $statusTipo = self::STATUS_TIPO_ABERTO;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -224,11 +164,6 @@ class Leilao extends ApiSync
     private $extra;
 
     /**
-     * @ORM\Column(type="boolean")
-     */
-    private $deleted = false;
-
-    /**
      * @ORM\Column(type="boolean", nullable=true)
      */
     private $destaque = false;
@@ -261,17 +196,28 @@ class Leilao extends ApiSync
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
+    private $cidade;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $uf;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
     private $enderecoReferencia;
+
+
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $editalHtml;
 
     /**
      * @ORM\Column(type="string", length=50, nullable=true, options={"default": "America/Sao_Paulo"})
      */
     private $timezone = 'America/Sao_Paulo';
-
-    /**
-     * @ORM\Column(type="boolean", nullable=true)
-     */
-    private $vendaDireta;
 
     /**
      * 0 = Desativar, 1 = Permitir e obrigatório, 2 = Permitir e não obrigatório
@@ -316,7 +262,7 @@ class Leilao extends ApiSync
     private $textoPropostas;
 
     /**
-     * @ORM\OneToMany(targetEntity="SL\WebsiteBundle\Entity\Lote", mappedBy="leilao", orphanRemoval=true, cascade={"persist", "remove"})
+     * @ORM\OneToMany(targetEntity="SL\WebsiteBundle\Entity\Lote", mappedBy="leilao", cascade={"persist"})
      * @ORM\OrderBy({"numero" = "ASC", "id" = "ASC"})
      */
     private $lotes;
@@ -379,107 +325,14 @@ class Leilao extends ApiSync
         return $this;
     }
 
-    public function getDataPraca1(): ?\DateTimeInterface
-    {
-        return $this->dataPraca1;
-    }
-
-    public function setDataPraca1(?\DateTimeInterface $dataPraca1): self
-    {
-        $this->dataPraca1 = $dataPraca1;
-
-        return $this;
-    }
-
-    public function getDataPraca2(): ?\DateTimeInterface
-    {
-        return $this->dataPraca2;
-    }
-
-    public function setDataPraca2(?\DateTimeInterface $dataPraca2): self
-    {
-        $this->dataPraca2 = $dataPraca2;
-
-        return $this;
-    }
-
-    public function getDataAbertura(): ?\DateTimeInterface
-    {
-        if ($this->praca === 2) {
-            return $this->getDataPraca2();
-        }
-        return $this->getDataPraca1();
-    }
-
-    public function getDataEncerramento(): ?\DateTimeInterface
-    {
-        if ($this->praca === 2) {
-            return $this->getDataFimPraca2();
-        }
-        return $this->getDataFimPraca1();
-    }
-
-    public function getDataAberturaOuEncerramento(): ?\DateTimeInterface
-    {
-        $now = new \DateTime();
-        if ($this->praca === 2) {
-            if ($this->getDataFimPraca2()) {
-                if ($this->getDataPraca2() < $now) {
-                    return $this->getDataFimPraca2();
-                }
-            }
-            return $this->getDataPraca2();
-        }
-        if ($this->getDataFimPraca1()) {
-            if ($this->getDataPraca1() < $now) {
-                return $this->getDataFimPraca1();
-            }
-        }
-        return $this->getDataPraca1();
-    }
-
     public function getJudicial(): ?bool
     {
         return $this->judicial;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getDataFimPraca1()
+    public function setJudicial($j)
     {
-        return $this->dataFimPraca1;
-    }
-
-    /**
-     * @param mixed $dataFimPraca1
-     */
-    public function setDataFimPraca1($dataFimPraca1): void
-    {
-        $this->dataFimPraca1 = $dataFimPraca1;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getDataFimPraca2()
-    {
-        return $this->dataFimPraca2;
-    }
-
-    /**
-     * @param mixed $dataFimPraca2
-     */
-    public function setDataFimPraca2($dataFimPraca2): void
-    {
-        $this->dataFimPraca2 = $dataFimPraca2;
-    }
-
-    public function setJudicial(?bool $judicial): self
-    {
-        $this->judicial = $judicial;
-
-        return $this;
+        return $this->judicial = $j;
     }
 
     public function getTotalLotes(): ?int
@@ -680,7 +533,7 @@ class Leilao extends ApiSync
 
     public function isEncerrado()
     {
-        return (!$this->getDataPraca2() && $this->status > self::STATUS_EM_LEILAO) || ($this->getDataPraca2() && $this->status > self::STATUS_EM_LEILAO && $this->praca === 2);
+        return $this->statusTipo === self::STATUS_TIPO_ENCERRADO;
     }
 
     /**
@@ -717,22 +570,6 @@ class Leilao extends ApiSync
         }
 
         return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isDeleted(): bool
-    {
-        return $this->deleted;
-    }
-
-    /**
-     * @param bool $deleted
-     */
-    public function setDeleted(bool $deleted): void
-    {
-        $this->deleted = $deleted;
     }
 
     /**
@@ -815,7 +652,7 @@ class Leilao extends ApiSync
 
     public function emLeilao()
     {
-        return $this->status === self::STATUS_EM_LEILAO;
+        return $this->status === self::STATUS_TIPO_EM_LEILAO;
     }
 
     /**
@@ -1090,6 +927,102 @@ class Leilao extends ApiSync
         $this->dataProximoLeilao = $dataProximoLeilao;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getStatusString()
+    {
+        return $this->statusString;
+    }
+
+    /**
+     * @param mixed $statusString
+     */
+    public function setStatusString($statusString): void
+    {
+        $this->statusString = $statusString;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getStatusCor()
+    {
+        return $this->statusCor;
+    }
+
+    /**
+     * @param mixed $statusCor
+     */
+    public function setStatusCor($statusCor): void
+    {
+        $this->statusCor = $statusCor;
+    }
+
+    /**
+     * @return int
+     */
+    public function getStatusTipo(): int
+    {
+        return $this->statusTipo;
+    }
+
+    /**
+     * @param int $statusTipo
+     */
+    public function setStatusTipo(int $statusTipo): void
+    {
+        $this->statusTipo = $statusTipo;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCidade()
+    {
+        return $this->cidade;
+    }
+
+    /**
+     * @param mixed $cidade
+     */
+    public function setCidade($cidade): void
+    {
+        $this->cidade = $cidade;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUf()
+    {
+        return $this->uf;
+    }
+
+    /**
+     * @param mixed $uf
+     */
+    public function setUf($uf): void
+    {
+        $this->uf = $uf;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getEditalHtml()
+    {
+        return $this->editalHtml;
+    }
+
+    /**
+     * @param mixed $editalHtml
+     */
+    public function setEditalHtml($editalHtml): void
+    {
+        $this->editalHtml = $editalHtml;
+    }
+
     public function __serialize(): array
     {
         return [
@@ -1098,10 +1031,7 @@ class Leilao extends ApiSync
             'titulo' => $this->titulo,
             'descricao' => $this->descricao,
             'tipo' => $this->tipo,
-            'dataPraca1' => $this->dataPraca1,
-            'dataFimPraca1' => $this->dataFimPraca1,
-            'dataPraca2' => $this->dataPraca2,
-            'dataFimPraca2' => $this->dataFimPraca2,
+            'dataProximoLeilao' => $this->dataProximoLeilao,
             'judicial' => $this->judicial,
             'totalLotes' => $this->totalLotes,
             'status' => $this->status,
