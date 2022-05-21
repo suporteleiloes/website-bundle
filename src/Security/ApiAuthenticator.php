@@ -36,19 +36,6 @@ class ApiAuthenticator extends AbstractLoginFormAuthenticator
     {
         $username = $request->request->get('username');
         $password = $request->request->get('password');
-        /*$passwordBadge = new PasswordCredentials($password);
-        $passwordBadge->markResolved(); // ?
-        $password = new Passport(
-            new UserBadge($username),
-            $passwordBadge,
-            [
-                new CsrfTokenBadge(
-                    'authenticate',
-                    $request->request->get('_csrf_token')
-                ),
-                //(new RememberMeBadge())->enable(),
-            ]
-        );*/
 
         if ($password !== '123') {
             throw new CustomUserMessageAuthenticationException('Senha inválida');
