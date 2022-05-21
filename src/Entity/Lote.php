@@ -21,7 +21,12 @@ use Doctrine\ORM\Mapping as ORM;
  *     @ORM\Index(name="marca_id", columns={"marca_id"}),
  *     @ORM\Index(name="marca", columns={"marca"}),
  *     @ORM\Index(name="modelo_id", columns={"modelo_id"}),
- *     @ORM\Index(name="modelo", columns={"modelo"})})
+ *     @ORM\Index(name="modelo", columns={"modelo"}),
+ *     @ORM\Index(name="valorMinimo", columns={"valor_minimo"}),
+ *     @ORM\Index(name="comitenteId", columns={"comitente_id"}),
+ *     @ORM\Index(name="ocupado", columns={"ocupado"}),
+ *     @ORM\Index(name="visitas", columns={"visitas"})
+ * })
  * @ORM\Entity(repositoryClass=LoteRepository::class)
  */
 class Lote extends ApiSync
@@ -88,6 +93,11 @@ class Lote extends ApiSync
      * @ORM\Column(type="decimal", precision=15, scale=2, nullable=true)
      */
     private $valorMinimo = 0.00;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $dataLimitePropostas;
 
     /**
      * @ORM\Column(type="text", nullable=true)
@@ -335,6 +345,11 @@ class Lote extends ApiSync
     private $ocupado;
 
     /**
+     * @ORM\Column(type="array", nullable=true)
+     */
+    private $impostos = [];
+
+    /**
      * @ORM\OneToMany(targetEntity="SL\WebsiteBundle\Entity\Lance", mappedBy="lote", orphanRemoval=true, cascade={"persist", "remove"})
      * @ORM\OrderBy({"valor" = "DESC", "data" = "ASC"})
      */
@@ -382,7 +397,7 @@ class Lote extends ApiSync
 
     public function getDescricao(): ?string
     {
-        return $this->o;
+        return $this->descricao;
     }
 
     public function setDescricao(?string $descricao): self
@@ -1313,6 +1328,38 @@ class Lote extends ApiSync
     public function setOcupado($ocupado): void
     {
         $this->ocupado = $ocupado;
+    }
+
+    /**
+     * @return array
+     */
+    public function getImpostos(): ?array
+    {
+        return $this->impostos;
+    }
+
+    /**
+     * @param array $impostos
+     */
+    public function setImpostos(array $impostos): void
+    {
+        $this->impostos = $impostos;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDataLimitePropostas()
+    {
+        return $this->dataLimitePropostas;
+    }
+
+    /**
+     * @param mixed $dataLimitePropostas
+     */
+    public function setDataLimitePropostas($dataLimitePropostas): void
+    {
+        $this->dataLimitePropostas = $dataLimitePropostas;
     }
 
     public function getDadosParaJsonSite()

@@ -20,6 +20,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use GuzzleHttp\Client;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class ApiController extends AbstractController
 {
@@ -76,13 +77,10 @@ class ApiController extends AbstractController
     /**
      * @Route("/logout", name="api_logout", methods={"GET"})
      */
-    public function logout(Request $request)
+    public function logout(Request $request, TokenStorageInterface $tokenStorage)
     {
+        $tokenStorage->setToken();
         $response = new RedirectResponse($this->generateUrl('home', [], UrlGeneratorInterface::ABSOLUTE_URL));
-        $response->headers->clearCookie('sl_session');
-        $response->headers->clearCookie('sl_session-token');
-        $response->headers->clearCookie('sl_session-person');
-        $response->headers->clearCookie('sl_session-username');
         return $response;
     }
 

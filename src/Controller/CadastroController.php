@@ -5,6 +5,7 @@ namespace SL\WebsiteBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 /**
  * CadastroController.
@@ -34,24 +35,18 @@ class CadastroController extends AbstractController
     }
 
     /**
-     * @Route("/login", name="login", methods={"GET"})
+     * @Route("/login", name="login", methods={"GET", "POST"})
      *
      * @param Request $request
      * @return mixed
      */
-    public function login(Request $request)
+    public function login(AuthenticationUtils $authenticationUtils, Request $request)
     {
 
-        $tipo = $_SERVER['TIPO_LOGIN'];
-
-        if ($tipo === 'EXTERNO') {
-            return $this->render('paginas/login.externo.html.twig', array(
-                'tipo' => $tipo
-            ));
-        }
-        return $this->render('paginas/login.html.twig', array(
-            'tipo' => $tipo
-        ));
+        return $this->render('@SLWebsite/login/login.html.twig', [
+            'error' => $authenticationUtils->getLastAuthenticationError(),
+            'last_username' => $authenticationUtils->getLastUsername(),
+        ]);
     }
 
     /**

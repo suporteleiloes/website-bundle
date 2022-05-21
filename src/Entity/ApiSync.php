@@ -6,7 +6,11 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\MappedSuperclass()
- * * @ORM\Table(indexes={@ORM\Index(name="aid", columns={"aid"}), @ORM\Index(name="active", columns={"active"})})
+ * * @ORM\Table(indexes={
+ *     @ORM\Index(name="aid", columns={"aid"}),
+ *     @ORM\Index(name="active", columns={"active"}),
+ *     @ORM\Index(name="deleted", columns={"deleted"})
+ * })
  */
 class ApiSync
 {
