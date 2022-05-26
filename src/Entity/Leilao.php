@@ -273,11 +273,18 @@ class Leilao extends ApiSync
     private $cache;
 
     /**
+     * @ORM\OneToMany(targetEntity="SL\WebsiteBundle\Entity\LeilaoData", mappedBy="leilao", cascade={"persist"})
+     * @ORM\OrderBy({"data" = "ASC"})
+     */
+    private $datas;
+
+    /**
      * Leilao constructor.
      */
     public function __construct()
     {
         $this->lotes = new ArrayCollection();
+        $this->datas = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -1021,6 +1028,22 @@ class Leilao extends ApiSync
     public function setEditalHtml($editalHtml): void
     {
         $this->editalHtml = $editalHtml;
+    }
+
+    /**
+     * @return ArrayCollection|LeilaoData
+     */
+    public function getDatas()
+    {
+        return $this->datas;
+    }
+
+    /**
+     * @param ArrayCollection $datas
+     */
+    public function addData(LeilaoData $data)
+    {
+        $this->datas[] = $data;
     }
 
     public function __serialize(): array

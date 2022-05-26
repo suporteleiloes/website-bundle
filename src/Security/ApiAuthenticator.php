@@ -2,6 +2,7 @@
 
 namespace SL\WebsiteBundle\Security;
 
+use SL\WebsiteBundle\Services\ApiService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -10,6 +11,7 @@ use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
+use Symfony\Component\Security\Core\User\InMemoryUser;
 use Symfony\Component\Security\Http\Authenticator\AbstractAuthenticator;
 use Symfony\Component\Security\Http\Authenticator\AbstractLoginFormAuthenticator;
 use Symfony\Component\Security\Http\Authenticator\AuthenticatorInterface;
@@ -27,9 +29,12 @@ class ApiAuthenticator extends AbstractLoginFormAuthenticator
     use TargetPathTrait;
 
     private $router;
-    public function __construct(RouterInterface $router)
+    private $apiService;
+
+    public function __construct(RouterInterface $router, ApiService $apiService)
     {
         $this->router = $router;
+        $this->apiService = $apiService;
     }
 
     public function authenticate(Request $request): Passport
@@ -37,11 +42,18 @@ class ApiAuthenticator extends AbstractLoginFormAuthenticator
         $username = $request->request->get('username');
         $password = $request->request->get('password');
 
-        if ($password !== '123') {
-            throw new CustomUserMessageAuthenticationException('Senha inválida');
+        try {
+            $userData = $this->apiService->requestToken($username, $password);
+        } catch (\Throwable $exception) {
+            throw new CustomUserMessageAuthenticationException($exception->getMessage());
         }
+
+        dump($userData);
+
         $passport = new SelfValidatingPassport(
-            new UserBadge($username),
+            new UserBadge($username, function ($userIdentifier) use ($userData) {
+                return new InMemoryUser($userIdentifier, null, $userData['user']['roles'], true, true, true, true, $userData);
+            }),
             [
                 new CsrfTokenBadge(
                     'authenticate',

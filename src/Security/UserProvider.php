@@ -24,6 +24,7 @@ class UserProvider implements UserProviderInterface, PasswordUpgraderInterface
      */
     public function loadUserByIdentifier(string $identifier): UserInterface
     {
+        dump($identifier); exit;
         // Load a User object from your data source or throw UserNotFoundException.
         // The $identifier argument is whatever value is being returned by the
         // getUserIdentifier() method in your User class.
@@ -50,7 +51,9 @@ class UserProvider implements UserProviderInterface, PasswordUpgraderInterface
             throw new UnsupportedUserException(sprintf('Invalid user class "%s".', get_class($user)));
         }
 
-        return new InMemoryUser($user->getUserIdentifier(), $user->getPassword(), array('ROLE_ADMIN', 'ROLE_USER'));
+        // @TODO: Check if JWT Token is expired...
+
+        return $user;
         // Return a User object after making sure its data is "fresh".
         // Or throw a UserNotFoundException if the user no longer exists.
         // throw new \Exception('TODO: fill in refreshUser() inside '.__FILE__);

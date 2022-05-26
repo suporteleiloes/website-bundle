@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Table(indexes={
+ *     @ORM\Index(name="bem_id", columns={"bem_id"}),
  *     @ORM\Index(name="aid", columns={"aid"}),
  *     @ORM\Index(name="status", columns={"status"}),
  *     @ORM\Index(name="numero", columns={"numero"}),
@@ -38,6 +39,11 @@ class Lote extends ApiSync
      * @ORM\Column(type="integer")
      */
     private $id;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $bemId;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -73,6 +79,11 @@ class Lote extends ApiSync
      * @ORM\Column(type="decimal", precision=15, scale=2, nullable=true)
      */
     private $valorInicial2;
+
+    /**
+     * @ORM\Column(type="decimal", precision=15, scale=2, nullable=true)
+     */
+    private $valorInicial3;
 
     /**
      * @ORM\Column(type="decimal", precision=15, scale=2, nullable=true)
@@ -407,26 +418,38 @@ class Lote extends ApiSync
         return $this;
     }
 
-    public function getValorInicial(): ?string
+    public function getValorInicial(): ?float
     {
         return $this->valorInicial;
     }
 
-    public function setValorInicial(?string $valorInicial): self
+    public function setValorInicial(?float $valor): self
     {
-        $this->valorInicial = $valorInicial;
+        $this->valorInicial = $valor;
 
         return $this;
     }
 
-    public function getValorInicial2(): ?string
+    public function getValorInicial2(): ?float
     {
         return $this->valorInicial2;
     }
 
-    public function setValorInicial2(?string $valorInicial2): self
+    public function setValorInicial2(?float $valor): self
     {
-        $this->valorInicial2 = $valorInicial2;
+        $this->valorInicial2 = $valor;
+
+        return $this;
+    }
+
+    public function getValorInicial3(): ?float
+    {
+        return $this->valorInicial3;
+    }
+
+    public function setValorInicial3(?float $valor): self
+    {
+        $this->valorInicial3 = $valor;
 
         return $this;
     }
@@ -1362,10 +1385,27 @@ class Lote extends ApiSync
         $this->dataLimitePropostas = $dataLimitePropostas;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getBemId()
+    {
+        return $this->bemId;
+    }
+
+    /**
+     * @param mixed $bemId
+     */
+    public function setBemId($bemId): void
+    {
+        $this->bemId = $bemId;
+    }
+
     public function getDadosParaJsonSite()
     {
         return [
             "id" => $this->getId(),
+            "bemId" => $this->getId(),
             "numero" => $this->getNumero(),
             "slug" => $this->getSlug(),
             "titulo" => $this->getTitulo(),
@@ -1376,6 +1416,7 @@ class Lote extends ApiSync
             "valorIncremento" => $this->getValorIncremento(),
             "valorInicial" => $this->getValorInicial(),
             "valorInicial2" => $this->getValorInicial2(),
+            "valorInicial3" => $this->getValorInicial3(),
         ];
     }
 
