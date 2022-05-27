@@ -42,11 +42,19 @@ class SincronizaApiCommand extends Command
         try {
             // Limpa o banco de dados atual
             $this->dbService->clearAllTables();
-            $data = $this->apiService->requestAllActiveSiteData();
-            dump(json_decode($data->getBody(), true));
+            $response = $this->apiService->requestAllActiveSiteData();
+            $data = json_decode($response->getBody(), true);
+            if (isset($data['leiloes']) && is_array($data['leiloes']) && count($data['leiloes'])) {
+                $io->note('Sincronizando leilões');
+                foreach ($data['leiloes'] as $leilao) {
+                    $this->apiService->processLeilao($leilao);
+                }
+                $io->note('Leilões sincronizados. Total: ' . count($data['leiloes']));
+            }
             // Carrega os leilões e bens ativos
-        } catch (\Exception $e){
-            $io->error($e->getMessage());
+        } catch (\Throwable $e){
+            dump($e->getMessage());
+            $io->error(sprintf('%s (file %s line %s)', $e->getMessage(), $e->getFile(), $e->getLine()));
         }
 
         $io->writeln('');

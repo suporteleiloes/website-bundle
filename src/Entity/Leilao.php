@@ -53,6 +53,39 @@ class Leilao extends ApiSync
     private $slug;
 
     /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $data1;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $data2;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $data3;
+
+    /**
+     * Data que o leilão estará aberto para lances
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $dataAbertura1;
+
+    /**
+     * Data que o segundo leilão estará aberto para lances
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $dataAbertura2;
+
+    /**
+     * Data que o terceiro leilão estará aberto para lances
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $dataAbertura3;
+
+    /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $titulo;
@@ -273,12 +306,6 @@ class Leilao extends ApiSync
     private $cache;
 
     /**
-     * @ORM\OneToMany(targetEntity="SL\WebsiteBundle\Entity\LeilaoData", mappedBy="leilao", cascade={"persist"})
-     * @ORM\OrderBy({"data" = "ASC"})
-     */
-    private $datas;
-
-    /**
      * Leilao constructor.
      */
     public function __construct()
@@ -368,7 +395,7 @@ class Leilao extends ApiSync
 
     public function getPraca(): ?int
     {
-        return $this->praca ? $this->praca : 1;
+        return $this->praca ?: 1;
     }
 
     public function setPraca(?int $praca): self
@@ -903,22 +930,6 @@ class Leilao extends ApiSync
     }
 
     /**
-     * @return int
-     */
-    public function getInstancia()
-    {
-        return $this->instancia;
-    }
-
-    /**
-     * @param int $instancia
-     */
-    public function setInstancia($instancia)
-    {
-        $this->instancia = $instancia;
-    }
-
-    /**
      * @return mixed
      */
     public function getDataProximoLeilao()
@@ -1031,19 +1042,99 @@ class Leilao extends ApiSync
     }
 
     /**
-     * @return ArrayCollection|LeilaoData
+     * @return mixed
      */
-    public function getDatas()
+    public function getData1()
     {
-        return $this->datas;
+        return $this->data1;
     }
 
     /**
-     * @param ArrayCollection $datas
+     * @param mixed $data1
      */
-    public function addData(LeilaoData $data)
+    public function setData1($data1): void
     {
-        $this->datas[] = $data;
+        $this->data1 = $data1;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getData2()
+    {
+        return $this->data2;
+    }
+
+    /**
+     * @param mixed $data2
+     */
+    public function setData2($data2): void
+    {
+        $this->data2 = $data2;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getData3()
+    {
+        return $this->data3;
+    }
+
+    /**
+     * @param mixed $data3
+     */
+    public function setData3($data3): void
+    {
+        $this->data3 = $data3;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDataAbertura1()
+    {
+        return $this->dataAbertura1;
+    }
+
+    /**
+     * @param mixed $dataAbertura1
+     */
+    public function setDataAbertura1($dataAbertura1): void
+    {
+        $this->dataAbertura1 = $dataAbertura1;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDataAbertura2()
+    {
+        return $this->dataAbertura2;
+    }
+
+    /**
+     * @param mixed $dataAbertura2
+     */
+    public function setDataAbertura2($dataAbertura2): void
+    {
+        $this->dataAbertura2 = $dataAbertura2;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDataAbertura3()
+    {
+        return $this->dataAbertura3;
+    }
+
+    /**
+     * @param mixed $dataAbertura3
+     */
+    public function setDataAbertura3($dataAbertura3): void
+    {
+        $this->dataAbertura3 = $dataAbertura3;
     }
 
     public function __serialize(): array
@@ -1051,6 +1142,12 @@ class Leilao extends ApiSync
         return [
             'id' => $this->id,
             'slug' => $this->slug,
+            'data1',
+            'data2',
+            'data3',
+            'dataAbertura1',
+            'dataAbertura2',
+            'dataAbertura3',
             'titulo' => $this->titulo,
             'descricao' => $this->descricao,
             'tipo' => $this->tipo,

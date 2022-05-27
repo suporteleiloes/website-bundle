@@ -21,7 +21,8 @@ class LoteTipoCacheRepository extends ServiceEntityRepository
     }
 
     public function flushData(){
-        $this->getEntityManager()->createQueryBuilder()->delete()->from(LoteTipoCache::class, 'cache')->getQuery()->execute();
+
+        $this->getEntityManager()->getConnection()->executeQuery('TRUNCATE TABLE lote_tipo_cache', array(), array());
         return;
     }
 

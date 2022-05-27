@@ -6,6 +6,10 @@ use SL\WebsiteBundle\Repository\LoteTipoCacheRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
+ * @ORM\Table(indexes={
+ *     @ORM\Index(name="tipo_id", columns={"tipo_id"}),
+ *     @ORM\Index(name="tipo_pai_id", columns={"tipo_pai_id"}),
+ * })
  * @ORM\Entity(repositoryClass=LoteTipoCacheRepository::class)
  */
 class LoteTipoCache
@@ -13,6 +17,12 @@ class LoteTipoCache
 
     /**
      * @ORM\Id()
+     * @ORM\GeneratedValue()
+     * @ORM\Column(type="integer")
+     */
+    private $id;
+
+    /**
      * @ORM\Column(type="integer")
      */
     private $tipoId;
@@ -39,7 +49,7 @@ class LoteTipoCache
 
     public function getId(): ?int
     {
-        return $this->tipoId;
+        return $this->id;
     }
 
     public function getTipo(): ?string

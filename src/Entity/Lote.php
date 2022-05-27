@@ -356,9 +356,24 @@ class Lote extends ApiSync
     private $ocupado;
 
     /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $vendaDireta;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $publicado;
+
+    /**
      * @ORM\Column(type="array", nullable=true)
      */
     private $impostos = [];
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $tour360;
 
     /**
      * @ORM\OneToMany(targetEntity="SL\WebsiteBundle\Entity\Lance", mappedBy="lote", orphanRemoval=true, cascade={"persist", "remove"})
@@ -1399,6 +1414,54 @@ class Lote extends ApiSync
     public function setBemId($bemId): void
     {
         $this->bemId = $bemId;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getVendaDireta()
+    {
+        return $this->vendaDireta;
+    }
+
+    /**
+     * @param mixed $vendaDireta
+     */
+    public function setVendaDireta($vendaDireta): void
+    {
+        $this->vendaDireta = $vendaDireta;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPublicado()
+    {
+        return $this->publicado;
+    }
+
+    /**
+     * @param mixed $publicado
+     */
+    public function setPublicado($publicado): void
+    {
+        $this->publicado = $publicado;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTour360()
+    {
+        return $this->tour360;
+    }
+
+    /**
+     * @param mixed $tour360
+     */
+    public function setTour360($tour360): void
+    {
+        $this->tour360 = $tour360;
     }
 
     public function getDadosParaJsonSite()

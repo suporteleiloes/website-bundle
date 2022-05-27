@@ -10,6 +10,7 @@ use SL\WebsiteBundle\Entity\LeilaoCache;
 use SL\WebsiteBundle\Entity\Lote;
 use SL\WebsiteBundle\Entity\LoteTipoCache;
 use SL\WebsiteBundle\Entity\Post;
+use SL\WebsiteBundle\Services\ApiService;
 use SL\WebsiteBundle\Services\DatabaseOperationsService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Cookie;
@@ -88,7 +89,7 @@ class ApiController extends AbstractController
      * @Route("/webhooks", name="api", methods={"POST"})
      * TODO: URGENTE! Implementar token
      */
-    public function webhookCapture(Request $request)
+    public function webhookCapture(Request $request, ApiService $apiService)
     {
         $data = \json_decode($request->getContent(), true);
         if ($data === null) {
@@ -98,7 +99,7 @@ class ApiController extends AbstractController
         try {
             // dump($data);
             $this->validateToken($request->headers->get('Token'));
-            $this->proccessHookData($data);
+            $this->proccessHookData($data, $apiService);
             return $this->json(['status' => 'OK'], 200);
         } catch (\Exception $e) {
             return $this->json(['status' => 'KO', 'error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
@@ -127,7 +128,7 @@ class ApiController extends AbstractController
      * @param array $hook
      * @throws \Exception
      */
-    private function proccessHookData(array $hook)
+    private function proccessHookData(array $hook, $apiService)
     {
         if (!isset($hook['entity']) || !isset($hook['entityId']) || !isset($hook['data'])) {
             throw new \Exception('Para processar os dados do webhook é necessário passar os valores de `entity`, `entityId` e `data` com os dados.');
@@ -135,400 +136,26 @@ class ApiController extends AbstractController
 
         switch ($hook['entity']) {
             case "leilao":
-                $this->processLeilao($hook);
+                $apiService->processLeilao($hook);
                 break;
             case "lote":
-                $this->processLote($hook);
+                $apiService->processLote($hook);
                 break;
             case "lance":
-                $this->processLance($hook);
+                $apiService->processLance($hook);
                 break;
             case "content":
-                $this->processContent($hook);
+                $apiService->processContent($hook);
                 break;
             case "banner":
-                $this->processBanner($hook);
+                $apiService->processBanner($hook);
                 break;
             case "post":
-                $this->processPost($hook);
+                $apiService->processPost($hook);
                 break;
             default:
                 throw new \Exception('Tipo de dados a ser processado não é compatível com este website');
         }
-    }
-
-    private function processLeilao($data)
-    {
-        $entityId = $data['entityId'];
-        // Verifica se já existe o leilao. Se não existir, cria um.
-        $em = $this->getDoctrine()->getManager();
-        $leilao = $em->getRepository(Leilao::class)->findOneByAid($entityId);
-        if (!$leilao) {
-            if (@$data['data']['deleted']) {
-                return;
-            }
-            $leilao = new Leilao();
-        }
-
-        $data = $data['data'];
-
-        $leilao->setAid($entityId);
-        $is_true = function ($val, $return_null = false) {
-            $boolval = (is_string($val) ? filter_var($val, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) : (bool)$val);
-            return ($boolval === null && !$return_null ? false : $boolval);
-        };
-        if ($leilao->getId()) {
-            if ($data['deleted'] || !$is_true($data['publicarSite'])) {
-                dump('Excluir');
-                $em->remove($leilao);
-                $em->flush();
-                return;
-            }
-            $leilao->setAlastUpdate(new \DateTime());
-        } else {
-            $leilao->setAcreatedAt(new \DateTime());
-        }
-
-        $praca = isset($data['praca']) ? intval($data['praca']) : 1;
-        $dataPraca1 = \DateTime::createFromFormat('Y-m-d H:i:s+', $data['dataAbertura']['date']);
-        $dataPraca2 = isset($data['dataAberturaPraca2']) ? \DateTime::createFromFormat('Y-m-d H:i:s+', $data['dataAberturaPraca2']['date']) : null;
-        $dataFimPraca1 = isset($data['dataFimPraca1']) ? \DateTime::createFromFormat('Y-m-d H:i:s+', $data['dataFimPraca1']['date']) : null;
-        $dataFimPraca2 = isset($data['dataFimPraca2']) ? \DateTime::createFromFormat('Y-m-d H:i:s+', $data['dataFimPraca2']['date']) : null;
-
-        $leilao->setSlug(substr($data['slug'], 0, 254));
-        $leilao->setTitulo($data['titulo']);
-        $leilao->setDescricao(@$data['descricao']);
-        $leilao->setTipo($data['tipo']);
-        $leilao->setDataPraca1($dataPraca1);
-        $leilao->setDataPraca2($dataPraca2);
-        $leilao->setDataFimPraca1($dataFimPraca1);
-        $leilao->setDataFimPraca2($dataFimPraca2);
-
-        if ($praca === 3) {
-            $extra = $leilao->getExtra();
-            $abertura = new \DateTime($extra['terceiraData']);
-            $encerramento = $abertura;
-        } elseif ($praca === 2) {
-            $abertura = $dataPraca2;
-            $encerramento = $dataFimPraca2;
-        } else {
-            $abertura = $dataPraca1;
-            $encerramento = $dataFimPraca1;
-        }
-
-        if ($abertura < (new \DateTime())) {
-            $dataProximoLeilao = $encerramento ?: $abertura;
-        } else {
-            $dataProximoLeilao = $abertura;
-        }
-        $leilao->setDataProximoLeilao($dataProximoLeilao);
-
-        $leilao->setJudicial($data['judicial']);
-        $leilao->setTotalLotes($data['totalLotes']);
-        $leilao->setStatus($data['status']);
-        $leilao->setPraca($praca);
-        $leilao->setInstancia(@$data['instancia']);
-        $leilao->setLeiloeiro($data['leiloeiro']['nome']);
-        ## $leilao->setLeiloeiroLogo($data['leiloeiro']['image']);
-        $leilao->setLocal($data['patio']);
-        ## $leilao->setLocalLat($data['']);
-        ## $leilao->setLocalLng($data['']);
-        ## $leilao->setLocalGoogleMaps($data['']);
-        $leilao->setInfoVisitacao($data['infoVisitacao']);
-        $leilao->setInfoRetirada($data['infoRetirada']);
-        $leilao->setObservacoes($data['observacao']);
-        $leilao->setArquivos($data['documentos']);
-        $leilao->setComitentes($data['comitentes']);
-        $leilao->setExtra($data['extra']);
-        $leilao->setDeleted($data['deleted']);
-        $leilao->setImage($data['image']);
-        $leilao->setDestaque($data['destaque']);
-
-        $leilao->setCep(@$data['cep']);
-        $leilao->setEndereco(@$data['endereco']);
-        $leilao->setEnderecoNumero(@$data['enderecoNumero']);
-        $leilao->setBairro(@$data['bairro']);
-        $leilao->setEnderecoReferencia(@$data['enderecoReferencia']);
-
-        $leilao->setTimezone(@$data['timezone']);
-        $leilao->setVendaDireta(@$data['vendaDireta']);
-        $leilao->setHabilitacao(@$data['habilitacao']);
-
-        $leilao->setPermitirParcelamento(@$data['permitirParcelamento']);
-        $leilao->setParcelamentoQtdParcelas(@$data['parcelamentoQtdParcelas']);
-        $leilao->setParcelamentoIndices(@$data['parcelamentoIndices']);
-        $leilao->setPermitirPropostas(@$data['permitirPropostas']);
-
-        $leilao->setVideo(@$data['video']);
-        $leilao->setRegras(@$data['regras']);
-        $leilao->setTextoPropostas(@$data['textoPropostas']);
-
-        $em->persist($leilao);
-        $em->flush();
-
-        $this->geraCacheLeilao($leilao);
-    }
-
-    private function processLote($data)
-    {
-        $entityId = $data['entityId'];
-        // Verifica se já existe o lote. Se não existir, cria um.
-        $em = $this->getDoctrine()->getManager();
-        $lote = $em->getRepository(Lote::class)->findOneByAid($entityId);
-        if (!$lote) {
-            if (@$data['data']['deleted']) {
-                return;
-            }
-            $lote = new Lote();
-        }
-
-        if ($data['remove']) {
-            $em->remove($lote);
-            $em->flush();
-            return;
-        } else {
-
-            $data = $data['data'];
-
-            $lote->setAid($entityId);
-            if ($lote->getId()) {
-                if ($data['deleted']) {
-                    $em->remove($lote);
-                    $em->flush();
-                    return;
-                }
-                $lote->setAlastUpdate(new \DateTime());
-            } else {
-                $lote->setAcreatedAt(new \DateTime());
-            }
-
-            $lote->setSlug(!empty($data['slug']) ? substr($data['slug'], 0, 254) : 'lote');
-            $lote->setNumero($data['numero']);
-            $lote->setTitulo($data['bem']['siteTitulo']);
-            $lote->setDescricao($data['bem']['siteDescricao']);
-            $lote->setObservacao($data['bem']['siteObservacao']);
-            $lote->setValorInicial($data['valorInicial']);
-            $lote->setValorInicial2($data['valorInicial2']);
-            $lote->setValorIncremento($data['valorIncremento']);
-            $lote->setValorMercado($data['valorMercado']);
-            $lote->setValorMinimo($data['valorMinimo']);
-            $lote->setValorAvaliacao($data['valorAvaliacao']);
-            ## $lote->setInfoVisitacao($data['infoVisitacao']);
-            ## $lote->setInfoImportante($data['infoImportante']);
-            $lote->setDocumentos($data['bem']['arquivos']);
-            $lote->setFoto($data['bem']['image']);
-            ##! $lote->setUltimoLance(@$data['ultimoLance']);
-            $lote->setStatus($data['status']);
-            $lote->setComitenteId($data['bem']['comitente']['id']);
-            $lote->setComitente($data['bem']['comitente']['pessoa']['name']);
-            $lote->setComitenteLogo($data['bem']['comitente']['image']);
-            $lote->setComitenteTipoId(@$data['bem']['comitente']['tipo']['id']);
-            $lote->setComitenteTipo(@$data['bem']['comitente']['tipo']['nome']);
-            ##! $lote->setMostrarComitente($data['bem']['comitente']['mostrarSite']);
-            $lote->setMarcaId(@$data['bem']['marca']['id']);
-            $lote->setMarca(@$data['bem']['marca']['nome']);
-            $lote->setModeloId(@$data['bem']['modelo']['id']);
-            $lote->setModelo(@$data['bem']['modelo']['nome']);
-            $lote->setAno(@$data['bem']['anoModelo']);
-            $lote->setCidade(@$data['bem']['cidade']);
-            $lote->setUf(@$data['bem']['uf']);
-            $lote->setTipoId(@$data['bem']['tipo']['id']);
-            $lote->setTipo(@$data['bem']['tipo']['nome']);
-            $lote->setTipoPaiId(@$data['bem']['tipoPaiId']);
-            $lote->setTipoPai(@$data['bem']['tipoPai']);
-            $lote->setExtra(@$data['bem']['extra']);
-            $lote->setDestaque(@$data['bem']['destaque']); // TODO: Bem ou lote ?
-            $lote->setConservacaoId(@$data['bem']['conservacao']['id']);
-            $lote->setConservacao(@$data['bem']['conservacao']['nome']);
-            $lote->setProcesso(@$data['bem']['processoNumero']);
-            $lote->setExequente(@$data['bem']['processoExequente']);
-            $lote->setExecutado(@$data['bem']['processoExecutado']);
-
-            $lote->setLocalizacaoUrlGoogleMaps(@$data['bem']['localizacaoUrlGoogleMaps']);
-            $lote->setLocalizacaoUrlStreetView(@$data['bem']['localizacaoUrlStreetView']);
-            $lote->setLocalizacaoMapEmbed(@$data['bem']['localizacaoMapEmbed']);
-            $lote->setPermitirParcelamento(@$data['permitirParcelamento']);
-            $lote->setParcelamentoQtdParcelas(@$data['parcelamentoQtdParcelas']);
-            $lote->setParcelamentoIndices(@$data['parcelamentoIndices']);
-            $lote->setPermitirPropostas(@$data['permitirPropostas']);
-            $lote->setVideos(@$data['bem']['videos']);
-            $lote->setCamposExtras(@$data['bem']['camposExtras']);
-            /* @var Leilao $leilao */
-            $leilao = $em->getRepository(Leilao::class)->findOneByAid($data['leilao']['id']);
-            $lote->setLeilao($leilao);
-            $em->persist($lote);
-            $em->flush();
-        }
-
-        $this->geraCacheLeilao($leilao);
-        $this->geraCacheLotes();
-
-        // Atualiza total lotes
-        $leilao->setTotalLotes($leilao->getLotes()->count()); // TODO: Use count query instead this
-    }
-
-    private function processLance($data)
-    {
-        $entityId = $data['entityId'];
-        // Verifica se já existe o lance. Se não existir, cria um.
-        $em = $this->getDoctrine()->getManager();
-
-        $data = $data['data'];
-
-        $lance = $em->getRepository(Lance::class)->findOneByAid($entityId);
-        if (!$lance) {
-            if ($data['deleted']) {
-                return;
-            }
-            $lance = new Lance();
-        }
-
-
-        $lance->setAid($entityId);
-        if ($lance->getId()) {
-            if ($data['deleted']) {
-                $em->remove($lance);
-                $em->flush();
-                return;
-            }
-            $lance->setAlastUpdate(new \DateTime());
-        } else {
-            $lance->setAcreatedAt(new \DateTime());
-        }
-
-        $lance->setData(\DateTime::createFromFormat('Y-m-d H:i:s+', $data['data']['date']));
-        $lance->setApelido(isset($data['autor']) ? $data['autor']['apelido'] : $data['arrematante']['apelido']);
-        $lance->setNome($data['arrematante']['pessoa']['name']);
-        $lance->setCidade(isset($data['autor']) ? $data['autor']['cidade'] : null);
-        $lance->setUf(isset($data['autor']) ? $data['autor']['uf'] : null);
-        $lance->setValor($data['valor']);
-        /* @var Lote $lote */
-        $lote = $em->getRepository(Lote::class)->findOneByAid($data['lote']['id']);
-        if ($lote) {
-            $lance->setLote($lote);
-            $lote->addLance($lance);
-        }
-        $em->persist($lance);
-        $em->flush();
-    }
-
-    public function geraCacheLeilao(Leilao $leilao)
-    {
-        $filtros = $this->getDoctrine()->getRepository(Leilao::class)->filtros($leilao->getId());
-        $cache = $leilao->getCache() ?: new LeilaoCache();
-        $cache->setFiltros($filtros);
-        $cache->setLeilao($leilao);
-        $leilao->setCache($cache);
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($cache);
-        $em->persist($leilao);
-        $em->flush();
-    }
-
-    private function processContent($data)
-    {
-        $entityId = $data['entityId'];
-        $em = $this->getDoctrine()->getManager();
-        $entity = $em->getRepository(Content::class)->findOneByAid($entityId);
-        if (!$entity) {
-            $entity = new Content();
-        }
-
-        $data = $data['data'];
-
-        if ($entity->getId()) {
-            if ($data['deleted']) {
-                $em->remove($entity);
-                $em->flush();
-                return;
-            }
-            $entity->setAlastUpdate(new \DateTime());
-        } else {
-            $entity->setAcreatedAt(new \DateTime());
-        }
-
-        $entity->setTitle(@$data['title']);
-        $entity->setPageName(@$data['pageName']);
-        $entity->setPageDescription(@$data['pageDescription']);
-        $entity->setTemplate(@$data['template']);
-
-        $em->persist($entity);
-        $em->flush();
-    }
-
-    private function processBanner($data)
-    {
-        $entityId = $data['entityId'];
-        $em = $this->getDoctrine()->getManager();
-        $banner = $em->getRepository(Banner::class)->findOneByAid($entityId);
-        if (!$banner) {
-            $banner = new Banner();
-        }
-
-        $data = $data['data'];
-
-        $banner->setAid($entityId);
-        if ($banner->getId()) {
-            if ($data['deleted']) {
-                $em->remove($banner);
-                $em->flush();
-                return;
-            }
-            $banner->setAlastUpdate(new \DateTime());
-        } else {
-            $banner->setAcreatedAt(new \DateTime());
-        }
-
-        $banner->setType(@$data['type']);
-        $banner->setTitle(@$data['title']);
-        $banner->setPosition(@$data['position']);
-        $banner->setDateStartExhibition(isset($data['dateStartExhibition']) ? \DateTime::createFromFormat('Y-m-d H:i:s+', $data['dateStartExhibition']['date']) : null);
-        $banner->setDateEndExhibition(isset($data['dateEndExhibition']) ? \DateTime::createFromFormat('Y-m-d H:i:s+', $data['dateEndExhibition']['date']) : null);
-        $banner->setHasVideo(@$data['hasVideo']);
-        $banner->setImage(@$data['image']);
-        $banner->setLink(@$data['link']);
-
-        $em->persist($banner);
-        $em->flush();
-    }
-
-    private function processPost($data)
-    {
-        $entityId = $data['entityId'];
-        $em = $this->getDoctrine()->getManager();
-        $entity = $em->getRepository(Post::class)->findOneByAid($entityId);
-        if (!$entity) {
-            $entity = new Post();
-        }
-
-        $data = $data['data'];
-
-        $entity->setAid($entityId);
-        if ($entity->getId()) {
-            if ($data['deleted']) {
-                $em->remove($entity);
-                $em->flush();
-                return;
-            }
-            $entity->setAlastUpdate(new \DateTime());
-        } else {
-            $entity->setAcreatedAt(new \DateTime());
-        }
-
-        $entity->setTitle(@$data['title']);
-        $entity->setImage(@$data['image']);
-        $entity->setDescription(@$data['description']);
-        $entity->setTemplate(@$data['template']);
-        $entity->setUrl(@$data['url']);
-        $entity->setActive(@$data['active']);
-        $entity->setOrder(@$data['order']);
-        if (isset($data['category'])) {
-            $entity->setCategoryId(@$data['category']['id']);
-            $entity->setCategory(@$data['category']['name']);
-        }
-
-        $em->persist($entity);
-        $em->flush();
     }
 
     public function validateToken($token)
@@ -541,51 +168,5 @@ class ApiController extends AbstractController
     public function checkSiteToken($token)
     {
         return strcmp($token, $_ENV['APP_SECRET']) === 0;
-    }
-
-    public function geraCacheLotes()
-    {
-        $em = $this->getDoctrine()->getManager();
-        $em->getRepository(LoteTipoCache::class)->flushData();
-        $em->flush();
-        $check = [];
-        $totais = $this->getDoctrine()->getRepository(Lote::class)->totalLotesByTipo();
-        if (count($totais) < 1) {
-            return;
-        }
-        foreach ($totais as $total) {
-            // $item = $em->getRepository(LoteTipoCache::class)->find($total['tipo_pai_id']);
-            // if (!$item) {
-            $item = new LoteTipoCache();
-            // }
-            if (empty($total['tipo_pai_id']) || empty($total['tipo_pai'])) {
-                continue;
-            }
-            $check[] = $total['tipo_pai_id'];
-            $item->setTipoId($total['tipo_pai_id']);
-            $item->setTipo($total['tipo_pai']);
-            $item->setTotal($total['total']);
-            $item->setSubtipo(false);
-            $em->persist($item);
-        }
-
-        $totaisFilho = $this->getDoctrine()->getRepository(Lote::class)->totalLotesByTipoFilho(); // @TODO: Melhorar este código para reduzir linhas
-        if (count($totaisFilho) < 1) {
-            return;
-        }
-        foreach ($totaisFilho as $total) {
-            $item = new LoteTipoCache();
-            // }
-            if (empty($total['tipo_id']) || empty($total['tipo']) || in_array($total['tipo_id'], $check)) {
-                continue;
-            }
-            $item->setTipoId($total['tipo_id']);
-            $item->setTipoPaiId($total['tipo_pai_id']);
-            $item->setTipo($total['tipo']);
-            $item->setTotal($total['total']);
-            $item->setSubtipo(true);
-            $em->persist($item);
-        }
-        $em->flush();
     }
 }

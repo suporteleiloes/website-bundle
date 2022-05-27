@@ -26,9 +26,8 @@ class LeilaoRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('l')
             #->where('l.dataPraca1 >= :data OR (l.dataPraca2 >= :data and l.status <= 4) OR l.dataFimPraca1 >= :data OR (l.dataFimPraca2 >= :data and l.status <= 4)')
             ->where('l.dataProximoLeilao >= :data')
-            ->andWhere('l.status > :status')
-            ->setParameter('data', $dataLimite->format('Y-m-d') . ' 00:00:00')
-            ->setParameter('status', Leilao::STATUS_RASCUNHO);
+            ->andWhere('l.status > 0')
+            ->setParameter('data', $dataLimite->format('Y-m-d') . ' 00:00:00');
 
         if (null !== $judicial) {
             $qb->andWhere('l.judicial = :judicial')->setParameter('judicial', $judicial);
