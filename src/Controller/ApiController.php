@@ -139,6 +139,7 @@ class ApiController extends AbstractController
                 $apiService->processLeilao($hook);
                 break;
             case "lote":
+            case "bem":
                 $apiService->processLote($hook);
                 break;
             case "lance":

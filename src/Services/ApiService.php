@@ -177,11 +177,11 @@ class ApiService
         $leilao->setTextoPropostas(@$data['textoPropostas']);
 
         $em->persist($leilao);
-        dump('Persistindo leilão ID ' . $data['id']);
+        #dump('Persistindo leilão ID ' . $data['id']);
         if ($autoFlush) $em->flush();
 
         if (isset($data['lotes']) && is_array($data['lotes']) && count($data['lotes'])) {
-            dump('Migrando lotes: ' . count($data['lotes']));
+            #dump('Migrando lotes: ' . count($data['lotes']));
             foreach ($data['lotes'] as $lote) {
                 $this->processLote($lote, true, false);
             }
@@ -204,14 +204,17 @@ class ApiService
         }
         // Verifica se já existe o lote. Se não existir, cria um.
         $em = $this->em;
-        $lote = $em->getRepository(Lote::class)->findOneByAid($entityId);
+        $lote = $em->getRepository(Lote::class)->findOneBy([
+            'aid' => $entityId,
+            'bemId' => $data['bem']['id']
+        ]);
         if (!$lote) {
             if (@$data['deleted']) {
                 return;
             }
             $lote = new Lote();
         } else {
-            dump('Achou lote ' . $data['id']);
+            #dump('Achou lote ' . $data['id']);
         }
 
         if ((isset($_data) && $_data['remove']) || $data['deleted']) {
@@ -227,7 +230,7 @@ class ApiService
             $lote->setAcreatedAt(new \DateTime());
         }
 
-        $lote->setSlug(!empty($data['slug']) ? substr($data['slug'], 0, 254) : 'lote');
+        $lote->setSlug(!empty($data['slug']) ? substr($data['slug'], 0, 254) : (!empty($data['bem']['slug']) ? substr($data['bem']['slug'], 0, 254) : 'lote'));
 
         // Lt
         $lote->setNumero($data['numero']);
@@ -283,6 +286,7 @@ class ApiService
         $lote->setLocalizacaoMapEmbed(@$data['bem']['localizacaoMapEmbed']);
         $lote->setVideos(@$data['bem']['videos']);
         $lote->setCamposExtras(@$data['bem']['camposExtras']);
+        $lote->setVendaDireta(@$data['bem']['vendaDireta']);
         $lote->setTour360(@$data['bem']['tour360']);
 
         if (isset($data['leilao'])) {
@@ -292,9 +296,9 @@ class ApiService
                 $lote->setLeilao($leilao);
             }
         } else {
-            dump('Lote sem leilão');
+            #dump('Lote sem leilão');
         }
-        dump('Persistindo lote ID ' . $data['id']);
+        #dump('Persistindo lote ID ' . $data['id']);
         $em->persist($lote);
 
         if ($autoFlush) $em->flush();
@@ -356,10 +360,10 @@ class ApiService
             $lance->setLote($lote);
             $lote->addLance($lance);
         } else {
-            dump('Lance sem lote.');
-            dump($data);
+            #dump('Lance sem lote.');
+            #dump($data);
         }
-        dump('Persistindo lance ID ' . $data['id'] . ' do lote ID ' . $data['lote']['id']);
+        #dump('Persistindo lance ID ' . $data['id'] . ' do lote ID ' . $data['lote']['id']);
         $em->persist($lance);
         if ($autoFlush) $em->flush();
     }
