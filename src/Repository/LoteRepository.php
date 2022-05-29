@@ -9,6 +9,7 @@ use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\Persistence\ManagerRegistry;
 use SL\WebsiteBundle\Entity\Leilao;
 use SL\WebsiteBundle\Entity\Lance;
+use SL\WebsiteBundle\Entity\LoteCache;
 use SL\WebsiteBundle\Entity\LoteTipoCache;
 
 /**
@@ -63,8 +64,7 @@ class LoteRepository extends ServiceEntityRepository
         $queryCount = $this->getEntityManager()->createQueryBuilder()
             ->select('COUNT(1) total')
             ->from(Lote::class, "l")
-            ->join("l.leilao", "leilao")
-        ;
+            ->join("l.leilao", "leilao");
 
         if ($tipoId !== null) {
             $tipoFieldName = 'tipoPaiId';
@@ -238,7 +238,8 @@ class LoteRepository extends ServiceEntityRepository
                 ->setParameter('blindado', '%blindado%');
         }
 
-        $statusPermitidosBusca = [Leilao::STATUS_EM_BREVE, Leilao::STATUS_EM_LOTEAMENTO, /*Leilao::STATUS_VER_MAIS,*/ Leilao::STATUS_ABERTO_PARA_LANCES];
+        $statusPermitidosBusca = [Leilao::STATUS_EM_BREVE, Leilao::STATUS_EM_LOTEAMENTO, /*Leilao::STATUS_VER_MAIS,*/
+            Leilao::STATUS_ABERTO_PARA_LANCES];
         $query->andWhere('leilao.status IN (:statusLeilao)')->setParameter('statusLeilao', $statusPermitidosBusca);
         $queryCount->andWhere('leilao.status IN (:statusLeilao)')->setParameter('statusLeilao', $statusPermitidosBusca);
 
@@ -285,6 +286,77 @@ class LoteRepository extends ServiceEntityRepository
             );
 
         return $query->getResult();
+    }
+
+    public function montaCacheRelacoes()
+    {
+
+        $r = [];
+
+        $this->getEntityManager()->getConnection()->executeQuery('TRUNCATE TABLE lote_cache', array(), array());
+
+        $queryFcn = function (&$array, $query, $column, $parent = null) {
+            $result = $this->getEntityManager()->getConnection()
+                ->prepare($query)
+                ->executeQuery()
+                ->fetchAllAssociative();
+
+            if ($result && count($result)) {
+                foreach ($result as $data) {
+                    $array[] = [
+                        'tipo' => $column,
+                        'valor' => $data['valor'],
+                        'total' => $data['total'],
+                        'parente' => $parent ? @$data[$parent] : null
+                    ];
+                }
+            }
+        };
+
+        $queryFcn(
+            $r,
+            'select distinct uf as valor, COUNT(uf) total from lote GROUP BY uf',
+            'uf'
+        );
+        $queryFcn(
+            $r,
+            'select distinct cidade valor, uf, COUNT(cidade) total from lote GROUP BY cidade, uf',
+            'cidade',
+            'uf'
+        );
+        $queryFcn(
+            $r,
+            'select distinct cidade, bairro valor, COUNT(bairro) total from lote GROUP BY bairro, cidade',
+            'bairro',
+            'cidade'
+        );
+        //
+        $queryFcn(
+            $r,
+            'select distinct marca as valor, COUNT(marca) total from lote GROUP BY marca',
+            'marca',
+            null
+        );
+        $queryFcn(
+            $r,
+            'select distinct modelo valor, marca, COUNT(marca) total from lote GROUP BY marca, modelo',
+            'marca',
+            'marca'
+        );
+
+        foreach($r as $cache) {
+            if(empty($cache['tipo']) || empty($cache['valor'])) continue;
+            $e = new LoteCache();
+            $e->setTipo($cache['tipo']);
+            $e->setValor($cache['valor']);
+            $e->setParente(@$cache['parente']);
+            $e->setTotal($cache['total']);
+            $this->getEntityManager()->persist($e);
+        }
+
+        $this->getEntityManager()->flush();
+
+        return $r;
     }
 
     // /**

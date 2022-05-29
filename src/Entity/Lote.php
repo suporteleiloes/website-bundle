@@ -19,6 +19,7 @@ use Doctrine\ORM\Mapping as ORM;
  *     @ORM\Index(name="tipo_pai", columns={"tipo_pai"}),
  *     @ORM\Index(name="cidade", columns={"cidade"}),
  *     @ORM\Index(name="uf", columns={"uf"}),
+ *     @ORM\Index(name="bairro", columns={"bairro"}),
  *     @ORM\Index(name="marca_id", columns={"marca_id"}),
  *     @ORM\Index(name="marca", columns={"marca"}),
  *     @ORM\Index(name="modelo_id", columns={"modelo_id"}),
@@ -26,7 +27,11 @@ use Doctrine\ORM\Mapping as ORM;
  *     @ORM\Index(name="valorMinimo", columns={"valor_minimo"}),
  *     @ORM\Index(name="comitenteId", columns={"comitente_id"}),
  *     @ORM\Index(name="ocupado", columns={"ocupado"}),
- *     @ORM\Index(name="visitas", columns={"visitas"})
+ *     @ORM\Index(name="visitas", columns={"visitas"}),
+ *     @ORM\Index(name="venda_direta", columns={"venda_direta"}),
+ *     @ORM\Index(name="processo", columns={"processo"}),
+ *     @ORM\Index(name="valor_inicial", columns={"valor_inicial"}),
+ *     @ORM\Index(name="titulo", columns={"titulo"}),
  * })
  * @ORM\Entity(repositoryClass=LoteRepository::class)
  */
@@ -221,14 +226,19 @@ class Lote extends ApiSync
     private $ano;
 
     /**
+     * @ORM\Column(type="string", length=100, nullable=true)
+     */
+    private $uf;
+
+    /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $cidade;
 
     /**
-     * @ORM\Column(type="string", length=100, nullable=true)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $uf;
+    private $bairro;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
@@ -1462,6 +1472,22 @@ class Lote extends ApiSync
     public function setTour360($tour360): void
     {
         $this->tour360 = $tour360;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getBairro()
+    {
+        return $this->bairro;
+    }
+
+    /**
+     * @param mixed $bairro
+     */
+    public function setBairro($bairro): void
+    {
+        $this->bairro = $bairro;
     }
 
     public function getDadosParaJsonSite()

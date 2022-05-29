@@ -270,6 +270,7 @@ class ApiService
         $lote->setAno(@$data['bem']['anoModelo']);
         $lote->setCidade(@$data['bem']['cidade']);
         $lote->setUf(@$data['bem']['uf']);
+        $lote->setBairro(@$data['bem']['bairro']);
         $lote->setTipoId(@$data['bem']['tipo']['id']);
         $lote->setTipo(@$data['bem']['tipo']['nome']);
         $lote->setTipoPaiId(isset($data['bem']['tipo']['parent']) ? $data['bem']['tipo']['parent']['id'] : @$data['bem']['tipoPaiId']);
@@ -530,6 +531,8 @@ class ApiService
             $item->setSubtipo(true);
             $em->persist($item);
         }
+
+        $this->em->getRepository(Lote::class)->montaCacheRelacoes();
         if ($autoFlush) $em->flush();
     }
 
