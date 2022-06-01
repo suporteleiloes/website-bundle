@@ -15,8 +15,10 @@ use Doctrine\ORM\Mapping as ORM;
  *     @ORM\Index(name="numero", columns={"numero"}),
  *     @ORM\Index(name="tipo_id", columns={"tipo_id"}),
  *     @ORM\Index(name="tipo", columns={"tipo"}),
+ *     @ORM\Index(name="tipo_slug", columns={"tipo_slug"}),
  *     @ORM\Index(name="tipo_pai_id", columns={"tipo_pai_id"}),
  *     @ORM\Index(name="tipo_pai", columns={"tipo_pai"}),
+ *     @ORM\Index(name="tipo_pai_slug", columns={"tipo_pai_slug"}),
  *     @ORM\Index(name="cidade", columns={"cidade"}),
  *     @ORM\Index(name="uf", columns={"uf"}),
  *     @ORM\Index(name="bairro", columns={"bairro"}),
@@ -37,7 +39,6 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Lote extends ApiSync
 {
-
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -251,6 +252,11 @@ class Lote extends ApiSync
     private $tipo;
 
     /**
+     * @ORM\Column(type="string", length=50, nullable=true)
+     */
+    private $tipoSlug;
+
+    /**
      * @ORM\Column(type="integer", nullable=true)
      */
     private $tipoPaiId;
@@ -259,6 +265,11 @@ class Lote extends ApiSync
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $tipoPai;
+
+    /**
+     * @ORM\Column(type="string", length=50, nullable=true)
+     */
+    private $tipoPaiSlug;
 
     /**
      * @ORM\Column(type="object", nullable=true)
@@ -1045,7 +1056,20 @@ class Lote extends ApiSync
         if($this->lances->count() > 0){
             return $this->lances->first()->getValor();
         }
-        return $this->getLeilao()->getPraca() === 2 && bccomp($this->valorInicial2, 0, 2) === 1 ? $this->valorInicial2 : $this->valorInicial;
+
+        if (bccomp($this->valorInicial2, 0, 2) < 1 && bccomp($this->valorInicial3, 0, 2) < 1) {
+            return $this->valorInicial;
+        }
+
+        switch ($this->getLeilao()->getPraca()){
+            case 2:
+                return $this->valorInicial2;
+            case 3:
+                return $this->valorInicial3;
+            default:
+                return $this->valorInicial;
+
+        }
     }
 
     public function diferencaAvaliacao()
@@ -1488,6 +1512,38 @@ class Lote extends ApiSync
     public function setBairro($bairro): void
     {
         $this->bairro = $bairro;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTipoSlug()
+    {
+        return $this->tipoSlug;
+    }
+
+    /**
+     * @param mixed $tipoSlug
+     */
+    public function setTipoSlug($tipoSlug): void
+    {
+        $this->tipoSlug = $tipoSlug;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTipoPaiSlug()
+    {
+        return $this->tipoPaiSlug;
+    }
+
+    /**
+     * @param mixed $tipoPaiSlug
+     */
+    public function setTipoPaiSlug($tipoPaiSlug): void
+    {
+        $this->tipoPaiSlug = $tipoPaiSlug;
     }
 
     public function getDadosParaJsonSite()

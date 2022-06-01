@@ -7,6 +7,7 @@ namespace SL\WebsiteBundle\Controller\Extra;
 use SL\WebsiteBundle\Entity\Content;
 use SL\WebsiteBundle\Entity\Leilao;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 
 class SLAbstractController extends AbstractController
 {
@@ -34,6 +35,15 @@ class SLAbstractController extends AbstractController
             $response[$texto] = ['title' => $textoEntity->getTitle(), 'pageName' => $texto, 'pageDescription' => $textoEntity->getPageDescription(), 'template' => $textoEntity->getTemplate()];
         }
         return $response;
+    }
+
+    public function getPagination(Request $request, $default, $max)
+    {
+        $page = $request->query->getInt('page', 1);
+        $limit = $request->query->getInt('limit', $default);
+        $limit = $limit > $max ? $max : $limit;
+        $offset = ($page * $limit) - $limit;
+        return [$page, $limit, $offset];
     }
 
 }

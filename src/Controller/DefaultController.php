@@ -55,7 +55,7 @@ class DefaultController extends SLAbstractController
     public function leilao(Request $request, Leilao $leilao = null, $busca = null, $tipoId = null, $tipoNome = null)
     {
         if ($leilao) {
-            if ($leilao->isEncerrado() && !$_ENV['MOSTRAR_LEILAO_ENCERRADO']) {
+            if ($leilao->isEncerrado() && (!isset($_ENV['MOSTRAR_LEILAO_ENCERRADO']) || !$_ENV['MOSTRAR_LEILAO_ENCERRADO'])) {
                 return $this->redirectToRoute('leilao_encerrado', ['id' => $leilao->getId()]);
             }
         }
@@ -157,16 +157,16 @@ class DefaultController extends SLAbstractController
     }
 
     /**
-     * @Route("/lote/{id}/{slug}", name="lote")
+     * @Route("/oferta/{tipoPai}/{tipo}/{id}/{slug}", name="lote")
      */
     public function lote(Lote $lote)
     {
-        if ($lote->getLeilao()->isEncerrado() && !$_ENV['MOSTRAR_LEILAO_ENCERRADO']) {
+        if ($lote->getLeilao() && $lote->getLeilao()->isEncerrado() && (!isset($_ENV['MOSTRAR_LEILAO_ENCERRADO']) || !$_ENV['MOSTRAR_LEILAO_ENCERRADO'])) {
             return $this->redirectToRoute('leilao_encerrado', ['id' => $lote->getLeilao()->getId()]);
         }
 
         $em = $this->getDoctrine()->getManager();
-        $lances = $lote->getLances();
+        /*$lances = $lote->getLances();
         $destaques = $em->getRepository(Lote::class)->findDestaques([$lote->getId()]);
 
         if ($lote->getNumero()) {
@@ -196,19 +196,15 @@ class DefaultController extends SLAbstractController
                 ->setParameter('lote', $lote->getId())
                 ->setMaxResults(1)
                 ->getOneOrNullResult();
-        }
+        }*/
 
         return $this->render('default/lote.html.twig', [
             'lote' => $lote,
             'leilao' => $lote->getLeilao(),
-            'lances' => $lances,
-            'lotes' => $destaques,
-            'leilaoJson' => \json_encode($lote->getLeilao()->__serialize()),
+            'leilaoJson' => $lote->getLeilao() ? \json_encode($lote->getLeilao()->__serialize()) : null,
             'loteJson' => \json_encode($lote->getDadosParaJsonSite()),
             'lancesJson' => \json_encode($lote->getLancesArray()),
             'permitidoLances' => true, // $permitidoLances,
-            'next' => $next,
-            'prev' => $prev
         ]);
     }
 

@@ -38,6 +38,8 @@ class SincronizaApiCommand extends Command
     {
         $io = new SymfonyStyle($input, $output);
         $io->note(sprintf('Iniciando...'));
+        ini_set('memory_limit', '-1');
+        set_time_limit(0);
 
         try {
             // Limpa o banco de dados atual

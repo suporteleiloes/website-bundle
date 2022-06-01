@@ -4,7 +4,9 @@
 namespace SL\WebsiteBundle\Services;
 
 
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\EntityManagerInterface;
+use SL\WebsiteBundle\Entity\Leilao;
 use SL\WebsiteBundle\Entity\Lote;
 
 class LeilaoService
@@ -18,6 +20,7 @@ class LeilaoService
 
     /**
      * @param null $leilao
+     * @param bool $somenteAtivos
      * @param int $limit
      * @param int $offset
      * @param array $filtros
@@ -35,18 +38,164 @@ class LeilaoService
      *          'ocupado' => (bool/null) Se está ou não desocupado. Null para ambos.
      *          'classificacaoLeilao' => (array/int) Classificação do leilão. Iniciativa privada, Seguradoras etc.
      *          'latLng' => (array[0 => lat, 1 = lng, 2 = proximidade(10km por padrão)) Latitude e Longitude para disponibilizar imóveis próximos
+     *          'ignorarLeilaoEncerrado' => (boolean) Se verdadeiro, encontra bens mesmo estando em leilões já encerrados
+     *          'status' => (mixed|int) Status do lote.
+     *          'destaque' => (boolean) Buscar pelo destaque ou não.
+     *          'vendaDireta' => (boolean) Buscar por venda direta ou não. Null não aplica filtro
      *      ]
      * @return array|Lote
      */
-    public function buscarBens($leilao = null, $limit = 100, $offset = 0, $filtros = [])
+    public function buscarBens($leilao = null, $somenteAtivos = true, $limit = 100, $offset = 0, $filtros = [])
     {
+        $searchCriteria = Criteria::create();
+
+        $hoje = new \DateTime();
+        $joins = [];
+
+        if ($somenteAtivos) {
+            $searchCriteria->andWhere(Criteria::expr()->eq('l.active', true));
+            $searchCriteria->andWhere(
+                Criteria::expr()->orX(
+                    Criteria::expr()->eq('l.leilao', null),
+                    Criteria::expr()->lte('leilao.statusTipo', 2)
+                )
+            );
+            $joins[] = ['l.leilao', 'leilao', true];
+        }
+
+        if (isset($filtros['relevancia'])) {
+        }
+
+        if (isset($filtros['destaque'])) {
+            $searchCriteria->andWhere(
+                Criteria::expr()->eq('l.destaque', $filtros['destaque'])
+            );
+        }
+
+        if (isset($filtros['vendaDireta'])) {
+            $searchCriteria->andWhere(
+                Criteria::expr()->eq('l.vendaDireta', $filtros['vendaDireta'])
+            );
+        }
+
         $qb = $this->em->createQueryBuilder();
         $qb->select('l')->from(Lote::class, 'l');
+
+        $qbCount = $this->em->createQueryBuilder()
+            ->select('COUNT(1) total')
+            ->from(Lote::class, 'l');
+
+        foreach ($joins as $join) {
+            $qb->leftJoin($join[0], $join[1]);
+            if ($join[2]) {
+                $qbCount->leftJoin($join[0], $join[1]);
+            }
+        }
+
+        $qb->addCriteria($searchCriteria);
+        $qbCount->addCriteria($searchCriteria);
+
+        $qb->setMaxResults($limit)->setFirstResult($offset);
+
+        $total = intval($qbCount->getQuery()->getSingleScalarResult());
+        return [
+            'result' => $qb->getQuery()->getResult(),
+            'limit' => $limit,
+            'page' => ($offset + $limit) / $limit,
+            'offset' => $offset,
+            'offsetEnd' => $total > $limit ? ($offset + $limit) : $total,
+            'total' => $total
+        ];
+    }
+
+    /**
+     * @param null $leilao
+     * @param int $limit
+     * @param int $offset
+     * @param array $filtros
+     *      $filtros = [
+     *          'somenteAtivos' => (boolean) Busca somente leilões ativos
+     *          'busca' => (string) Busca inteligente por leilões
+     *          'data1' => (datetime) Data inicial
+     *          'data2' => (datetime) Data final
+     *          'statusTipo' => (mixed|int) Tipo do Status do Leilão (prop statusTipo)
+     *          'tipoLeilao' => (array|int) 1 = Judicial; 2 = Extrajudicial;
+     *          'relevancia' => (int) 0 = Relevância baseado no número e acessos e lances; 1 = Pela data do leilão (Crescente) [Default]; 2 = Valor (Crescente); 3 = Valor (Decrescente)
+     *          'classificacaoLeilao' => (array/int) Classificação do leilão. Iniciativa privada, Seguradoras etc.
+     *      ]
+     * @return array|Lote
+     */
+    public function buscarLeiloes($limit = 100, $offset = 0, $filtros = [])
+    {
+        $searchCriteria = Criteria::create();
+
+        $hoje = new \DateTime();
+        $joins = [];
+        //$joins[] = ['l.cache', 'cache', false];
+
+        /**
+         * Somente ativos lista os leilões com data igual ou superior ao dia de hoje e leilões que ainda estão com status ativo
+         * O filtro da data se faz necessário para não ocultar leilões do dia que foram encerrados. Mesmo encerrado, ele deve ficar
+         * no site até o fim do dia.
+         */
+        if (isset($filtros['somenteAtivos']) && ($filtros['somenteAtivos'] == '1' || $filtros['somenteAtivos'] === true || $filtros['somenteAtivos'] == 'true')) {
+            /*$qb->andWhere('l.dataProximoLeilao > :hoje or l.statusTipo IN (:statusTipo)')
+                ->setParameter('hoje', $hoje->format('Y-m-d ') . '00:00:00')
+                ->setParameter('statusTipo', [Leilao::STATUS_TIPO_ABERTO, Leilao::STATUS_TIPO_EM_LEILAO]);*/
+
+            $searchCriteria->andWhere(
+                Criteria::expr()->orX(
+                    Criteria::expr()->gt('l.dataProximoLeilao', $hoje->format('Y-m-d ') . '00:00:00'),
+                    Criteria::expr()->in('l.statusTipo', [Leilao::STATUS_TIPO_ABERTO, Leilao::STATUS_TIPO_EM_LEILAO])
+                )
+            );
+        }
+
+        if (isset($filtros['statusTipo'])) {
+            if (!in_array($filtros['statusTipo'], [Leilao::STATUS_TIPO_ABERTO, Leilao::STATUS_TIPO_EM_LEILAO, Leilao::STATUS_TIPO_ENCERRADO])) {
+                throw new \Exception('Filtro statusTipo inválido');
+            }
+            /*$qb->andWhere('l.statusTipo IN (:statusTipo)')
+                ->setParameter('statusTipo', is_array($filtros['statusTipo']) ? $filtros['statusTipo'] : [$filtros['statusTipo']]);*/
+            $searchCriteria->andWhere(
+                Criteria::expr()->in('l.statusTipo', is_array($filtros['statusTipo']) ? $filtros['statusTipo'] : [$filtros['statusTipo']]));
+        }
+
+
+        $qb = $this->em->createQueryBuilder();
+        $qb->select('l')->from(Leilao::class, 'l');
+
+        $qbCount = $this->em->createQueryBuilder()
+            ->select('COUNT(1) total')
+            ->from(Leilao::class, 'l');
+
+        if (!isset($filtros['relevancia']) || $filtros['relevancia'] == '1') {
+            $qb->orderBy('l.dataProximoLeilao', 'ASC');
+        }
+
+        foreach ($joins as $join) {
+            $qb->leftJoin($join[0], $join[1]);
+            if ($join[2]) {
+                $qbCount->leftJoin($join[0], $join[1]);
+            }
+        }
+
+        $qb->addCriteria($searchCriteria);
+        $qbCount->addCriteria($searchCriteria);
+
         $qb->setMaxResults($limit)->setFirstResult($offset);
 
         // Filters
 
-        return $qb->getQuery()->getResult();
+        $total = intval($qbCount->getQuery()->getSingleScalarResult());
+        return [
+            'result' => $qb->getQuery()->getResult(),
+            'limit' => $limit,
+            'page' => ($offset + $limit) / $limit,
+            'offset' => $offset,
+            'offsetEnd' => $total > $limit ? ($offset + $limit) : $total,
+            'total' => $total
+        ];
     }
 
 }

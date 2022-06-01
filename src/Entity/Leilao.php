@@ -10,6 +10,8 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Table(indexes={
  *     @ORM\Index(name="status", columns={"status"}),
+ *     @ORM\Index(name="status_tipo", columns={"status_tipo"}),
+ *     @ORM\Index(name="data_proximo_leilao", columns={"data_proximo_leilao"}),
  *     @ORM\Index(name="tipo", columns={"tipo"}),
  *     @ORM\Index(name="judicial", columns={"judicial"})
  * })
@@ -681,7 +683,7 @@ class Leilao extends ApiSync
      */
     public function setCache(LeilaoCache $cache)
     {
-        $this->cache = $cache;
+        //$this->cache = $cache;
     }
 
     public function emLeilao()

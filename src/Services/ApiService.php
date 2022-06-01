@@ -16,6 +16,7 @@ use SL\WebsiteBundle\Entity\LeilaoCache;
 use SL\WebsiteBundle\Entity\Lote;
 use SL\WebsiteBundle\Entity\LoteTipoCache;
 use SL\WebsiteBundle\Entity\Post;
+use SL\WebsiteBundle\Helpers\Sluggable;
 
 class ApiService
 {
@@ -37,7 +38,7 @@ class ApiService
     {
         if (!isset(self::$client)) {
             self::$client = new Client(array(
-                'timeout' => 5,
+                'timeout' => 100,
                 'base_uri' => $this->apiUrl,
                 'headers' => [
                     'uloc-mi' => $this->apiClient,
@@ -194,6 +195,7 @@ class ApiService
 
     public function processLote($data, $autoFlush = true, $enableCache = true)
     {
+        $leilao = null;
         if (isset($data['webhookStructure'])) {
             $_data = $data;
             $data = $data['data'];
@@ -233,8 +235,12 @@ class ApiService
         $lote->setSlug(!empty($data['slug']) ? substr($data['slug'], 0, 254) : (!empty($data['bem']['slug']) ? substr($data['bem']['slug'], 0, 254) : 'lote'));
 
         // Lt
+        if (isset($data['active']) && $data['active']) {
+            $lote->setActive(true);
+        } else {
+            $lote->setActive(intval($data['status']) < 5); // @TODO: Provisório ou permanente?
+        }
         $lote->setNumero($data['numero']);
-        $lote->setActive($data['active'] ?: true);
         $lote->setDeleted($data['deleted'] ?: false);
         $lote->setValorInicial($data['valorInicial']);
         $lote->setValorInicial2($data['valorInicial2']);
@@ -273,8 +279,10 @@ class ApiService
         $lote->setBairro(@$data['bem']['bairro']);
         $lote->setTipoId(@$data['bem']['tipo']['id']);
         $lote->setTipo(@$data['bem']['tipo']['nome']);
+        $lote->setTipoSlug(Sluggable::slugify(@$data['bem']['tipo']['nome']));
         $lote->setTipoPaiId(isset($data['bem']['tipo']['parent']) ? $data['bem']['tipo']['parent']['id'] : @$data['bem']['tipoPaiId']);
         $lote->setTipoPai(isset($data['bem']['tipo']['parent']) ? $data['bem']['tipo']['parent']['nome'] : @$data['bem']['tipoPai']);
+        $lote->setTipoPaiSlug(Sluggable::slugify(isset($data['bem']['tipo']['parent']) ? $data['bem']['tipo']['parent']['nome'] : @$data['bem']['tipoPai']));
         $lote->setExtra(@$data['bem']['extra']);
         $lote->setDestaque(@$data['bem']['destaque']); // TODO: Bem ou lote ?
         $lote->setConservacaoId(@$data['bem']['conservacao']['id']);
