@@ -89,7 +89,7 @@ class ApiService
             $data = $data['data'];
         }
         $entityId = $data['id'];
-        dump('Migrando leilão de ID ' . $entityId);
+        //dump('Migrando leilão de ID ' . $entityId);
         if (intval($data['status']) === 0) {
             return; // Rascunho
         }
@@ -97,7 +97,7 @@ class ApiService
         $em = $this->em;
         $leilao = $em->getRepository(Leilao::class)->findOneByAid($entityId);
         if (!$leilao) {
-            dump('Leilão de ID ' . $entityId . ' não encontrado, criando novo!');
+            //dump('Leilão de ID ' . $entityId . ' não encontrado, criando novo!');
             if (@$data['deleted']) {
                 return;
             }
@@ -182,11 +182,11 @@ class ApiService
         $leilao->setTextoPropostas(@$data['textoPropostas']);
 
         $em->persist($leilao);
-        #dump('Persistindo leilão ID ' . $data['id']);
+        #//dump('Persistindo leilão ID ' . $data['id']);
         if ($autoFlush) $em->flush();
 
         if (isset($data['lotes']) && is_array($data['lotes']) && count($data['lotes'])) {
-            #dump('Migrando lotes: ' . count($data['lotes']));
+            #//dump('Migrando lotes: ' . count($data['lotes']));
             foreach ($data['lotes'] as $lote) {
                 $this->processLote($lote, true, false, $leilao);
             }
@@ -223,7 +223,7 @@ class ApiService
             }
             $lote = new Lote();
         } else {
-            #dump('Achou lote ' . $data['id']);
+            #//dump('Achou lote ' . $data['id']);
         }
 
         if ((isset($_data) && $_data['remove']) || $data['deleted']) {
@@ -314,9 +314,9 @@ class ApiService
             $lote->setPermitirLance(@$data['permitidoLance']);
         } else {
             $lote->setVendaDireta(@$data['bem']['vendaDireta']);
-            #dump('Lote sem leilão');
+            #//dump('Lote sem leilão');
         }
-        #dump('Persistindo lote ID ' . $data['id']);
+        #//dump('Persistindo lote ID ' . $data['id']);
         $em->persist($lote);
 
         if ($autoFlush) $em->flush();
@@ -378,17 +378,17 @@ class ApiService
             $lance->setLote($lote);
             $lote->addLance($lance);
         } else {
-            #dump('Lance sem lote.');
-            #dump($data);
+            #//dump('Lance sem lote.');
+            #//dump($data);
         }
-        #dump('Persistindo lance ID ' . $data['id'] . ' do lote ID ' . $data['lote']['id']);
+        #//dump('Persistindo lance ID ' . $data['id'] . ' do lote ID ' . $data['lote']['id']);
         $em->persist($lance);
         if ($autoFlush) $em->flush();
     }
 
     public function geraCacheLeilao(Leilao $leilao, $autoFlush = true)
     {
-        dump('Gerando cache do leilão ' . $leilao->getId());
+        //dump('Gerando cache do leilão ' . $leilao->getId());
         $filtros = $this->em->getRepository(Leilao::class)->filtros($leilao->getId());
         $cache = $leilao->getCache() ?? new LeilaoCache();
         $cache->setFiltros($filtros);
@@ -462,6 +462,8 @@ class ApiService
         $banner->setHasVideo(@$data['hasVideo']);
         $banner->setImage(@$data['image']);
         $banner->setLink(@$data['link']);
+        $banner->setActive(@$data['active']);
+        $banner->setDeleted(@$data['deleted']);
 
         $em->persist($banner);
         if ($autoFlush) $em->flush();
@@ -579,6 +581,36 @@ class ApiService
                         'deviceRegistration' => Utils::detectPlatform(),
                         'browserRegistration' => Utils::getBrowser()['name'],
                     ]
+                ]
+            ]);
+        } catch (ClientException $e) {
+            $body = json_decode($e->getResponse()->getBody(), true);
+            if (isset($body['detail'])) {
+                throw new \Exception(is_array($body['detail']) ? serialize($body['detail']) : $body['detail']);
+            }
+            if (isset($body['error'])) {
+                throw new \Exception((is_array($body['message']) ? (string)join($body['message'], ', ') : $body['message']));
+            }
+            try {
+                throw new \Exception((string)$body);
+            } catch (\Throwable $exception) {
+                throw new \Exception((string)$e->getResponse()->getBody());
+            }
+        } catch (\Throwable $exception) {
+            throw $exception;
+        }
+        return json_decode($response->getBody(), true);
+    }
+
+    public function recuperarSenha($username)
+    {
+        try {
+            $response = $this->getClient()->request('POST', 'api/public/arrematantes/service/recupera-senha', [
+                RequestOptions::JSON => [
+                    'login' => $username,
+                    'ipRegistration' => Utils::get_client_ip_env(),
+                    'deviceRegistration' => Utils::detectPlatform(),
+                    'browserRegistration' => Utils::getBrowser()['name'],
                 ]
             ]);
         } catch (ClientException $e) {

@@ -3,14 +3,19 @@
 namespace SL\WebsiteBundle\Controller;
 
 use App\Entity\PreCadastro;
+use App\Entity\RecuperarSenhaModel;
 use App\Form\PreCadastroType;
+use App\Form\RecuperarSenhaType;
 use ReCaptcha\ReCaptcha;
 use SL\WebsiteBundle\Services\ApiService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\User\InMemoryUser;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
+use Symfony\Component\Security\Http\Authenticator\FormLoginAuthenticator;
 
 /**
  * CadastroController.
@@ -20,11 +25,8 @@ class CadastroController extends AbstractController
 {
     /**
      * @Route("/cadastro", name="cadastro", methods={"GET", "POST"})
-     *
-     * @param Request $request
-     * @return mixed
      */
-    public function cadastro(Request $request, ReCaptcha $reCaptcha, ApiService $apiService)
+    public function cadastro(Request $request, ReCaptcha $reCaptcha, ApiService $apiService, UserAuthenticatorInterface $userAuthenticator, FormLoginAuthenticator $formLoginAuthenticator)
     {
         $cadastroTemplate = 'cadastro.html.twig';
         $cadastro = new PreCadastro();
@@ -42,12 +44,13 @@ class CadastroController extends AbstractController
             }
 
             try {
-                $userData = $apiService->cadastro(
+                $registerResponse = $apiService->cadastro(
                     $cadastro->getNome(),
                     $cadastro->getEmail(),
                     $cadastro->getCelular(),
                     $cadastro->getPassword()
                 );
+
             } catch (\Throwable $exception) {
                 $form->addError(new FormError($exception->getMessage()));
                 return $this->renderForm($cadastroTemplate, array(
@@ -56,6 +59,14 @@ class CadastroController extends AbstractController
             }
 
             // Manual authenticate
+            $username = $registerResponse['user']['username'];
+            $userData = $apiService->requestToken($username, $cadastro->getPassword());
+            $user = new InMemoryUser($username, null, $userData['user']['roles'], true, true, true, true, $userData);
+            $userAuthenticator->authenticateUser(
+                $user,
+                $formLoginAuthenticator,
+                $request
+            );
 
             return $this->redirectToRoute('conta');
         }
@@ -93,25 +104,48 @@ class CadastroController extends AbstractController
     }
 
     /**
-     * @Route("/recuperar-senha", name="recuperar-senha", methods={"GET"})
+     * @Route("/recuperar-senha", name="recuperar-senha", methods={"GET", "POST"})
      *
      * @param Request $request
      * @return mixed
      */
-    public function recuperarSenha(Request $request)
+    public function recuperarSenha(Request $request, ReCaptcha $reCaptcha, ApiService $apiService)
     {
+        $model = new RecuperarSenhaModel();
+        $form = $this->createForm(RecuperarSenhaType::class, $model);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $botCheck = $reCaptcha->verify($request->request->get('g-recaptcha-response'));
+            $botCheckTest = $botCheck->isSuccess() && $botCheck->getScore() >= 0.5;
+            if (!$botCheckTest) {
+                $form->addError(new FormError('ReCaptcha inválido'));
+                return $this->renderForm('recuperar-senha.html.twig', array(
+                    'form' => $form
+                ));
+            }
 
-        $tipo = $_SERVER['TIPO_CADASTRO'];
+            try {
+                $response = $apiService->recuperarSenha(
+                    $model->getUsername()
+                );
 
-        if ($tipo === 'EXTERNO') {
-            return $this->render('paginas/login.externo.recuperar-senha.html.twig', array(
-                'tipo' => $tipo,
-                'id' => intval($request->get('id')),
-                'token' => $request->get('token')
-            ));
+                if (isset($response['email'])) {
+                    return $this->renderForm('recuperar-senha.html.twig', array(
+                        'sended' => $response['email']
+                    ));
+                }
+
+            } catch (\Throwable $exception) {
+                $form->addError(new FormError($exception->getMessage()));
+                return $this->renderForm('recuperar-senha.html.twig', array(
+                    'form' => $form
+                ));
+            }
+
+            return $this->redirectToRoute('conta');
         }
-        return $this->render('paginas/cadastro.html.twig', array(
-            'tipo' => $tipo
+        return $this->renderForm('recuperar-senha.html.twig', array(
+            'form' => $form
         ));
     }
 }

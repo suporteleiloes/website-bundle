@@ -6,6 +6,7 @@ namespace SL\WebsiteBundle\Services;
 
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\EntityManagerInterface;
+use SL\WebsiteBundle\Entity\Banner;
 use SL\WebsiteBundle\Entity\Leilao;
 use SL\WebsiteBundle\Entity\Lote;
 use SL\WebsiteBundle\Entity\LoteTipoCache;
@@ -206,8 +207,14 @@ class LeilaoService
     /**
      * Retorna os tipos de bem baseado na montagem de cache
      */
-    public function getTiposBem () {
+    public function getTiposBem()
+    {
         return $this->em->getRepository(LoteTipoCache::class)->findBy([], ['tipo' => 'ASC']);
+    }
+
+    public function getBanners($filtros = [])
+    {
+        return $this->em->getRepository(Banner::class)->findAtivos();
     }
 
 }
