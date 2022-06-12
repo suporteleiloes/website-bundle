@@ -2,6 +2,7 @@
 
 namespace SL\WebsiteBundle\Controller;
 
+use SL\WebsiteBundle\Entity\Leilao;
 use SL\WebsiteBundle\Entity\Lote;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -52,5 +53,13 @@ class BuscaController extends AbstractController
         ));
 
         return $response;
+    }
+
+    /**
+     * @Route("/busca-tipo/{tipoId}/{tipoNome}", name="busca_tipo")
+     */
+    public function buscaPorTipoBem(Request $request, Leilao $leilao = null, $busca = null, $tipoId = null, $tipoNome = null)
+    {
+
     }
 }

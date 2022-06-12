@@ -9,7 +9,6 @@ use SL\WebsiteBundle\Entity\Leilao;
 
 use SL\WebsiteBundle\Entity\LoteTipoCache;
 use Doctrine\Common\Collections\ArrayCollection;
-use SL\WebsiteBundle\Services\LeilaoService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
@@ -48,8 +47,12 @@ class DefaultController extends SLAbstractController
     /**
      * @Route("/leiloes/{id}", name="leilao")
      * @Route("/print/leiloes/{id}", name="print_leilao")
+     * @Route("/busca/{busca}", name="busca")
+     * @Route("/busca", name="busca_simples")
+     * @Route("/busca-tipo/{tipoId}/{tipoNome}", name="busca_tipo")
+     * @Route("/categoria/{tipoNome}", name="busca_categoria")
      */
-    public function leilao(Request $request, Leilao $leilao, LeilaoService $leilaoService)
+    public function leilao(Request $request, Leilao $leilao = null, $busca = null, $tipoId = null, $tipoNome = null)
     {
         if ($leilao) {
             if ($leilao->isEncerrado() && (!isset($_ENV['MOSTRAR_LEILAO_ENCERRADO']) || !$_ENV['MOSTRAR_LEILAO_ENCERRADO'])) {
@@ -57,28 +60,81 @@ class DefaultController extends SLAbstractController
             }
         }
 
+        if (!empty($tipoNome)) {
+            $tipoNome = str_replace(['__b__', '__i__', '__e__'], ['/', '?', '&'], $tipoNome);
+        }
+
+        $filtros = [];
+        $filtros2 = [];
+        $filtros2 = array_merge_recursive($filtros2, $request->query->all());
+        $filtros2 = array_merge_recursive($filtros2, $request->request->all());
         $page = $request->query->getInt('page', 1);
         $page = $page === 0 ? 1 : $page;
         $limit = 100;
         $offset = ($page * $limit) - $limit;
+        $em = $this->getDoctrine()->getManager();
 
-        $tipoId = $request->get('tipo');
-
-        $filtros = [];
-        $cache = $leilao->getCache();
-
-        if ($cache) {
-            $filtros = $cache->getFiltros() ?: [];
+        if (!empty($request->get('busca')) && !$busca) {
+            $busca = $request->get('busca');
+        } elseif (empty($request->get('busca'))  && !$busca){
+            $busca = 'nd';
         }
 
-        $lotes = $leilaoService->buscarBens($leilao->getId(), false, $limit, $offset);
+        if ($leilao) {
+            $cache = $leilao->getCache();
 
+            if ($cache) {
+                $filtros = $cache->getFiltros() ?: [];
+            }
+
+            if (!empty($request->get('busca'))) {
+                $busca = $request->get('busca');
+                if (strlen($busca) > 3) {
+                    $lotes = $em->getRepository(Lote::class)->findAllSimpleBasic($leilao->getId(), $limit, $offset, null, $busca);
+                    $leilao->setLotesManual(new ArrayCollection());
+                }
+            } else {
+                $lotes = $em->getRepository(Lote::class)->findAllSimpleBasic($leilao->getId(), $limit, $offset, $filtros2);
+            }
+        } elseif (!empty($busca) || !empty($tipoId) || !empty($tipoNome)) {
+            $leilao = new Leilao();
+            $leilao->setTitulo('Buscador');
+
+            // $busca = $request->get('s');
+
+            if (!empty($tipoId) && intval($tipoId) > 0) {
+                $lotes = $em->getRepository(Lote::class)->findAllSimpleBasic(null, $limit, $offset, null, $busca, $tipoId);
+            } elseif (!empty($tipoNome)) {
+                $tipoEntity = $em->getRepository(LoteTipoCache::class)->findOneByTipo($tipoNome);
+                $tipoId = 0;
+                if ($tipoEntity) {
+                    $tipoId = $tipoEntity->getTipoId();
+                }
+                $lotes = $em->getRepository(Lote::class)->findAllSimpleBasic(null, $limit, $offset, null, $busca, $tipoId);
+            } else {
+                $buscaQuery = $request->query->get('busca');
+                if (strlen($buscaQuery) > 2) {
+                    $busca = $buscaQuery;
+                }
+                if (strlen($busca) < 3) {
+                    return $this->render('paginas/busca-invalida.html.twig');
+                }
+                $lotes = $em->getRepository(Lote::class)->findAllSimpleBasic(null, $limit, $offset, null, $busca);
+            }
+
+        } elseif ($request->get('bf')) {
+            $leilao = new Leilao();
+            $leilao->setTitulo('Buscador');
+            $lotes = $em->getRepository(Lote::class)->findAllSimpleBasic(null, $limit, $offset, $filtros2, $busca);
+        } else {
+            throw new NotFoundHttpException('Leilão não encontrado.');
+        }
 
         $template = $request->attributes->get('_route') === 'print_leilao'
             ? 'default/print/leilao.html.twig'
             : 'default/leilao.html.twig';
 
-        $tipos = $leilaoService->getTiposBem();
+        $tipos = $em->getRepository(LoteTipoCache::class)->findBy([], ['tipo' => 'ASC']);
         $tiposPrincipais = [];
         if (count($tipos)) {
             $tiposPrincipais = array_filter($tipos, function ($t) {
@@ -89,9 +145,11 @@ class DefaultController extends SLAbstractController
             'leilao' => $leilao,
             'lotes' => @$lotes['result'],
             'filtros' => $filtros,
+            'busca' => $busca,
             'lotesTipo' => $tiposPrincipais,
             'lotesTipoAll' => $tipos,
             'tipoId' => $tipoId,
+            'tipoNome' => $tipoNome,
             "totalLotes" => intval(@$lotes['total']),
             "totalPages" => ceil(intval(@$lotes['total']) / $limit),
             "paginaAtual" => $page,

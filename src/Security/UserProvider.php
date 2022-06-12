@@ -24,7 +24,6 @@ class UserProvider implements UserProviderInterface, PasswordUpgraderInterface
      */
     public function loadUserByIdentifier(string $identifier): UserInterface
     {
-        dump($identifier); exit;
         // Load a User object from your data source or throw UserNotFoundException.
         // The $identifier argument is whatever value is being returned by the
         // getUserIdentifier() method in your User class.
@@ -79,7 +78,6 @@ class UserProvider implements UserProviderInterface, PasswordUpgraderInterface
 
     public function loadUserByUsername(string $username)
     {
-        dump($username); exit;
         return new InMemoryUser(
             $username,
             null,

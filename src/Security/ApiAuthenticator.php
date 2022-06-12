@@ -48,8 +48,6 @@ class ApiAuthenticator extends AbstractLoginFormAuthenticator
             throw new CustomUserMessageAuthenticationException($exception->getMessage());
         }
 
-        dump($userData);
-
         $passport = new SelfValidatingPassport(
             new UserBadge($username, function ($userIdentifier) use ($userData) {
                 return new InMemoryUser($userIdentifier, null, $userData['user']['roles'], true, true, true, true, $userData);
@@ -71,7 +69,7 @@ class ApiAuthenticator extends AbstractLoginFormAuthenticator
             return new RedirectResponse($target);
         }
         return new RedirectResponse(
-            $this->router->generate('teste')
+            $this->router->generate('home')
         );
     }
 

@@ -72,6 +72,11 @@ class Lote extends ApiSync
     private $titulo;
 
     /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $subtitulo;
+
+    /**
      * @ORM\Column(type="text", nullable=true)
      */
     private $descricao;
@@ -891,6 +896,17 @@ class Lote extends ApiSync
         return $fotos;
     }
 
+    public function getFotosSemPrincipal()
+    {
+        $fotos = new ArrayCollection();
+        foreach ($this->documentos as $arquivo) {
+            if (strtolower($arquivo['tipo']['nome']) === 'foto site' && $arquivo['site']) {
+                $fotos->add($arquivo);
+            }
+        }
+        return count($fotos) ? $fotos : $this->getFotos();
+    }
+
     /**
      * @return bool
      */
@@ -1053,7 +1069,11 @@ class Lote extends ApiSync
 
     public function valorAtual()
     {
-        if($this->lances->count() > 0){
+        if (!$this->getLeilao()) {
+            return $this->valorInicial;
+        }
+
+        if ($this->lances->count() > 0) {
             return $this->lances->first()->getValor();
         }
 
@@ -1061,7 +1081,7 @@ class Lote extends ApiSync
             return $this->valorInicial;
         }
 
-        switch ($this->getLeilao()->getPraca()){
+        switch ($this->getLeilao()->getPraca()) {
             case 2:
                 return $this->valorInicial2;
             case 3:
@@ -1544,6 +1564,26 @@ class Lote extends ApiSync
     public function setTipoPaiSlug($tipoPaiSlug): void
     {
         $this->tipoPaiSlug = $tipoPaiSlug;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSubtitulo()
+    {
+        return $this->subtitulo;
+    }
+
+    /**
+     * @param mixed $subtitulo
+     */
+    public function setSubtitulo($subtitulo): void
+    {
+        $this->subtitulo = $subtitulo;
+    }
+
+    public function isRetirado () {
+        return trim(mb_strtolower($this->statusString)) === 'retirado';
     }
 
     public function getDadosParaJsonSite()

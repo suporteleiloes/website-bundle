@@ -7,7 +7,7 @@ namespace SL\WebsiteBundle\Services;
 use Doctrine\ORM\EntityManagerInterface;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Psr7\Message;
+use GuzzleHttp\RequestOptions;
 use SL\WebsiteBundle\Entity\Banner;
 use SL\WebsiteBundle\Entity\Content;
 use SL\WebsiteBundle\Entity\Lance;
@@ -17,6 +17,7 @@ use SL\WebsiteBundle\Entity\Lote;
 use SL\WebsiteBundle\Entity\LoteTipoCache;
 use SL\WebsiteBundle\Entity\Post;
 use SL\WebsiteBundle\Helpers\Sluggable;
+use SL\WebsiteBundle\Helpers\Utils;
 
 class ApiService
 {
@@ -57,7 +58,8 @@ class ApiService
             $response = $this->getClient()->request('POST', '/api/auth', [
                 'form_params' => [
                     'user' => $username,
-                    'pass' => $password
+                    'pass' => $password,
+                    'needRole' => 'ROLE_ARREMATANTE'
                 ]
             ]);
         } catch (ClientException $e) {
@@ -87,6 +89,7 @@ class ApiService
             $data = $data['data'];
         }
         $entityId = $data['id'];
+        dump('Migrando leilão de ID ' . $entityId);
         if (intval($data['status']) === 0) {
             return; // Rascunho
         }
@@ -94,6 +97,7 @@ class ApiService
         $em = $this->em;
         $leilao = $em->getRepository(Leilao::class)->findOneByAid($entityId);
         if (!$leilao) {
+            dump('Leilão de ID ' . $entityId . ' não encontrado, criando novo!');
             if (@$data['deleted']) {
                 return;
             }
@@ -184,18 +188,21 @@ class ApiService
         if (isset($data['lotes']) && is_array($data['lotes']) && count($data['lotes'])) {
             #dump('Migrando lotes: ' . count($data['lotes']));
             foreach ($data['lotes'] as $lote) {
-                $this->processLote($lote, true, false);
+                $this->processLote($lote, true, false, $leilao);
             }
         }
 
-        $this->em->clear();
         $this->geraCacheLotes();
         $this->geraCacheLeilao($leilao);
+        $this->em->clear();
     }
 
-    public function processLote($data, $autoFlush = true, $enableCache = true)
+    public function processLote($data, $autoFlush = true, $enableCache = true, $leilao = null)
     {
-        $leilao = null;
+        $isTree = false;
+        if ($leilao) {
+            $isTree = true;
+        }
         if (isset($data['webhookStructure'])) {
             $_data = $data;
             $data = $data['data'];
@@ -260,6 +267,7 @@ class ApiService
         // Bem
         $lote->setBemId($data['bem']['id']);
         $lote->setTitulo($data['bem']['siteTitulo']);
+        $lote->setSubtitulo(!empty($data['bem']['siteSubtitulo']) ? $data['bem']['siteSubtitulo'] : mb_substr($data['bem']['siteDescricao'], 0, 254));
         $lote->setDescricao($data['bem']['siteDescricao']);
         $lote->setObservacao($data['bem']['siteObservacao']);
         $lote->setDocumentos($data['bem']['arquivos']);
@@ -295,16 +303,17 @@ class ApiService
         $lote->setLocalizacaoMapEmbed(@$data['bem']['localizacaoMapEmbed']);
         $lote->setVideos(@$data['bem']['videos']);
         $lote->setCamposExtras(@$data['bem']['camposExtras']);
-        $lote->setVendaDireta(@$data['bem']['vendaDireta']);
         $lote->setTour360(@$data['bem']['tour360']);
 
-        if (isset($data['leilao'])) {
+        if (isset($data['leilao']) || $leilao) {
             /* @var Leilao $leilao */
-            $leilao = $em->getRepository(Leilao::class)->findOneByAid($data['leilao']['id']);
+            $leilao = $leilao ?? $em->getRepository(Leilao::class)->findOneByAid($data['leilao']['id']);
             if ($leilao) {
                 $lote->setLeilao($leilao);
             }
+            $lote->setPermitirLance(@$data['permitidoLance']);
         } else {
+            $lote->setVendaDireta(@$data['bem']['vendaDireta']);
             #dump('Lote sem leilão');
         }
         #dump('Persistindo lote ID ' . $data['id']);
@@ -318,8 +327,8 @@ class ApiService
             }
         }*/
 
-        if (isset($leilao)) $this->geraCacheLeilao($leilao);
-        if ($enableCache) $this->geraCacheLotes();
+        //if (isset($leilao) && !$isTree) $this->geraCacheLeilao($leilao);
+        if ($enableCache && !$isTree) $this->geraCacheLotes();
 
         // Atualiza total lotes
         if (isset($leilao)) $leilao->setTotalLotes($leilao->getLotes()->count()); // TODO: Use count query instead this
@@ -379,14 +388,15 @@ class ApiService
 
     public function geraCacheLeilao(Leilao $leilao, $autoFlush = true)
     {
+        dump('Gerando cache do leilão ' . $leilao->getId());
         $filtros = $this->em->getRepository(Leilao::class)->filtros($leilao->getId());
-        $cache = $leilao->getCache() ?: new LeilaoCache();
+        $cache = $leilao->getCache() ?? new LeilaoCache();
         $cache->setFiltros($filtros);
         $cache->setLeilao($leilao);
-        $leilao->setCache($cache);
+        //$leilao->setCache($cache);
         $em = $this->em;
         $em->persist($cache);
-        $em->persist($leilao);
+        //$em->persist($leilao);
         if ($autoFlush) $em->flush();
     }
 
@@ -542,6 +552,52 @@ class ApiService
 
         $this->em->getRepository(Lote::class)->montaCacheRelacoes();
         if ($autoFlush) $em->flush();
+    }
+
+    public function cadastro($nome, $email, $celular, $senha)
+    {
+        try {
+            $response = $this->getClient()->request('POST', '/api/public/arrematantes/cadastro', [
+                RequestOptions::JSON => [
+                    'precadastro' => true,
+                    'password' => $senha,
+                    'pessoa' => [
+                        'name' => $nome,
+                        'emails' => [
+                            [
+                                'email' => $email
+                            ]
+                        ],
+                        'phoneNumbers' => [
+                            [
+                                'areaCode' => '+55',
+                                'phoneNumber' => preg_replace('/\D/', '$1', $celular)
+                            ]
+                        ],
+                        'type' => 1,
+                        'ipRegistration' => Utils::get_client_ip_env(),
+                        'deviceRegistration' => Utils::detectPlatform(),
+                        'browserRegistration' => Utils::getBrowser()['name'],
+                    ]
+                ]
+            ]);
+        } catch (ClientException $e) {
+            $body = json_decode($e->getResponse()->getBody(), true);
+            if (isset($body['detail'])) {
+                throw new \Exception(is_array($body['detail']) ? serialize($body['detail']) : $body['detail']);
+            }
+            if (isset($body['error'])) {
+                throw new \Exception((is_array($body['message']) ? (string)join($body['message'], ', ') : $body['message']));
+            }
+            try {
+                throw new \Exception((string)$body);
+            } catch (\Throwable $exception) {
+                throw new \Exception((string)$e->getResponse()->getBody());
+            }
+        } catch (\Throwable $exception) {
+            throw $exception;
+        }
+        return json_decode($response->getBody(), true);
     }
 
 }

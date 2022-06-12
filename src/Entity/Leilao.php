@@ -88,6 +88,11 @@ class Leilao extends ApiSync
     private $dataAbertura3;
 
     /**
+     * @ORM\Column(type="smallint", options={"default": 1})
+     */
+    private $praca = 1;
+
+    /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $titulo;
@@ -303,7 +308,7 @@ class Leilao extends ApiSync
     private $lotes;
 
     /**
-     * @ORM\OneToOne(targetEntity="SL\WebsiteBundle\Entity\LeilaoCache", mappedBy="leilao", orphanRemoval=true, cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity="SL\WebsiteBundle\Entity\LeilaoCache", mappedBy="leilao", orphanRemoval=true)
      */
     private $cache;
 
@@ -313,7 +318,6 @@ class Leilao extends ApiSync
     public function __construct()
     {
         $this->lotes = new ArrayCollection();
-        $this->datas = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -683,7 +687,7 @@ class Leilao extends ApiSync
      */
     public function setCache(LeilaoCache $cache)
     {
-        //$this->cache = $cache;
+        $this->cache = $cache;
     }
 
     public function emLeilao()

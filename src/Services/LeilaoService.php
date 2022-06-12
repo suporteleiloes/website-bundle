@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\EntityManagerInterface;
 use SL\WebsiteBundle\Entity\Leilao;
 use SL\WebsiteBundle\Entity\Lote;
+use SL\WebsiteBundle\Entity\LoteTipoCache;
 
 class LeilaoService
 {
@@ -51,6 +52,10 @@ class LeilaoService
 
         $hoje = new \DateTime();
         $joins = [];
+
+        if ($leilao) {
+            $searchCriteria->andWhere(Criteria::expr()->eq('l.leilao', $leilao));
+        }
 
         if ($somenteAtivos) {
             $searchCriteria->andWhere(Criteria::expr()->eq('l.active', true));
@@ -196,6 +201,13 @@ class LeilaoService
             'offsetEnd' => $total > $limit ? ($offset + $limit) : $total,
             'total' => $total
         ];
+    }
+
+    /**
+     * Retorna os tipos de bem baseado na montagem de cache
+     */
+    public function getTiposBem () {
+        return $this->em->getRepository(LoteTipoCache::class)->findBy([], ['tipo' => 'ASC']);
     }
 
 }
