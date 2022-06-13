@@ -192,9 +192,9 @@ class ApiService
             }
         }
 
-        $this->geraCacheLotes();
+        //$this->geraCacheLotes();
         $this->geraCacheLeilao($leilao);
-        $this->em->clear();
+        //$this->em->clear();
     }
 
     public function processLote($data, $autoFlush = true, $enableCache = true, $leilao = null)
@@ -316,6 +316,9 @@ class ApiService
             $lote->setVendaDireta(@$data['bem']['vendaDireta']);
             #//dump('Lote sem leilão');
         }
+        if(!$leilao && (!isset($data['bem']['vendaDireta']) || !$data['bem']['vendaDireta'])) {
+            return; // Lote atualizado de leilão encerrado e inexistente na base do site
+        }
         #//dump('Persistindo lote ID ' . $data['id']);
         $em->persist($lote);
 
@@ -331,7 +334,9 @@ class ApiService
         if ($enableCache && !$isTree) $this->geraCacheLotes();
 
         // Atualiza total lotes
-        if (isset($leilao)) $leilao->setTotalLotes($leilao->getLotes()->count()); // TODO: Use count query instead this
+        if (isset($leilao)) {
+            $leilao->setTotalLotes($em->createQueryBuilder()->select('count(1)')->from(Lote::class, 'l')->where('l.leilao = :leilao')->setParameter('leilao', $leilao->getId())->getQuery()->getSingleScalarResult());
+        }
     }
 
     public function processLance($data, $autoFlush = true)

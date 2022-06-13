@@ -128,7 +128,7 @@ class ApiController extends AbstractController
      * @param array $hook
      * @throws \Exception
      */
-    private function proccessHookData(array $hook, $apiService)
+    private function proccessHookData(array $hook, ApiService $apiService)
     {
         if (!isset($hook['entity']) || !isset($hook['entityId']) || !isset($hook['data'])) {
             throw new \Exception('Para processar os dados do webhook é necessário passar os valores de `entity`, `entityId` e `data` com os dados.');

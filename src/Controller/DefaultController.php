@@ -59,7 +59,7 @@ class DefaultController extends SLAbstractController
 
         $page = $request->query->getInt('page', 1);
         $page = $page === 0 ? 1 : $page;
-        $limit = 100;
+        $limit = 10;
         $offset = ($page * $limit) - $limit;
 
         $tipoId = $request->get('tipo');
@@ -71,7 +71,29 @@ class DefaultController extends SLAbstractController
             $filtros = $cache->getFiltros() ?: [];
         }
 
-        $lotes = $leilaoService->buscarBens($leilao->getId(), false, $limit, $offset);
+        $requestFiltros = [];
+
+        if ($request->get('busca')) {
+            $requestFiltros['busca'] = $request->get('busca');
+        }
+
+        if ($request->get('f-tipo')) {
+            $requestFiltros['tipo'] = $request->get('f-tipo');
+        }
+
+        if ($request->get('f-comitente')) {
+            $requestFiltros['comitente'] = $request->get('f-comitente');
+        }
+
+        if ($request->get('f-uf')) {
+            $requestFiltros['uf'] = $request->get('f-uf');
+        }
+
+        if ($request->get('f-cidade')) {
+            $requestFiltros['cidade'] = $request->get('f-cidade');
+        }
+
+        $lotes = $leilaoService->buscarBens($leilao->getId(), false, $limit, $offset, $requestFiltros);
 
 
         $template = $request->attributes->get('_route') === 'print_leilao'

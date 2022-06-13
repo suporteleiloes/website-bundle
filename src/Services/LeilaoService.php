@@ -30,6 +30,7 @@ class LeilaoService
      *          'busca' => (string) Busca inteligente por lotes
      *          'precoMinimo' => (decimal) Valor mínimo
      *          'precoMaximo' => (decimal) Valor máximo
+     *          'comitente' => (array|int) Tipo do Bem
      *          'tipo' => (array|int) Tipo do Bem
      *          'tipoLeilao' => (array|int) 1 = Judicial; 2 = Extrajudicial;
      *          'relevancia' => (int) 0 = Relevância baseado no número e acessos e lances; 1 = Pela data do leilão (Crescente); 2 = Valor (Crescente); 3 = Valor (Decrescente)
@@ -53,6 +54,10 @@ class LeilaoService
 
         $hoje = new \DateTime();
         $joins = [];
+
+        $convertArray = function ($value) {
+            return is_array($value) ? $value : [$value];
+        };
 
         if ($leilao) {
             $searchCriteria->andWhere(Criteria::expr()->eq('l.leilao', $leilao));
@@ -81,6 +86,55 @@ class LeilaoService
         if (isset($filtros['vendaDireta'])) {
             $searchCriteria->andWhere(
                 Criteria::expr()->eq('l.vendaDireta', $filtros['vendaDireta'])
+            );
+        }
+
+        if (isset($filtros['tipo'])) {
+            $searchCriteria->andWhere(
+                Criteria::expr()->in('l.tipoId', $convertArray($filtros['tipo']))
+            );
+        }
+
+        if (isset($filtros['comitente'])) {
+            $searchCriteria->andWhere(
+                Criteria::expr()->in('l.comitenteId', $convertArray($filtros['comitente']))
+            );
+        }
+
+        if (isset($filtros['uf'])) {
+            $searchCriteria->andWhere(
+                Criteria::expr()->in('l.uf', $convertArray($filtros['uf']))
+            );
+        }
+
+        if (isset($filtros['cidade'])) {
+            $searchCriteria->andWhere(
+                Criteria::expr()->in('l.cidade', $convertArray($filtros['cidade']))
+            );
+        }
+
+        if (isset($filtros['busca'])) {
+            $buscaOnlyDigits = preg_replace('/\D/', '$1', $filtros['busca']);
+            if (empty(trim($buscaOnlyDigits))) {
+                $buscaOnlyDigits = '000000000000000';
+            }
+            $searchCriteria->andWhere(
+                Criteria::expr()->orX(
+                    Criteria::expr()->contains('l.titulo', $filtros['busca']),
+                    Criteria::expr()->contains('l.numero', $filtros['busca']),
+                    Criteria::expr()->contains('l.numeroRotulo', $filtros['busca']),
+                    Criteria::expr()->contains('l.descricao', $filtros['busca']),
+                    Criteria::expr()->contains('l.marca', $filtros['busca']),
+                    Criteria::expr()->contains('l.modelo', $filtros['busca']),
+                    Criteria::expr()->contains('l.ano', $filtros['busca']),
+                    Criteria::expr()->contains('l.uf', $filtros['busca']),
+                    Criteria::expr()->contains('l.cidade', $filtros['busca']),
+                    Criteria::expr()->contains('l.bairro', $filtros['busca']),
+                    Criteria::expr()->contains('l.processo', $filtros['busca']),
+                    Criteria::expr()->contains('l.processo', $buscaOnlyDigits),
+                    Criteria::expr()->contains('l.executado', $filtros['busca']),
+                    Criteria::expr()->contains('l.exequente', $filtros['busca']),
+                )
             );
         }
 

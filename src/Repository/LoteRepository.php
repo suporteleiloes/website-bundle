@@ -294,6 +294,7 @@ class LoteRepository extends ServiceEntityRepository
         $r = [];
 
         $this->getEntityManager()->getConnection()->executeQuery('TRUNCATE TABLE lote_cache', array(), array());
+        //$this->getEntityManager()->clear();
 
         $queryFcn = function (&$array, $query, $column, $parent = null) {
             $result = $this->getEntityManager()->getConnection()
@@ -345,7 +346,9 @@ class LoteRepository extends ServiceEntityRepository
         );
 
         foreach($r as $cache) {
-            if(empty($cache['tipo']) || empty($cache['valor'])) continue;
+            if(empty($cache['tipo']) || empty($cache['valor'])) {
+                continue;
+            }
             $e = new LoteCache();
             $e->setTipo($cache['tipo']);
             $e->setValor($cache['valor']);

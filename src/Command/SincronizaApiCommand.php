@@ -57,10 +57,13 @@ class SincronizaApiCommand extends Command
             if (isset($data['bens']) && is_array($data['bens']) && count($data['bens'])) {
                 $io->note('Sincronizando bens de venda direta');
                 foreach ($data['bens'] as $bem) {
-                    $this->apiService->processLote($bem);
+                    $this->apiService->processLote($bem, true, false);
                 }
                 $io->note('Leilões sincronizados. Total: ' . count($data['bens']));
             }
+            $this->em->flush();
+            $this->em->clear();
+            $this->apiService->geraCacheLotes();
             // Carrega os leilões e bens ativos
         } catch (\Throwable $e){
             dump($e->getMessage());
