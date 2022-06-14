@@ -90,8 +90,17 @@ class LeilaoService
         }
 
         if (isset($filtros['tipo'])) {
+            $tipoSearch = Criteria::expr()->in('l.tipoId', $convertArray($filtros['tipo']));
+            if (!is_array($filtros['tipo'])) {
+                if (!is_numeric($filtros['tipo'])) {
+                    $tipoSearch = Criteria::expr()->orX(
+                        Criteria::expr()->contains('l.tipo', $filtros['tipo']),
+                        Criteria::expr()->contains('l.tipoPai', $filtros['tipo'])
+                    );
+                }
+            }
             $searchCriteria->andWhere(
-                Criteria::expr()->in('l.tipoId', $convertArray($filtros['tipo']))
+                $tipoSearch
             );
         }
 
