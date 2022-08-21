@@ -59,7 +59,7 @@ class SincronizaApiCommand extends Command
                 foreach ($data['bens'] as $bem) {
                     $this->apiService->processLote($bem, true, false);
                 }
-                $io->note('Leilões sincronizados. Total: ' . count($data['bens']));
+                $io->note('Bens em Venda Direta sincronizados. Total: ' . count($data['bens']));
             }
             $this->em->flush();
             $this->em->clear();

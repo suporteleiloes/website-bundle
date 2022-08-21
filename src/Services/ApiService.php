@@ -18,6 +18,7 @@ use SL\WebsiteBundle\Entity\LoteTipoCache;
 use SL\WebsiteBundle\Entity\Post;
 use SL\WebsiteBundle\Helpers\Sluggable;
 use SL\WebsiteBundle\Helpers\Utils;
+use Symfony\Component\Security\Core\Security;
 
 class ApiService
 {
@@ -25,31 +26,78 @@ class ApiService
     private $apiUrl;
     private $apiClient;
     private $apiKey;
+    private $security;
     public static $client;
+    public static $clientAuthenticated;
 
-    public function __construct(EntityManagerInterface $em, $apiUrl, $apiClient, $apiKey)
+    public function __construct(EntityManagerInterface $em, $apiUrl, $apiClient, $apiKey, Security $security)
     {
         $this->em = $em;
         $this->apiUrl = $apiUrl;
         $this->apiClient = $apiClient;
         $this->apiKey = $apiKey;
+        $this->security = $security;
     }
 
-    function getClient()
+    function getClient($token = null)
     {
-        if (!isset(self::$client)) {
-            self::$client = new Client(array(
-                'timeout' => 100,
-                'base_uri' => $this->apiUrl,
-                'headers' => [
-                    'uloc-mi' => $this->apiClient,
-                    'X-AUTH-TOKEN' => $this->apiKey
-                ],
-                '',
-                'verify' => false
-            ));
+        if ($token) {
+            $token = $this->security->getUser()->getExtraFields()['token'];
+            if (!isset(self::$clientAuthenticated)) {
+                self::$clientAuthenticated = new Client(array(
+                    'timeout' => 100,
+                    'base_uri' => $this->apiUrl,
+                    'headers' => [
+                        'uloc-mi' => $this->apiClient,
+                        'X-AUTH-TOKEN' => $this->apiKey,
+                        'Authorization' => 'Bearer ' . $token
+                    ],
+                    'verify' => false
+                ));
+            }
+            return self::$clientAuthenticated;
+        } else {
+            if (!isset(self::$client)) {
+                self::$client = new Client(array(
+                    'timeout' => 100,
+                    'base_uri' => $this->apiUrl,
+                    'headers' => [
+                        'uloc-mi' => $this->apiClient,
+                        'X-AUTH-TOKEN' => $this->apiKey
+                    ],
+                    'verify' => false
+                ));
+            }
+            return self::$client;
         }
-        return self::$client;
+    }
+
+    public function callApi($method, $endpoint, $data = [], $userAuth = false)
+    {
+        try {
+            $response = $this->getClient($userAuth)->request($method, $endpoint, $data);
+        } catch (ClientException $e) {
+            $this->requestError($e);
+        } catch (\Throwable $exception) {
+            throw $exception;
+        }
+        return json_decode($response->getBody(), true);
+    }
+
+    protected function requestError($e)
+    {
+        $body = json_decode($e->getResponse()->getBody(), true);
+        if (isset($body['detail'])) {
+            throw new \Exception(is_array($body['detail']) ? serialize($body['detail']) : $body['detail']);
+        }
+        if (isset($body['error'])) {
+            throw new \Exception((is_array($body['message']) ? (string)join($body['message'], ', ') : $body['message']));
+        }
+        try {
+            throw new \Exception((string)$body);
+        } catch (\Throwable $exception) {
+            throw new \Exception((string)$e->getResponse()->getBody());
+        }
     }
 
     public function requestToken($username, $password)
@@ -324,11 +372,11 @@ class ApiService
 
         if ($autoFlush) $em->flush();
 
-        /*if (isset($data['lances']) && is_array($data['lances']) && count($data['lances'])) {
+        if (isset($data['lances']) && is_array($data['lances']) && count($data['lances'])) {
             foreach($data['lances'] as $lance) {
                 $this->processLance($lance);
             }
-        }*/
+        }
 
         //if (isset($leilao) && !$isTree) $this->geraCacheLeilao($leilao);
         if ($enableCache && !$isTree) $this->geraCacheLotes();
@@ -635,6 +683,16 @@ class ApiService
             throw $exception;
         }
         return json_decode($response->getBody(), true);
+    }
+
+    public function recuperarSenhaSalvar($id, $token, $password)
+    {
+        $data = [RequestOptions::JSON => [
+            'id' => $id,
+            'token' => $token,
+            'password' => $password
+        ]];
+        return $this->callApi('PUT', '/api/public/arrematantes/service/recupera-senha', $data);
     }
 
 }

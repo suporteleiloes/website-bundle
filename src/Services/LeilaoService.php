@@ -130,6 +130,7 @@ class LeilaoService
             $searchCriteria->andWhere(
                 Criteria::expr()->orX(
                     Criteria::expr()->contains('l.titulo', $filtros['busca']),
+                    Criteria::expr()->contains('l.subtitulo', $filtros['busca']),
                     Criteria::expr()->contains('l.numero', $filtros['busca']),
                     Criteria::expr()->contains('l.numeroRotulo', $filtros['busca']),
                     Criteria::expr()->contains('l.descricao', $filtros['busca']),

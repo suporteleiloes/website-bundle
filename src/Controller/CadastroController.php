@@ -2,8 +2,10 @@
 
 namespace SL\WebsiteBundle\Controller;
 
+use App\Entity\AlterarSenhaModel;
 use App\Entity\PreCadastro;
 use App\Entity\RecuperarSenhaModel;
+use App\Form\AlterarSenhaType;
 use App\Form\PreCadastroType;
 use App\Form\RecuperarSenhaType;
 use ReCaptcha\ReCaptcha;
@@ -111,6 +113,36 @@ class CadastroController extends AbstractController
      */
     public function recuperarSenha(Request $request, ReCaptcha $reCaptcha, ApiService $apiService)
     {
+        if ($request->get('id') && $request->get('token')) {
+            $model = new AlterarSenhaModel();
+            $form = $this->createForm(AlterarSenhaType::class, $model);
+            $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {
+                try {
+                    $response = $apiService->recuperarSenhaSalvar(
+                        $request->get('id'),
+                        $request->get('token'),
+                        $model->getSenha()
+                    );
+
+                } catch (\Throwable $exception) {
+                    $form->addError(new FormError($exception->getMessage()));
+                    return $this->renderForm('recuperar-senha-alterar.html.twig', array(
+                        'form' => $form
+                    ));
+                }
+                return $this->renderForm('recuperar-senha-alterar.html.twig', array(
+                    'form' => $form,
+                    'success' => true
+                ));
+            }
+            return $this->renderForm('recuperar-senha-alterar.html.twig', array(
+                'form' => $form,
+                'id' => $request->get('id'),
+                'token' => $request->get('token')
+            ));
+        }
+
         $model = new RecuperarSenhaModel();
         $form = $this->createForm(RecuperarSenhaType::class, $model);
         $form->handleRequest($request);
@@ -144,8 +176,9 @@ class CadastroController extends AbstractController
 
             return $this->redirectToRoute('conta');
         }
+
         return $this->renderForm('recuperar-senha.html.twig', array(
-            'form' => $form
+            'form' => $form,
         ));
     }
 }

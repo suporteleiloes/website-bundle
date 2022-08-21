@@ -57,7 +57,7 @@ class BuscaController extends AbstractController
             $requestFiltros['cidade'] = $request->get('f-cidade');
         }
 
-        $lotes = $leilaoService->buscarBens(null, false, $limit, $offset, $requestFiltros);
+        $lotes = $leilaoService->buscarBens(null, true, $limit, $offset, $requestFiltros);
 
 
         $template = $request->attributes->get('_route') === 'print_leilao'
