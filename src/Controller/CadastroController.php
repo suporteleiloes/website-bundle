@@ -101,7 +101,11 @@ class CadastroController extends AbstractController
      */
     public function conta(Request $request)
     {
-
+        if (isset($_ENV['SL_PAINEL_EXTERNO'])) {
+            if ($_ENV['SL_PAINEL_EXTERNO'] == '1') {
+                return $this->redirect($_ENV['SL_PAINEL_URL']);
+            }
+        }
         return $this->render('conta.html.twig', array());
     }
 
