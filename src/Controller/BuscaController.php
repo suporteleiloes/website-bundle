@@ -77,6 +77,7 @@ class BuscaController extends AbstractController
             'lotesTipo' => $tiposPrincipais,
             'lotesTipoAll' => $tipos,
             'tipoId' => $tipoId,
+            'busca' => $request->get('busca'),
             "totalLotes" => intval(@$lotes['total']),
             "totalPages" => ceil(intval(@$lotes['total']) / $limit),
             "paginaAtual" => $page,

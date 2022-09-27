@@ -50,7 +50,9 @@ class ApiService
                     'headers' => [
                         'uloc-mi' => $this->apiClient,
                         'X-AUTH-TOKEN' => $this->apiKey,
-                        'Authorization' => 'Bearer ' . $token
+                        'Authorization' => 'Bearer ' . $token,
+                        'User-Agent' => @$_SERVER['HTTP_USER_AGENT'],
+                        'X_FORWARDED_FOR' => Utils::get_client_ip_env(),
                     ],
                     'verify' => false
                 ));
@@ -63,7 +65,9 @@ class ApiService
                     'base_uri' => $this->apiUrl,
                     'headers' => [
                         'uloc-mi' => $this->apiClient,
-                        'X-AUTH-TOKEN' => $this->apiKey
+                        'X-AUTH-TOKEN' => $this->apiKey,
+                        'User-Agent' => @$_SERVER['HTTP_USER_AGENT'],
+                        'X_FORWARDED_FOR' => Utils::get_client_ip_env(),
                     ],
                     'verify' => false
                 ));
@@ -384,6 +388,9 @@ class ApiService
         // Atualiza total lotes
         if (isset($leilao)) {
             $leilao->setTotalLotes($em->createQueryBuilder()->select('count(1)')->from(Lote::class, 'l')->where('l.leilao = :leilao')->setParameter('leilao', $leilao->getId())->getQuery()->getSingleScalarResult());
+            $this->geraCacheLeilao($leilao);
+            $em->persist($leilao);
+            if ($autoFlush) $em->flush();
         }
     }
 

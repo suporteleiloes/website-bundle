@@ -104,6 +104,50 @@ class LeilaoService
             );
         }
 
+        if (isset($filtros['marca'])) {
+            $marcaSearch = Criteria::expr()->in('l.marcaId', $convertArray($filtros['marca']));
+            if (!is_array($filtros['marca'])) {
+                if (!is_numeric($filtros['marca'])) {
+                    $marcaSearch = Criteria::expr()->orX(
+                        Criteria::expr()->contains('l.marca', $filtros['marca']),
+                        Criteria::expr()->contains('l.marcaId', $filtros['marca'])
+                    );
+                }
+            }
+            $searchCriteria->andWhere(
+                $marcaSearch
+            );
+        }
+
+        if (isset($filtros['modelo'])) {
+            $modeloSearch = Criteria::expr()->in('l.modeloId', $convertArray($filtros['modelo']));
+            if (!is_array($filtros['modelo'])) {
+                if (!is_numeric($filtros['modelo'])) {
+                    $modeloSearch = Criteria::expr()->orX(
+                        Criteria::expr()->contains('l.modelo', $filtros['modelo']),
+                        Criteria::expr()->contains('l.modeloId', $filtros['modelo'])
+                    );
+                }
+            }
+            $searchCriteria->andWhere(
+                $modeloSearch
+            );
+        }
+
+        if (isset($filtros['ano'])) {
+            $anoSearch = Criteria::expr()->in('l.ano', $convertArray($filtros['ano']));
+            if (!is_array($filtros['ano'])) {
+                if (!is_numeric($filtros['ano'])) {
+                    $anoSearch = Criteria::expr()->orX(
+                        Criteria::expr()->contains('l.ano', $filtros['ano'])
+                    );
+                }
+            }
+            $searchCriteria->andWhere(
+                $anoSearch
+            );
+        }
+
         if (isset($filtros['comitente'])) {
             $searchCriteria->andWhere(
                 Criteria::expr()->in('l.comitenteId', $convertArray($filtros['comitente']))
@@ -166,6 +210,10 @@ class LeilaoService
         $qbCount->addCriteria($searchCriteria);
 
         $qb->setMaxResults($limit)->setFirstResult($offset);
+
+        if ($leilao) {
+            $qb->orderBy('l.numero', 'ASC');
+        }
 
         $total = intval($qbCount->getQuery()->getSingleScalarResult());
         return [

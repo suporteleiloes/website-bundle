@@ -81,6 +81,18 @@ class DefaultController extends SLAbstractController
             $requestFiltros['tipo'] = $request->get('f-tipo');
         }
 
+        if ($request->get('f-marca')) {
+            $requestFiltros['marca'] = $request->get('f-marca');
+        }
+
+        if ($request->get('f-modelo')) {
+            $requestFiltros['modelo'] = $request->get('f-modelo');
+        }
+
+        if ($request->get('f-ano')) {
+            $requestFiltros['ano'] = $request->get('f-ano');
+        }
+
         if ($request->get('f-comitente')) {
             $requestFiltros['comitente'] = $request->get('f-comitente');
         }
