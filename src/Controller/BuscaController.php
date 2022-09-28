@@ -17,21 +17,20 @@ class BuscaController extends AbstractController
 {
     /**
      * @Route("/busca", name="busca", methods={"GET", "POST"})
+     * @Route("/ofertas", name="busca_vendaDireta", methods={"GET", "POST"})
      *
      * @param Request $request
      * @return mixed
      */
     public function busca(Request $request, LeilaoService $leilaoService)
     {
-
+        $routeName = $request->attributes->get('_route');
         $page = $request->query->getInt('page', 1);
         $page = $page === 0 ? 1 : $page;
         $limit = 10;
         $offset = ($page * $limit) - $limit;
 
         $tipoId = $request->get('tipo');
-
-        $filtros = [];
 
         $requestFiltros = [];
 
@@ -57,6 +56,10 @@ class BuscaController extends AbstractController
             $requestFiltros['cidade'] = $request->get('f-cidade');
         }
 
+        if ($routeName === 'busca_vendaDireta') {
+            $requestFiltros['vendaDireta'] = 1;
+        }
+
         $lotes = $leilaoService->buscarBens(null, true, $limit, $offset, $requestFiltros);
 
 
@@ -73,7 +76,7 @@ class BuscaController extends AbstractController
         }
         return $this->render($template, [
             'lotes' => @$lotes['result'],
-            'filtros' => $filtros,
+            'filtros' => $requestFiltros,
             'lotesTipo' => $tiposPrincipais,
             'lotesTipoAll' => $tipos,
             'tipoId' => $tipoId,

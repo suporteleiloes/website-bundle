@@ -60,6 +60,8 @@ class ApiAuthenticator extends AbstractLoginFormAuthenticator
                 //(new RememberMeBadge())->enable(),
             ]);
 
+        $request->getSession()->set('sl_session-token', $userData['token']);
+
         return $passport;
     }
 

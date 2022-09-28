@@ -12,7 +12,10 @@ use ReCaptcha\ReCaptcha;
 use SL\WebsiteBundle\Services\ApiService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
+use Symfony\Component\HttpFoundation\Cookie;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\User\InMemoryUser;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
@@ -25,6 +28,30 @@ use Symfony\Component\Security\Http\Authenticator\FormLoginAuthenticator;
  */
 class CadastroController extends AbstractController
 {
+
+    public static function createLoginResponse($session, $token, $personName, $username, $redirect = null, $clear = false)
+    {
+        if ($redirect !== null) {
+            $response = new RedirectResponse($redirect);
+        } else {
+            $response = new Response();
+        }
+        /*if ($clear) {
+            $cookieExpires = 0;
+        } else {
+            $cookieExpires = time() + 86400; // TODO: Definir cookie baseado na data de expiração do token
+        }
+        $cookieSession = Cookie::create('sl_session')->withValue($session)->withExpires($cookieExpires)->withSecure(false)->withSameSite(null);
+        $cookieToken = Cookie::create('sl_session-token')->withValue($token)->withExpires($cookieExpires)->withSecure(false)->withSameSite(null);
+        $cookiePerson = Cookie::create('sl_session-person')->withValue($personName)->withExpires($cookieExpires)->withSecure(false)->withSameSite(null);
+        $cookieUsername = Cookie::create('sl_session-username')->withValue($username)->withExpires($cookieExpires)->withSecure(false)->withSameSite(null);
+        $response->headers->setCookie($cookieSession);
+        $response->headers->setCookie($cookieToken);
+        $response->headers->setCookie($cookiePerson);
+        $response->headers->setCookie($cookieUsername);*/
+        return $response;
+    }
+
     /**
      * @Route("/cadastro", name="cadastro", methods={"GET", "POST"})
      */
@@ -70,7 +97,8 @@ class CadastroController extends AbstractController
                 $request
             );
 
-            return $this->redirectToRoute('conta');
+            $response = self::createLoginResponse(\json_encode($registerResponse), $registerResponse['token'], $registerResponse['user']['name'], $registerResponse['user']['username'], $this->generateUrl('conta', []));
+            return $response;
         }
 
         return $this->renderForm($cadastroTemplate, array(
@@ -86,11 +114,22 @@ class CadastroController extends AbstractController
      */
     public function login(AuthenticationUtils $authenticationUtils, Request $request)
     {
-
         return $this->render('@SLWebsite/login/login.html.twig', [
             'error' => $authenticationUtils->getLastAuthenticationError(),
             'last_username' => $authenticationUtils->getLastUsername(),
         ]);
+    }
+
+    /**
+     * @Route("/logout-event", name="logout", methods={"GET", "POST"})
+     *
+     * @param Request $request
+     * @return mixed
+     */
+    public function logout(AuthenticationUtils $authenticationUtils, Request $request)
+    {
+        $response = self::createLoginResponse('', '', '', '', $this->generateUrl('home', []), true);
+        return $response;
     }
 
     /**
@@ -101,9 +140,13 @@ class CadastroController extends AbstractController
      */
     public function conta(Request $request)
     {
-        if (isset($_ENV['SL_PAINEL_EXTERNO'])) {
-            if ($_ENV['SL_PAINEL_EXTERNO'] == '1') {
-                return $this->redirect($_ENV['SL_PAINEL_URL']);
+        if (isset($_ENV['SL_PAINEL_TIPO'])) {
+            if ($_ENV['SL_PAINEL_TIPO'] == 'externo') {
+                return $this->redirect($_ENV['SL_PAINEL_LOGIN_URL'] . '?token=' . $this->getUser()->getExtraFields()['token']);
+                /*return $this->render('loginExterno.html.twig', [
+                    'painelUrl' => $_ENV['SL_PAINEL_URL'],
+                    'painelLoginUrl' => $_ENV['SL_PAINEL_LOGIN_URL'],
+                ]);*/
             }
         }
         return $this->render('conta.html.twig', array());
