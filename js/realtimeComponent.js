@@ -2,12 +2,13 @@ import $ from 'jquery'
 import Vue from 'vue'
 import createComunicator from './comunicator'
 import Mixin from './realtimeMixin'
+import UserMixin from './vue/mixins/userMixin'
 import Utils from './vue/plugins/utils'
 Vue.use(Utils)
 
 new Vue({
     el: '#app',
-    mixins: [Mixin],
+    mixins: [Mixin, UserMixin],
     components: {},
     data() {
         return {

@@ -71,7 +71,7 @@ class ApiAuthenticator extends AbstractLoginFormAuthenticator
             return new RedirectResponse($target);
         }
         return new RedirectResponse(
-            $this->router->generate('home')
+            $this->router->generate('conta', ['externalAutologin' => 1])
         );
     }
 

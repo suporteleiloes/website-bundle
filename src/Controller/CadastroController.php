@@ -17,6 +17,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\User\InMemoryUser;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
@@ -142,7 +143,11 @@ class CadastroController extends AbstractController
     {
         if (isset($_ENV['SL_PAINEL_TIPO'])) {
             if ($_ENV['SL_PAINEL_TIPO'] == 'externo') {
-                return $this->redirect($_ENV['SL_PAINEL_LOGIN_URL'] . '?token=' . $this->getUser()->getExtraFields()['token']);
+                $url = $_ENV['SL_PAINEL_LOGIN_URL'] . '?token=' . $this->getUser()->getExtraFields()['token'];
+                if ($request->get('externalAutologin')) {
+                    $url = $url . '&redirectAfterLogin=' . $this->generateUrl('home', [], UrlGeneratorInterface::ABSOLUTE_URL);
+                }
+                return $this->redirect($url);
                 /*return $this->render('loginExterno.html.twig', [
                     'painelUrl' => $_ENV['SL_PAINEL_URL'],
                     'painelLoginUrl' => $_ENV['SL_PAINEL_LOGIN_URL'],
