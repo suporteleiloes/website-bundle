@@ -14,11 +14,11 @@ export default {
         this.getLotesFavoritos()
     },
     methods: {
-        needLogged () {
+        needLogged (showAlert = true) {
             if (typeof TOKEN !== "undefined" && TOKEN) {
                 return true
             }
-            alert('Você precisa estar logado');
+            showAlert && alert('Você precisa estar logado');
             throw new Error('Não logado.');
         },
         http () {
@@ -29,7 +29,7 @@ export default {
         },
         getLotesFavoritos () {
             try {
-                this.needLogged()
+                this.needLogged(false)
                 if (!Cookie.get(lotesFavoritosCookieName)) {
                     this.http().get('api/arrematantes/lotes/favoritos')
                         .then(response => {
