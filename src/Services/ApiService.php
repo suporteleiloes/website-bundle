@@ -702,4 +702,10 @@ class ApiService
         return $this->callApi('PUT', '/api/public/arrematantes/service/recupera-senha', $data);
     }
 
+    public function getCategorias()
+    {
+        return $this->callApi('GET', '/api/public/service/tiposBem');
+    }
+
+
 }
