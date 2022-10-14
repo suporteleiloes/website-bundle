@@ -58,6 +58,12 @@ class CadastroController extends AbstractController
      */
     public function cadastro(Request $request, ReCaptcha $reCaptcha, ApiService $apiService, UserAuthenticatorInterface $userAuthenticator, FormLoginAuthenticator $formLoginAuthenticator)
     {
+        if (isset($_ENV['SL_PAINEL_CADASTRO_TIPO'])) {
+            if ($_ENV['SL_PAINEL_CADASTRO_TIPO'] == 'externo') {
+                $url = $_ENV['SL_PAINEL_CADASTRO_URL'];
+                return $this->redirect($url);
+            }
+        }
         $cadastroTemplate = 'cadastro.html.twig';
         $cadastro = new PreCadastro();
         $form = $this->createForm(PreCadastroType::class, $cadastro);
