@@ -482,6 +482,8 @@ class ApiService
             $entity->setAcreatedAt(new \DateTime());
         }
 
+        $entity->setAid(@$data['id']);
+        $entity->setActive(@$data['active']);
         $entity->setTitle(@$data['title']);
         $entity->setPageName(@$data['pageName']);
         $entity->setPageDescription(@$data['pageDescription']);
