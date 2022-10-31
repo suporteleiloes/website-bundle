@@ -93,6 +93,12 @@ class Leilao extends ApiSync
     private $praca = 1;
 
     /**
+     * Em qual leilão está. Isso serve em caso de leilões de mais de uma data.
+     * @ORM\Column(type="smallint", options={"default": 1})
+     */
+    private $instancia = 1;
+
+    /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $titulo;
@@ -1141,6 +1147,22 @@ class Leilao extends ApiSync
     public function setDataAbertura3($dataAbertura3): void
     {
         $this->dataAbertura3 = $dataAbertura3;
+    }
+
+    /**
+     * @return int
+     */
+    public function getInstancia(): int
+    {
+        return $this->instancia;
+    }
+
+    /**
+     * @param int $instancia
+     */
+    public function setInstancia(int $instancia): void
+    {
+        $this->instancia = $instancia;
     }
 
     public function __serialize(): array

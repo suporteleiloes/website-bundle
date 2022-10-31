@@ -173,6 +173,7 @@ class ApiService
         }
 
         $praca = isset($data['praca']) ? intval($data['praca']) : 1;
+        $instancia = isset($data['instancia']) ? intval($data['instancia']) : 1;
         $data1 = isset($data['data1']) ? \DateTime::createFromFormat('Y-m-d H:i:s+', $data['data1']['date']) : null;
         $data2 = isset($data['data2']) ? \DateTime::createFromFormat('Y-m-d H:i:s+', $data['data2']['date']) : null;
         $data3 = isset($data['data3']) ? \DateTime::createFromFormat('Y-m-d H:i:s+', $data['data3']['date']) : null;
