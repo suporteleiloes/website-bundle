@@ -88,12 +88,15 @@ class Leilao extends ApiSync
     private $dataAbertura3;
 
     /**
+     * Em qual leilão está. Isso serve em caso de leilões de mais de uma data.
      * @ORM\Column(type="smallint", options={"default": 1})
      */
     private $praca = 1;
 
     /**
-     * Em qual leilão está. Isso serve em caso de leilões de mais de uma data.
+     * Quantidade de datas para este leilão. Pode acontecer de ser 3 instâncias (3 leilões), mas
+     * somente a primeira e segunda data já está marcada, então não confie 100% no data1, data2 e data3
+     * como referência para quantidade de leilões
      * @ORM\Column(type="smallint", options={"default": 1})
      */
     private $instancia = 1;

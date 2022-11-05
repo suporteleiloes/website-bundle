@@ -4,7 +4,11 @@ import createComunicator from './comunicator'
 import Mixin from './realtimeMixin'
 import UserMixin from './vue/mixins/userMixin'
 import Utils from './vue/plugins/utils'
+import Dialog from './vue/plugins/dialog'
 Vue.use(Utils)
+Vue.use(Dialog)
+
+import '../css/app.scss'
 
 new Vue({
     el: '#app',

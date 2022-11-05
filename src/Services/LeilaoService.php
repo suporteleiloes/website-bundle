@@ -44,6 +44,7 @@ class LeilaoService
      *          'ignorarLeilaoEncerrado' => (boolean) Se verdadeiro, encontra bens mesmo estando em leilões já encerrados
      *          'status' => (mixed|int) Status do lote.
      *          'destaque' => (boolean) Buscar pelo destaque ou não.
+     *          'destaqueComVendaDireta' => (boolean) Adicionar bens em venda direta aos destaques
      *          'vendaDireta' => (boolean) Buscar por venda direta ou não. Null não aplica filtro
      *      ]
      * @return array|Lote
@@ -78,9 +79,18 @@ class LeilaoService
         }
 
         if (isset($filtros['destaque'])) {
-            $searchCriteria->andWhere(
-                Criteria::expr()->eq('l.destaque', $filtros['destaque'])
-            );
+            if (isset($filtros['destaqueComVendaDireta']) && $filtros['destaqueComVendaDireta']) {
+                $searchCriteria->andWhere(
+                    Criteria::expr()->orX(
+                        Criteria::expr()->eq('l.destaque', $filtros['destaque']),
+                        Criteria::expr()->eq('l.vendaDireta', true)
+                    )
+                );
+            } else {
+                $searchCriteria->andWhere(
+                    Criteria::expr()->eq('l.destaque', $filtros['destaque'])
+                );
+            }
         }
 
         if (isset($filtros['vendaDireta'])) {

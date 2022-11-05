@@ -62,7 +62,8 @@ export default {
         systemError: systemError,
         errorsToString: errorToString,
         alertApiError: function (response, title = null, color = null, message = null) {
-          alert(message || this.errorsToString(response))
+          // alert(message || this.errorsToString(response))
+          this.$dialog.new({title: 'Ops', message: message || this.errorsToString(response)})
         },
       }
     })

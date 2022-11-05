@@ -203,6 +203,7 @@ class ApiService
         $leilao->setStatusString(@$data['statusString']);
         $leilao->setStatusTipo(@$data['statusTipo']);
         $leilao->setPraca($praca);
+        $leilao->setInstancia($data['instancia'] ?? null);
         $leilao->setLeiloeiro($data['leiloeiro']['nome']);
         $leilao->setLocal($data['patio']);
         $leilao->setInfoVisitacao($data['infoVisitacao']);
@@ -262,7 +263,7 @@ class ApiService
         }
         $entityId = $data['id'];
         if (intval($data['status']) === 0) {
-            return; // Rascunho
+            #return; // Rascunho ###@TODO: REMOVER
         }
         // Verifica se já existe o lote. Se não existir, cria um.
         $em = $this->em;
@@ -451,7 +452,7 @@ class ApiService
     {
         //dump('Gerando cache do leilão ' . $leilao->getId());
         $filtros = $this->em->getRepository(Leilao::class)->filtros($leilao->getId());
-        $cache = $leilao->getCache() ?? new LeilaoCache();
+        $cache = $this->em->getRepository(LeilaoCache::class)->findOneByLeilao($leilao->getId()) ?? new LeilaoCache();
         $cache->setFiltros($filtros);
         $cache->setLeilao($leilao);
         //$leilao->setCache($cache);
