@@ -277,9 +277,14 @@ class Lote extends ApiSync
     private $tipoPaiSlug;
 
     /**
-     * @ORM\Column(type="object", nullable=true)
+     * @ORM\Column(type="json", nullable=true)
      */
     private $extra;
+
+    /**
+     * @ORM\Column(type="json", nullable=true)
+     */
+    private $bemExtra;
 
     /**
      * @ORM\Column(type="boolean", nullable=true)
@@ -1586,6 +1591,22 @@ class Lote extends ApiSync
         return trim(mb_strtolower($this->statusString)) === 'retirado';
     }
 
+    /**
+     * @return mixed
+     */
+    public function getBemExtra()
+    {
+        return $this->bemExtra;
+    }
+
+    /**
+     * @param mixed $bemExtra
+     */
+    public function setBemExtra($bemExtra): void
+    {
+        $this->bemExtra = $bemExtra;
+    }
+
     public function getDadosParaJsonSite()
     {
         return [
@@ -1598,10 +1619,15 @@ class Lote extends ApiSync
             "observacao" => $this->getObservacao(),
             "destaque" => $this->isDestaque(),
             "status" => $this->getStatus(),
+            "valorMinimo" => $this->getValorMinimo(),
+            "valorAvaliacao" => $this->getValorAvaliacao(),
             "valorIncremento" => $this->getValorIncremento(),
+            "valorAtual" => $this->valorAtual(),
+            "valorDiferencaAvaliacao" => $this->diferencaAvaliacao(),
+            "valorDiferencaAvaliacaoPorcentagem" => $this->diferencaAvaliacaoPorcentagem(),
             "valorInicial" => $this->getValorInicial(),
             "valorInicial2" => $this->getValorInicial2(),
-            "valorInicial3" => $this->getValorInicial3(),
+            "valorInicial3" => $this->getValorInicial3()
         ];
     }
 

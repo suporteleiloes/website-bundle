@@ -157,7 +157,7 @@ class DefaultController extends SLAbstractController
     }
 
     /**
-     * @Route("/oferta/{tipoPai}/{tipo}/{id}/{slug}", name="lote")
+     * @Route("/oferta/{tipoOferta}/{tipoPai}/{tipo}/{id}/{aid}/{slug}", name="lote")
      */
     public function lote(Lote $lote)
     {

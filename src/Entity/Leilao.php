@@ -311,6 +311,11 @@ class Leilao extends ApiSync
     private $textoPropostas;
 
     /**
+     * @ORM\Column(type="json", length=255, nullable=true)
+     */
+    private $sistemaTaxa;
+
+    /**
      * @ORM\OneToMany(targetEntity="SL\WebsiteBundle\Entity\Lote", mappedBy="leilao", cascade={"persist"})
      * @ORM\OrderBy({"numero" = "ASC", "id" = "ASC"})
      */
@@ -1168,6 +1173,22 @@ class Leilao extends ApiSync
         $this->instancia = $instancia;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getSistemaTaxa()
+    {
+        return $this->sistemaTaxa;
+    }
+
+    /**
+     * @param mixed $sistemaTaxa
+     */
+    public function setSistemaTaxa($sistemaTaxa): void
+    {
+        $this->sistemaTaxa = $sistemaTaxa;
+    }
+
     public function __serialize(): array
     {
         return [
@@ -1184,10 +1205,13 @@ class Leilao extends ApiSync
             'tipo' => $this->tipo,
             'dataProximoLeilao' => $this->dataProximoLeilao,
             'judicial' => $this->judicial,
+            'praca' => $this->praca,
             'totalLotes' => $this->totalLotes,
             'status' => $this->status,
+            'statusString' => $this->statusString,
             'leiloeiro' => $this->leiloeiro,
             'leiloeiroLogo' => $this->leiloeiroLogo,
+            'sistemaTaxa' => $this->sistemaTaxa
         ];
     }
 

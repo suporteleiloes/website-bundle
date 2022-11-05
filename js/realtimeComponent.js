@@ -8,9 +8,15 @@ import Dialog from './vue/plugins/dialog'
 Vue.use(Utils)
 Vue.use(Dialog)
 
+Vue.component(
+    'lance',
+    // A dynamic import returns a Promise.
+    () => import('./vue/components/lote/Lance')
+)
+
 import '../css/app.scss'
 
-new Vue({
+const app = new Vue({
     el: '#app',
     mixins: [Mixin, UserMixin],
     components: {},
@@ -30,6 +36,10 @@ new Vue({
         })
     },
     mounted () {
+        document.body.classList.add('app-loaded')
+        setTimeout(() => {
+            document.body.classList.add('app-anim')
+        }, 1)
     },
     watch: {
     },

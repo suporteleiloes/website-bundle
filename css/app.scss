@@ -1,3 +1,19 @@
+.prevent-app-load{
+  transition: all 200ms;
+  opacity: 0;
+  display: none;
+}
+.app-loaded {
+  &.app-anim {
+    .prevent-app-load {
+      opacity: 1;
+    }
+  }
+  .prevent-app-load {
+    display: inherit !important;
+  }
+}
+
 .app-dialog-container {
   .dialog-window {
     position: fixed;

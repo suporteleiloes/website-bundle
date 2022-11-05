@@ -234,6 +234,7 @@ class ApiService
         $leilao->setVideo(@$data['video']);
         $leilao->setRegras(@$data['regras']);
         $leilao->setTextoPropostas(@$data['textoPropostas']);
+        $leilao->setSistemaTaxa($data['sistemaTaxa'] ?? null);
 
         $em->persist($leilao);
         #//dump('Persistindo leilão ID ' . $data['id']);
@@ -321,7 +322,7 @@ class ApiService
         // Bem
         $lote->setBemId($data['bem']['id']);
         $lote->setTitulo($data['bem']['siteTitulo']);
-        $lote->setSubtitulo(!empty($data['bem']['siteSubtitulo']) ? $data['bem']['siteSubtitulo'] : mb_substr($data['bem']['siteDescricao'], 0, 254));
+        $lote->setSubtitulo(!empty($data['bem']['siteSubtitulo']) ? $data['bem']['siteSubtitulo'] : strip_tags(mb_substr($data['bem']['siteDescricao'], 0, 254)));
         $lote->setDescricao($data['bem']['siteDescricao']);
         $lote->setObservacao($data['bem']['siteObservacao']);
         $lote->setDocumentos($data['bem']['arquivos']);
@@ -345,7 +346,8 @@ class ApiService
         $lote->setTipoPaiId(isset($data['bem']['tipo']['parent']) ? $data['bem']['tipo']['parent']['id'] : @$data['bem']['tipoPaiId']);
         $lote->setTipoPai(isset($data['bem']['tipo']['parent']) ? $data['bem']['tipo']['parent']['nome'] : @$data['bem']['tipoPai']);
         $lote->setTipoPaiSlug(Sluggable::slugify(isset($data['bem']['tipo']['parent']) ? $data['bem']['tipo']['parent']['nome'] : @$data['bem']['tipoPai']));
-        $lote->setExtra(@$data['bem']['extra']);
+        $lote->setExtra($data['extra'] ?? null);
+        $lote->setBemExtra($data['bem']['extra'] ?? null);
         $lote->setDestaque(@$data['bem']['destaque']); // TODO: Bem ou lote ?
         $lote->setConservacaoId(@$data['bem']['conservacao']['id']);
         $lote->setConservacao(@$data['bem']['conservacao']['nome']);
