@@ -78,7 +78,7 @@
               <button class="btn b-automatico" @click="configurarLanceAutomatico">
                 Lance Automático
               </button>
-              <button class="btn auditorio">
+              <button @click="gotoAuditorio" class="btn auditorio">
                 Auditório
               </button>
             </div>
@@ -430,6 +430,9 @@ export default {
             // this.$q.loading.hide()
             this.alertApiError(error)
           })
+    },
+    gotoAuditorio () {
+      window.location = PAINEL_URL + `/#/auditorio/${this.leilao.id}`
     }
   }
 }
