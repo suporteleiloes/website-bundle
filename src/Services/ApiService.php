@@ -455,6 +455,14 @@ class ApiService
         #//dump('Persistindo lance ID ' . $data['id'] . ' do lote ID ' . $data['lote']['id']);
         $em->persist($lance);
         if ($autoFlush) $em->flush();
+        $totalLances = $em->getRepository(Lance::class)->createQueryBuilder('l')
+            ->select('count(1)')
+            ->where('l.lote = :lote')
+            ->setParameter('lote', $lote->getId())
+            ->getQuery()->getSingleScalarResult();
+        $lote->setTotalLances($totalLances);
+        $em->persist($lote);
+        if ($autoFlush) $em->flush();
     }
 
     public function geraCacheLeilao(Leilao $leilao, $autoFlush = true)

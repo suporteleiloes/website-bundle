@@ -66,7 +66,7 @@ class DefaultController extends SLAbstractController
 
         $page = $request->query->getInt('page', 1);
         $page = $page === 0 ? 1 : $page;
-        $limit = 10;
+        $limit = 100;
         $offset = ($page * $limit) - $limit;
 
         $tipoId = $request->get('tipo');

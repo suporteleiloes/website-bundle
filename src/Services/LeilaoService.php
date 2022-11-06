@@ -186,7 +186,7 @@ class LeilaoService
                     Criteria::expr()->contains('l.titulo', $filtros['busca']),
                     Criteria::expr()->contains('l.subtitulo', $filtros['busca']),
                     Criteria::expr()->contains('l.numero', $filtros['busca']),
-                    Criteria::expr()->contains('l.numeroRotulo', $filtros['busca']),
+                    Criteria::expr()->contains('l.numeroString', $filtros['busca']),
                     Criteria::expr()->contains('l.descricao', $filtros['busca']),
                     Criteria::expr()->contains('l.marca', $filtros['busca']),
                     Criteria::expr()->contains('l.modelo', $filtros['busca']),

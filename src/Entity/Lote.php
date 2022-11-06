@@ -412,6 +412,11 @@ class Lote extends ApiSync
     private $tour360;
 
     /**
+     * @ORM\Column(type="smallint", nullable=true, options={"default": 0})
+     */
+    protected $totalLances = 0;
+
+    /**
      * @ORM\OneToMany(targetEntity="SL\WebsiteBundle\Entity\Lance", mappedBy="lote", orphanRemoval=true, cascade={"persist", "remove"})
      * @ORM\OrderBy({"valor" = "DESC", "data" = "ASC"})
      */
@@ -1628,6 +1633,22 @@ class Lote extends ApiSync
         $this->parcelamentoMinimoEntrada = $parcelamentoMinimoEntrada;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getTotalLances()
+    {
+        return $this->totalLances;
+    }
+
+    /**
+     * @param mixed $totalLances
+     */
+    public function setTotalLances($totalLances): void
+    {
+        $this->totalLances = $totalLances ?? 0;
+    }
+
     public function getDadosParaJsonSite()
     {
         return [
@@ -1654,7 +1675,8 @@ class Lote extends ApiSync
             'parcelamentoQtdParcelas' => $this->parcelamentoQtdParcelas,
             'parcelamentoMinimoEntrada' => $this->parcelamentoMinimoEntrada,
             'parcelamentoIndices' => $this->parcelamentoIndices,
-            'permitirPropostas' => $this->permitirPropostas
+            'permitirPropostas' => $this->permitirPropostas,
+            'totalLances' => $this->totalLances,
         ];
     }
 
