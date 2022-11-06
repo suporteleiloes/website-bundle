@@ -27,7 +27,7 @@ export default {
   },
   computed: {
     cookieName () {
-      return `leilao.${this.leilao.id}.habilitacao`
+      return `leilao_${this.leilao.id}_habilitacao`
     },
     leilao () {
       return this.controlador.leilao

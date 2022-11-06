@@ -2,6 +2,8 @@
 
 namespace SL\WebsiteBundle\Controller;
 
+use Doctrine\ORM\EntityManagerInterface;
+use ReCaptcha\ReCaptcha;
 use SL\WebsiteBundle\Controller\Extra\SLAbstractController;
 use SL\WebsiteBundle\Entity\Lote;
 use SL\WebsiteBundle\Entity\Lance;
@@ -9,7 +11,12 @@ use SL\WebsiteBundle\Entity\Leilao;
 
 use SL\WebsiteBundle\Entity\LoteTipoCache;
 use Doctrine\Common\Collections\ArrayCollection;
+use SL\WebsiteBundle\Entity\Proposta;
+use SL\WebsiteBundle\Form\PropostaType;
 use SL\WebsiteBundle\Services\LeilaoService;
+use Symfony\Component\Form\FormError;
+use Symfony\Component\HttpFoundation\Cookie;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
@@ -135,7 +142,7 @@ class DefaultController extends SLAbstractController
     /**
      * @Route("/oferta/{tipoOferta}/{tipoPai}/{tipo}/{id}/id-{aid}/{slug}", name="lote")
      */
-    public function lote(Lote $lote)
+    public function lote(Lote $lote, Request $request, ReCaptcha $reCaptcha, EntityManagerInterface $em)
     {
         if ($lote->getLeilao() && $lote->getLeilao()->isEncerrado() && (!isset($_ENV['MOSTRAR_LEILAO_ENCERRADO']) || !$_ENV['MOSTRAR_LEILAO_ENCERRADO'])) {
             return $this->redirectToRoute('leilao_encerrado', ['id' => $lote->getLeilao()->getId()]);
@@ -202,6 +209,41 @@ class DefaultController extends SLAbstractController
         }
         $loteJson = \json_encode($loteArray);
 
+        $formProposta = null;
+        $formPropostaSucesso = null;
+        if (!$lote->getLeilao() && $lote->getVendaDireta()) {
+            $cookieName = 'bem_proposta_' . $lote->getAid();
+            if ($request->cookies->get($cookieName)) {
+                $formPropostaSucesso = true;
+            } else {
+                $model = new Proposta();
+                $formProposta = $this->createForm(PropostaType::class, $model);
+                $formProposta->handleRequest($request);
+                if ($formProposta->isSubmitted() && $formProposta->isValid()) {
+                    $botCheck = $reCaptcha->verify($request->request->get('g-recaptcha-response'));
+                    $botCheckTest = $botCheck->isSuccess() && $botCheck->getScore() >= 0.5;
+                    if (!$botCheckTest) {
+                        $formProposta->addError(new FormError('ReCaptcha inválido'));
+                    }
+
+                    if ($formProposta->isValid()) {
+                        $em->persist($model);
+                        $em->flush();
+                        $response = new RedirectResponse($request->getUri());
+                        $cookie = Cookie::create($cookieName, 1)
+                            ->withExpires((new \DateTime())->modify('+30 days')->getTimestamp())
+                            ->withSecure(false)
+                            ->withSameSite(null)
+                            ->withPath('/');
+                        $response->headers->setCookie($cookie);
+                        return $response;
+                    } else {
+                        // Error
+                    }
+                }
+            }
+        }
+
         return $this->render('default/lote.html.twig', [
             'lote' => $lote,
             'leilao' => $lote->getLeilao(),
@@ -209,6 +251,8 @@ class DefaultController extends SLAbstractController
             'loteJson' => $loteJson,
             'next' => $next,
             'prev' => $prev,
+            'formProposta' => $formProposta ? $formProposta->createView() : null,
+            'formPropostaSucesso' => $formPropostaSucesso,
         ]);
     }
 
