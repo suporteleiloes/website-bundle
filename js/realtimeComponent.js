@@ -5,8 +5,10 @@ import Mixin from './realtimeMixin'
 import UserMixin from './vue/mixins/userMixin'
 import Utils from './vue/plugins/utils'
 import Dialog from './vue/plugins/dialog'
+import Modal from './vue/plugins/modal'
 Vue.use(Utils)
 Vue.use(Dialog)
+Vue.use(Modal)
 
 Vue.component(
     'lance',

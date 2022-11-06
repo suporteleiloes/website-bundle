@@ -3,6 +3,7 @@ import Cookie from '../utils/cookie'
 const lotesFavoritosCookieName = 'lotesFavoritos'
 const leiloesFavoritosCookieName = 'leiloesFavoritos'
 const bensFavoritosCookieName = 'bensFavoritos'
+import {setHttp} from "../../domain/services"
 
 export default {
     data () {
@@ -18,6 +19,7 @@ export default {
         if (typeof TOKEN !== "undefined" && TOKEN) {
             this.comunicatorClass.http.defaults.headers.common.Authorization = 'Bearer ' + TOKEN
         }
+        setHttp(this.comunicatorClass.http)
         this.getFavoritos()
         this.getFavoritos('leiloes')
         this.getFavoritos('bens')
@@ -57,7 +59,7 @@ export default {
                     this.http().get(`api/arrematantes/${endpoint}/favoritos`)
                         .then(response => {
                             const ids = response.data.map(findCallback)
-                            Cookie.add(cookieName, JSON.stringify(ids), (3600*10))
+                            Cookie.add(cookieName, JSON.stringify(ids), (86400*100))
                             this[dataKey] = ids
                         })
                         .catch(error => {
@@ -106,7 +108,7 @@ export default {
                                 f.splice(f.indexOf(id), 1)
                             }
                         }
-                        Cookie.add(cookieName, JSON.stringify(f), (3600*10))
+                        Cookie.add(cookieName, JSON.stringify(f), (86400*100))
                         resolve()
                     })
                     .catch(error => {

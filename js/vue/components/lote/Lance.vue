@@ -18,7 +18,7 @@
             <td>{{lance.data|formatDate('dd/MM/yyyy HH:mm:ss')}}</td>
             <td>R$ {{ lance.valor|moeda }}</td>
           </tr>
-          <tr v-if="lote.lances.length == 0">
+          <tr v-if="lote.lances.length === 0">
             <td colspan="3" style="text-align: left; font-weight: normal">Nenhum lance registrado para este lote.
             </td>
           </tr>
@@ -52,15 +52,16 @@
 
             <div class="line2">
               <button class="btn b-automatico" @click="configurarLanceAutomatico">
-                <span class="hidden-xs">Lance Automático</span>
+                Lance Automático
               </button>
               <button class="btn auditorio">
                 Auditório
               </button>
             </div>
-            <button class="btn habilitese">
+<!--            <button class="btn habilitese">
               Habilite-se
-            </button>
+            </button>-->
+            <habilitacao-btn />
           </div>
 
           <div class="lote-notification-sound">
@@ -115,9 +116,11 @@
 import LeilaoMixin from 'comunicator/src/integrations/vue/mixins/leilao.mixin'
 import {convertRealToMoney, REAL_BRL} from "../../utils/money"
 import {VMoney} from 'v-money'
+import HabilitacaoBtn from "../leilao/HabilitacaoBtn"
 export default {
   name: "Lance",
-  provite: function () {
+  components: {HabilitacaoBtn},
+  provide: function () {
     return {
       controlador: this
     }
@@ -147,7 +150,8 @@ export default {
           entrada: 0,
           indice: null
         }
-      }
+      },
+      habilitado: false
     }
   },
   computed: {
@@ -210,7 +214,9 @@ export default {
       this.lance.lanceManual = 0
       this.lance.isLancandoManual = false
     },
-    configurarLanceAutomatico ($event) {},
+    configurarLanceAutomatico ($event) {
+
+    },
   }
 }
 </script>

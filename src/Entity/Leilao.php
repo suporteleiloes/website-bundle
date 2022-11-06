@@ -1212,7 +1212,8 @@ class Leilao extends ApiSync
             'statusString' => $this->statusString,
             'leiloeiro' => $this->leiloeiro,
             'leiloeiroLogo' => $this->leiloeiroLogo,
-            'sistemaTaxa' => $this->sistemaTaxa
+            'sistemaTaxa' => $this->sistemaTaxa,
+            'habilitacao' => $this->getHabilitacao(),
         ];
     }
 

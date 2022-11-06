@@ -53,14 +53,28 @@
       text-align: left;
     }
 
-    tr td {
-      border-bottom: #F2F2F2 2px solid !important;
-      border-top: #F2F2F2 2px solid !important;
-      font-size: 12px;
-      cursor: default;
-      background-color: #E6E6E6;
-      padding: 12px;
-      margin-bottom: 10px;
+    tr {
+      td {
+        border-bottom: #F2F2F2 2px solid !important;
+        border-top: #F2F2F2 2px solid !important;
+        font-size: 12px;
+        cursor: default;
+        background-color: #E6E6E6;
+        padding: 12px;
+        margin-bottom: 10px;
+      }
+      &.meuLance {
+        td {
+          background-color: #c0fcd3;
+        }
+        .label-meu-lance {
+          display: inline-flex;
+          background-color: #1db012;
+          color: #FFFFFF;
+          padding: 0px 4px;
+          font-size: 10px;
+        }
+      }
     }
   }
 
