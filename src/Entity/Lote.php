@@ -352,6 +352,11 @@ class Lote extends ApiSync
     private $parcelamentoQtdParcelas;
 
     /**
+     * @ORM\Column(type="smallint", nullable=true, options={"default": 0})
+     */
+    private $parcelamentoMinimoEntrada;
+
+    /**
      * @ORM\Column(type="array", nullable=true)
      */
     private $parcelamentoIndices;
@@ -1607,6 +1612,22 @@ class Lote extends ApiSync
         $this->bemExtra = $bemExtra;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getParcelamentoMinimoEntrada()
+    {
+        return $this->parcelamentoMinimoEntrada;
+    }
+
+    /**
+     * @param mixed $parcelamentoMinimoEntrada
+     */
+    public function setParcelamentoMinimoEntrada($parcelamentoMinimoEntrada): void
+    {
+        $this->parcelamentoMinimoEntrada = $parcelamentoMinimoEntrada;
+    }
+
     public function getDadosParaJsonSite()
     {
         return [
@@ -1628,7 +1649,12 @@ class Lote extends ApiSync
             "valorDiferencaAvaliacaoPorcentagem" => $this->diferencaAvaliacaoPorcentagem(),
             "valorInicial" => $this->getValorInicial(),
             "valorInicial2" => $this->getValorInicial2(),
-            "valorInicial3" => $this->getValorInicial3()
+            "valorInicial3" => $this->getValorInicial3(),
+            'permitirParcelamento' => $this->permitirParcelamento,
+            'parcelamentoQtdParcelas' => $this->parcelamentoQtdParcelas,
+            'parcelamentoMinimoEntrada' => $this->parcelamentoMinimoEntrada,
+            'parcelamentoIndices' => $this->parcelamentoIndices,
+            'permitirPropostas' => $this->permitirPropostas
         ];
     }
 

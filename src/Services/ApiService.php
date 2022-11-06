@@ -229,6 +229,7 @@ class ApiService
 
         $leilao->setPermitirParcelamento(@$data['permitirParcelamento']);
         $leilao->setParcelamentoQtdParcelas(@$data['parcelamentoQtdParcelas']);
+        $leilao->setParcelamentoMinimoEntrada(@$data['parcelamentoMinimoEntrada']);
         $leilao->setParcelamentoIndices(@$data['parcelamentoIndices']);
         $leilao->setPermitirPropostas(@$data['permitirPropostas']);
 
@@ -316,6 +317,7 @@ class ApiService
         $lote->setValorAvaliacao($data['valorAvaliacao']);
         $lote->setPermitirParcelamento(@$data['permitirParcelamento']);
         $lote->setParcelamentoQtdParcelas(@$data['parcelamentoQtdParcelas']);
+        $lote->setParcelamentoMinimoEntrada(@$data['parcelamentoMinimoEntrada']);
         $lote->setParcelamentoIndices(@$data['parcelamentoIndices']);
         $lote->setPermitirPropostas(@$data['permitirPropostas']);
         $lote->setStatus($data['status']);
@@ -384,6 +386,7 @@ class ApiService
         if ($autoFlush) $em->flush();
 
         if (isset($data['lances']) && is_array($data['lances']) && count($data['lances'])) {
+            sort($data['lances'], SORT_DESC);
             foreach($data['lances'] as $lance) {
                 $this->processLance($lance);
             }

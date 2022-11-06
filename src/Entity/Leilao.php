@@ -285,6 +285,11 @@ class Leilao extends ApiSync
     private $parcelamentoQtdParcelas;
 
     /**
+     * @ORM\Column(type="smallint", nullable=true, options={"default": 0})
+     */
+    private $parcelamentoMinimoEntrada;
+
+    /**
      * @ORM\Column(type="array", nullable=true)
      */
     private $parcelamentoIndices;
@@ -1189,6 +1194,22 @@ class Leilao extends ApiSync
         $this->sistemaTaxa = $sistemaTaxa;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getParcelamentoMinimoEntrada()
+    {
+        return $this->parcelamentoMinimoEntrada;
+    }
+
+    /**
+     * @param mixed $parcelamentoMinimoEntrada
+     */
+    public function setParcelamentoMinimoEntrada($parcelamentoMinimoEntrada): void
+    {
+        $this->parcelamentoMinimoEntrada = $parcelamentoMinimoEntrada;
+    }
+
     public function __serialize(): array
     {
         return [
@@ -1214,6 +1235,10 @@ class Leilao extends ApiSync
             'leiloeiroLogo' => $this->leiloeiroLogo,
             'sistemaTaxa' => $this->sistemaTaxa,
             'habilitacao' => $this->getHabilitacao(),
+            'permitirParcelamento' => $this->permitirParcelamento,
+            'parcelamentoMinimoEntrada' => $this->parcelamentoMinimoEntrada,
+            'parcelamentoQtdParcelas' => $this->parcelamentoQtdParcelas,
+            'parcelamentoIndices' => $this->parcelamentoIndices
         ];
     }
 

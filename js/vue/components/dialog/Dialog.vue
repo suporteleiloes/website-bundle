@@ -4,10 +4,17 @@
     <slot>
       <div class="dialog-body">
         <div class="dialog-title">{{title}}</div>
-        <div class="dialog-message">{{message}}</div>
+        <div class="dialog-message" v-if="html" v-html="message"></div>
+        <div class="dialog-message" v-else>{{message}}</div>
         <div class="dialog-footer">
-          <button v-if="okBtn" @click="clickOk" class="okBtn">Ok</button>
-          <button v-if="cancelBtn" @click="clickCancel" class="cancelBtn">Cancelar</button>
+          <button v-if="okBtn" @click="clickOk" class="okBtn">
+            <span v-if="ok">{{ ok }}</span>
+            <span v-else>Ok</span>
+          </button>
+          <button v-if="cancelBtn" @click="clickCancel" class="cancelBtn">
+            <span v-if="cancel">{{ cancel }}</span>
+            <span v-else>Cancelar</span>
+          </button>
         </div>
       </div>
     </slot>
@@ -33,8 +40,14 @@ export default {
       type: Boolean,
       default: false
     },
+    html: {
+      type: Boolean,
+      default: false
+    },
     title: {required: false},
     message: {required: false},
+    ok: {required: false},
+    cancel: {required: false},
     wid: {required: true}
   },
   data() {

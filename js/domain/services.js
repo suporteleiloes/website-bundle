@@ -51,3 +51,40 @@ export const getTextoHabilitacaoLeilao = (id) => {
             return Promise.reject(response)
         })
 }
+
+export const analisadorLote = (id) => {
+    const url = `/api/arrematantes/service/lotes/${id}/analisador`
+    return http.get(url)
+        .then(response => {
+            return Promise.resolve(response)
+        })
+        .catch(({response}) => {
+            return Promise.reject(response)
+        })
+}
+
+
+export const registrarLanceAutomaticoLote = (loteId, valorLimite, parcelamento) => {
+    const url = `/api/arrematantes/service/lotes/${loteId}/registrarLanceAutomatico`
+    return http.post(url, {
+        valorLimite: valorLimite,
+        ...parcelamento
+    })
+        .then(response => {
+            return Promise.resolve(response)
+        })
+        .catch(({response}) => {
+            return Promise.reject(response)
+        })
+}
+
+export const cancelarLanceAutomaticoLote = (loteId) => {
+    const url = `/api/arrematantes/service/lotes/${loteId}/cancelarLanceAutomatico`
+    return http.delete(url)
+        .then(response => {
+            return Promise.resolve(response)
+        })
+        .catch(({response}) => {
+            return Promise.reject(response)
+        })
+}

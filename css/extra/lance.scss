@@ -184,13 +184,6 @@
       line-height: 1.1;
       text-align: center;
       font-size: 14px;
-
-      input {
-        margin-top: 10px;
-        margin-bottom: 10px;
-        padding: 10px 5px;
-        width: 100%;
-      }
     }
   }
 
@@ -201,6 +194,37 @@
 
     .aba-content {
       display: none;
+    }
+  }
+
+  .input {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding: 10px 5px;
+    width: 100%;
+    border-radius: 10px;
+  }
+
+  .lance-automatico-status {
+
+    > div {
+      background: linear-gradient(112.1deg, rgb(32, 38, 57) 11.4%, rgb(63, 76, 119) 70.2%);
+      color: #FFFFFF;
+      display: inline-flex;
+      padding: 5px 20px 6px 12px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      margin-right: -10px;
+      min-width: 100px;
+
+      &.on {
+      background: #24bb27;
+      font-weight: bold;
+    }
+
+      &.off {
+        background: #C10015
+      }
     }
   }
 }
