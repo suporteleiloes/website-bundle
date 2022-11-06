@@ -142,45 +142,73 @@ class DefaultController extends SLAbstractController
         }
 
         $em = $this->getDoctrine()->getManager();
-        /*$lances = $lote->getLances();
-        $destaques = $em->getRepository(Lote::class)->findDestaques([$lote->getId()]);
 
-        if ($lote->getNumero()) {
-            // Loteado
-            $proximo = $lote->getNumero() + 1;
-            $anterior = $lote->getNumero() - 1;
-            $next = $em->createQuery("SELECT l.id, l.slug FROM SLWebsiteBundle:Lote l WHERE l.leilao = :leilao and l.numero = :numero")
-                ->setParameter('leilao', $lote->getLeilao()->getId())
-                ->setParameter('numero', $proximo)
-                ->setMaxResults(1)
-                ->getOneOrNullResult();
+        if ($lote->getLeilao()) {
+            if ($lote->getNumero()) {
+                // Loteado
+                $proximo = $lote->getNumero() + 1;
+                $anterior = $lote->getNumero() - 1;
+                $next = $em->createQuery("SELECT l.id, l.slug, l.aid, l.tipoSlug, l.tipoPaiSlug FROM SLWebsiteBundle:Lote l WHERE l.leilao = :leilao and l.numero = :numero")
+                    ->setParameter('leilao', $lote->getLeilao()->getId())
+                    ->setParameter('numero', $proximo)
+                    ->setMaxResults(1)
+                    ->getOneOrNullResult();
 
-            $prev = $em->createQuery("SELECT l.id, l.slug FROM SLWebsiteBundle:Lote l WHERE l.leilao = :leilao and l.numero = :numero")
-                ->setParameter('leilao', $lote->getLeilao()->getId())
-                ->setParameter('numero', $anterior)
-                ->setMaxResults(1)
-                ->getOneOrNullResult();
+                $prev = $em->createQuery("SELECT l.id, l.slug, l.aid, l.tipoSlug, l.tipoPaiSlug FROM SLWebsiteBundle:Lote l WHERE l.leilao = :leilao and l.numero = :numero")
+                    ->setParameter('leilao', $lote->getLeilao()->getId())
+                    ->setParameter('numero', $anterior)
+                    ->setMaxResults(1)
+                    ->getOneOrNullResult();
+            } else {
+                $next = $em->createQuery("SELECT l.id, l.slug, l.aid, l.tipoSlug, l.tipoPaiSlug FROM SLWebsiteBundle:Lote l WHERE l.leilao = :leilao and l.id > :lote ORDER BY l.id ASC")
+                    ->setParameter('leilao', $lote->getLeilao()->getId())
+                    ->setParameter('lote', $lote->getId())
+                    ->setMaxResults(1)
+                    ->getOneOrNullResult();
+
+                $prev = $em->createQuery("SELECT l.id, l.slug, l.aid, l.tipoSlug, l.tipoPaiSlug FROM SLWebsiteBundle:Lote l WHERE l.leilao = :leilao and l.id < :lote ORDER BY l.id DESC")
+                    ->setParameter('leilao', $lote->getLeilao()->getId())
+                    ->setParameter('lote', $lote->getId())
+                    ->setMaxResults(1)
+                    ->getOneOrNullResult();
+            }
+
+            $lances = $em->getRepository(Lance::class)
+                ->createQueryBuilder('l')
+                ->where('l.lote = :lote')
+                ->setParameter('lote', $lote->getId())
+                ->orderBy('l.id', 'DESC')
+                ->setMaxResults(10)
+                ->getQuery()->getArrayResult();
         } else {
-            $next = $em->createQuery("SELECT l.id, l.slug FROM SLWebsiteBundle:Lote l WHERE l.leilao = :leilao and l.id > :lote ORDER BY l.id ASC")
-                ->setParameter('leilao', $lote->getLeilao()->getId())
-                ->setParameter('lote', $lote->getId())
-                ->setMaxResults(1)
-                ->getOneOrNullResult();
+            $lances = $prev = $next = null;
+        }
 
-            $prev = $em->createQuery("SELECT l.id, l.slug FROM SLWebsiteBundle:Lote l WHERE l.leilao = :leilao and l.id < :lote ORDER BY l.id DESC")
-                ->setParameter('leilao', $lote->getLeilao()->getId())
-                ->setParameter('lote', $lote->getId())
-                ->setMaxResults(1)
-                ->getOneOrNullResult();
-        }*/
+        $loteArray = $lote->getDadosParaJsonSite();
+        if ($lote->getLeilao()) {
+            if (count($lances)) {
+                foreach ($lances as &$lance) {
+                    $lance['id'] = $lance['aid'];
+                    $lance['arrematante'] = [
+                        'id' => $lance['arrematanteId'],
+                        'apelido' => $lance['apelido'],
+                        'pessoa' => [
+                            'name' => $lance['nome']
+                        ],
+                    ];
+                }
+            }
+            $loteArray['lances'] = $lances;
+        }
+        $loteJson = \json_encode($loteArray);
 
         return $this->render('default/lote.html.twig', [
             'lote' => $lote,
             'leilao' => $lote->getLeilao(),
             'leilaoJson' => $lote->getLeilao() ? \json_encode($lote->getLeilao()->__serialize()) : null,
-            'loteJson' => \json_encode($lote->getDadosParaJsonSite()),
-            'lancesJson' => \json_encode($lote->getLancesArray()),
-            'permitidoLances' => true, // $permitidoLances,
+            'loteJson' => $loteJson,
+            'next' => $next,
+            'prev' => $prev,
         ]);
     }
 

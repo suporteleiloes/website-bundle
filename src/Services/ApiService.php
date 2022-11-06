@@ -196,6 +196,7 @@ class ApiService
         $leilao->setDataProximoLeilao(isset($data['dataProximoLeilao']) ? \DateTime::createFromFormat('Y-m-d H:i:s+', $data['dataProximoLeilao']['date']) : null);
 
         $leilao->setActive($data['active'] ?: true);
+        $leilao->setOrder($data['order'] ?: 99);
         $leilao->setDeleted($data['deleted'] ?: false);
         $leilao->setJudicial($data['judicial']);
         $leilao->setTotalLotes($data['totalLotes']);
@@ -303,7 +304,9 @@ class ApiService
             $lote->setActive(intval($data['status']) < 5); // @TODO: Provisório ou permanente?
         }
         $lote->setNumero($data['numero']);
+        $lote->setNumeroString($data['numeroString'] ?? null);
         $lote->setDeleted($data['deleted'] ?: false);
+        $lote->setOrder($data['order'] ?? 99);
         $lote->setValorInicial($data['valorInicial']);
         $lote->setValorInicial2($data['valorInicial2']);
         $lote->setValorInicial3($data['valorInicial3']);
@@ -429,6 +432,7 @@ class ApiService
         }
 
         $lance->setData(\DateTime::createFromFormat('Y-m-d H:i:s+', $data['data']['date']));
+        $lance->setArrematanteId(isset($data['autor']) ? $data['autor']['id'] : $data['arrematante']['id']);
         $lance->setApelido(isset($data['autor']) ? $data['autor']['apelido'] : $data['arrematante']['apelido']);
         $lance->setNome($data['arrematante']['pessoa']['name']);
         $lance->setCidade(isset($data['autor']) ? $data['autor']['cidade'] : null);

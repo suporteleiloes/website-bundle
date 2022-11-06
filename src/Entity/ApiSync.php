@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
  * * @ORM\Table(indexes={
  *     @ORM\Index(name="aid", columns={"aid"}),
  *     @ORM\Index(name="active", columns={"active"}),
+ *     @ORM\Index(name="order", columns={"ordering"}),
  *     @ORM\Index(name="deleted", columns={"deleted"})
  * })
  */
@@ -44,6 +45,11 @@ class ApiSync
      * @ORM\Column(type="boolean", options={"unsigned":true, "default":1})
      */
     private $active;
+
+    /**
+     * @ORM\Column(type="smallint", name="ordering", options={"default":99})
+     */
+    private $order = 99;
 
     public function getId(): ?int
     {
@@ -132,5 +138,21 @@ class ApiSync
     public function setDeleted(bool $deleted): void
     {
         $this->deleted = $deleted;
+    }
+
+    /**
+     * @return int
+     */
+    public function getOrder(): int
+    {
+        return $this->order;
+    }
+
+    /**
+     * @param int $order
+     */
+    public function setOrder(?int $order): void
+    {
+        $this->order = $order;
     }
 }

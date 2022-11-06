@@ -64,7 +64,7 @@ class Lote extends ApiSync
     /**
      * @ORM\Column(type="string", nullable=true)
      */
-    private $numeroRotulo;
+    private $numeroString;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -1318,17 +1318,17 @@ class Lote extends ApiSync
     /**
      * @return mixed
      */
-    public function getNumeroRotulo()
+    public function getNumeroString()
     {
-        return $this->numeroRotulo;
+        return $this->numeroString ?? $this->numero;
     }
 
     /**
-     * @param mixed $numeroRotulo
+     * @param mixed $numeroString
      */
-    public function setNumeroRotulo($numeroRotulo): void
+    public function setNumeroString($numeroString): void
     {
-        $this->numeroRotulo = $numeroRotulo;
+        $this->numeroString = $numeroString;
     }
 
     /**
@@ -1611,6 +1611,7 @@ class Lote extends ApiSync
     {
         return [
             "id" => $this->getId(),
+            "aid" => $this->getAid(),
             "bemId" => $this->getId(),
             "numero" => $this->getNumero(),
             "slug" => $this->getSlug(),

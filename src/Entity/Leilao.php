@@ -1193,6 +1193,7 @@ class Leilao extends ApiSync
     {
         return [
             'id' => $this->id,
+            'aid' => $this->getAid(),
             'slug' => $this->slug,
             'data1',
             'data2',

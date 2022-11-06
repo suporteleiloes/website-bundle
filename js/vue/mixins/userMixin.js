@@ -15,6 +15,9 @@ export default {
     computed: {
     },
     beforeMount() {
+        if (typeof TOKEN !== "undefined" && TOKEN) {
+            this.comunicatorClass.http.defaults.headers.common.Authorization = 'Bearer ' + TOKEN
+        }
         this.getFavoritos()
         this.getFavoritos('leiloes')
         this.getFavoritos('bens')
@@ -29,9 +32,6 @@ export default {
             throw new Error('Não logado.');
         },
         http () {
-            if (typeof TOKEN !== "undefined" && TOKEN) {
-                this.comunicatorClass.http.defaults.headers.common.Authorization = 'Bearer ' + TOKEN
-            }
             return this.comunicatorClass.http
         },
         getFavoritos (tipo = 'lotes') {

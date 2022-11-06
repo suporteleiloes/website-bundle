@@ -64,11 +64,6 @@ class Post extends ApiSync
      */
     private $author;
 
-    /**
-     * @ORM\Column(type="smallint", name="ordering", nullable=true)
-     */
-    private $order = 100;
-
     public function getId(): ?int
     {
         return $this->id;
@@ -220,21 +215,5 @@ class Post extends ApiSync
     public function setActive($active): void
     {
         $this->active = $active;
-    }
-
-    /**
-     * @return int
-     */
-    public function getOrder()
-    {
-        return $this->order;
-    }
-
-    /**
-     * @param int $order
-     */
-    public function setOrder($order)
-    {
-        $this->order = $order;
     }
 }

@@ -24,6 +24,11 @@ class Lance extends ApiSync
     private $data;
 
     /**
+     * @ORM\Column(type="integer", length=255, nullable=true)
+     */
+    private $arrematanteId;
+
+    /**
      * @ORM\Column(type="string", length=255)
      */
     private $apelido;
@@ -151,11 +156,29 @@ class Lance extends ApiSync
         $this->uf = $uf;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getArrematanteId()
+    {
+        return $this->arrematanteId;
+    }
+
+    /**
+     * @param mixed $arrematanteId
+     */
+    public function setArrematanteId($arrematanteId): void
+    {
+        $this->arrematanteId = $arrematanteId;
+    }
+
     public function __serialize(): array
     {
         return [
             'id' => $this->id,
+            'aid' => $this->getAid(),
             'data' => $this->data,
+            'arrematanteId' => $this->apelido,
             'apelido' => $this->apelido,
             'nome' => $this->nome,
             'cidade' => $this->cidade,
