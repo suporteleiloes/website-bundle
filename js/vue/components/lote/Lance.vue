@@ -71,12 +71,12 @@
         <div class="aba-content" v-if="!analisandoLote && !lance.configurarLanceAutomaticoLayout">
           <div class="lance-options">
             <button class="btn lance" @click="iniciarLance">
-              <span class="hidden-xs">Efetuar Lance</span>
+              <span>Efetuar Lance</span>
             </button>
 
             <div class="line2">
               <button class="btn b-automatico" @click="configurarLanceAutomatico">
-                Lance Automático
+                <span class="hidden-xs mr-1">Lance</span> Automático
               </button>
               <button @click="gotoAuditorio" class="btn auditorio">
                 Auditório

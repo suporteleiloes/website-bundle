@@ -228,3 +228,22 @@
     }
   }
 }
+
+@media (max-width: 768px) {
+  .hidden-xs {
+    display: none;
+  }
+  .app-lance {
+    display: block;
+    padding: 20px;
+
+    .col1, .col2, .col3 {
+      width: 100%;
+      padding: 0;
+      margin-bottom: 10px;
+    }
+    .col3 {
+      margin-top: 20px;
+    }
+  }
+}
