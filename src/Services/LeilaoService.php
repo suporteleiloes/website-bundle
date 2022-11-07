@@ -247,7 +247,7 @@ class LeilaoService
      *          'data1' => (datetime) Data inicial
      *          'data2' => (datetime) Data final
      *          'statusTipo' => (mixed|int) Tipo do Status do Leilão (prop statusTipo)
-     *          'tipoLeilao' => (array|int) 1 = Judicial; 2 = Extrajudicial;
+     *          'tipoLeilao' => (int) 1 = Judicial; 2 = Extrajudicial; Null para ambos.
      *          'relevancia' => (int) 0 = Relevância baseado no número e acessos e lances; 1 = Pela data do leilão (Crescente) [Default]; 2 = Valor (Crescente); 3 = Valor (Decrescente)
      *          'classificacaoLeilao' => (array/int) Classificação do leilão. Iniciativa privada, Seguradoras etc.
      *      ]
@@ -287,6 +287,15 @@ class LeilaoService
                 ->setParameter('statusTipo', is_array($filtros['statusTipo']) ? $filtros['statusTipo'] : [$filtros['statusTipo']]);*/
             $searchCriteria->andWhere(
                 Criteria::expr()->in('l.statusTipo', is_array($filtros['statusTipo']) ? $filtros['statusTipo'] : [$filtros['statusTipo']]));
+        }
+
+        if (isset($filtros['tipoLeilao'])) {
+            if (!in_array($filtros['tipoLeilao'], [1, 2])) {
+                throw new \Exception('Filtro tipoLeilao inválido');
+            }
+            $searchCriteria->andWhere(
+                Criteria::expr()->eq('l.judicial', $filtros['tipoLeilao'] === 1)
+            );
         }
 
 

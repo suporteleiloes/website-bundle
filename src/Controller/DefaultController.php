@@ -9,8 +9,6 @@ use SL\WebsiteBundle\Entity\Lote;
 use SL\WebsiteBundle\Entity\Lance;
 use SL\WebsiteBundle\Entity\Leilao;
 
-use SL\WebsiteBundle\Entity\LoteTipoCache;
-use Doctrine\Common\Collections\ArrayCollection;
 use SL\WebsiteBundle\Entity\Proposta;
 use SL\WebsiteBundle\Form\PropostaType;
 use SL\WebsiteBundle\Services\LeilaoService;
@@ -18,38 +16,66 @@ use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 class DefaultController extends SLAbstractController
 {
     /**
      * @Route("/leiloes", name="leiloes")
+     * @Route("/agenda-leiloes", name="agenda-leiloes")
      */
-    public function leiloes(Request $request)
+    public function leiloes(Request $request, LeilaoService $leilaoService)
     {
         $filtro = $request->get('filtro');
-        if (!$filtro || !in_array($filtro, ['recente', 'judiciais', 'extrajudiciais', 'encerrados', 'suspensos'])) {
+        /*if (!$filtro || !in_array($filtro, ['recente', 'judiciais', 'extrajudiciais', 'encerrados', 'suspensos', 'vendaDireta'])) {
             $filtro = 'recentes';
-        }
+        }*/
 
-        $em = $this->getDoctrine()->getManager();
-        if ($filtro === 'judiciais' || $filtro === 'extrajudiciais') {
-            $leiloes = $em->getRepository(Leilao::class)->carregaRecentes((new \DateTime())->modify('-1 days'), $filtro === 'judiciais');
-        } elseif ($filtro === 'encerrados') {
-            $leiloes = $em->getRepository(Leilao::class)->findBy(['status' => Leilao::STATUS_ENCERRADO], ['dataProximoLeilao' => 'DESC']);
-        } elseif ($filtro === 'suspensos') {
-            $leiloes = $em->getRepository(Leilao::class)->findBy(['status' => Leilao::STATUS_SUSPENSO], ['dataProximoLeilao' => 'DESC']);
+        $page = $request->query->getInt('page', 1);
+        $page = $page === 0 ? 1 : $page;
+        $limit = 100;
+        $offset = ($page * $limit) - $limit;
+
+        $ofertasEmDestaque = null;
+        $leiloes = null;
+        if ($filtro === 'vendaDireta') {
+            $filtrosOfertas = [
+                'relevancia' => 0,
+                'vendaDireta' => true
+            ];
+            $ofertasEmDestaque = $leilaoService->buscarBens(null, true, $limit, $offset, $filtrosOfertas);
+            $totalItens = isset($ofertasEmDestaque['total']) ? intval($ofertasEmDestaque['total']) : 0;
         } else {
-            $leiloes = $em->getRepository(Leilao::class)->carregaRecentes((new \DateTime())->modify('-1 days'));
+            $filtrosLeiloes = [
+                'relevancia' => 1,
+                // 'somenteAtivos' => true,
+            ];
+
+            if ($filtro === 'judiciais') {
+                $filtrosLeiloes['tipoLeilao'] = 1;
+            }
+            if ($filtro === 'extrajudiciais') {
+                $filtrosLeiloes['tipoLeilao'] = 2;
+            }
+            if (in_array($filtro, ['encerrados', 'suspensos'])) {
+                $filtrosLeiloes['statusTipo'] = Leilao::STATUS_TIPO_ENCERRADO;
+            } else {
+                $filtrosLeiloes['somenteAtivos'] = true;
+            }
+            $leiloes = $leilaoService->buscarLeiloes($limit, $offset, $filtrosLeiloes);
+            $totalItens = isset($leiloes['total']) ? intval($leiloes['total']) : 0;
         }
 
         return $this->render('default/leiloes.html.twig', [
-            // 'bens' => [],
+            'ofertasEmDestaque' => $ofertasEmDestaque,
             'leiloes' => $leiloes,
             'filtro' => $filtro,
-            'print_route' => $this->generateUrl('print_leiloes', $request->query->all())
+            "totalLotes" => $totalItens,
+            "totalPages" => ceil($totalItens / $limit),
+            "paginaAtual" => $page,
+            'print_route' => $this->generateUrl('print_leiloes', $request->query->all()) // @TODO
         ]);
+
     }
 
     /**
