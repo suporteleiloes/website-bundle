@@ -61,6 +61,35 @@ class SincronizaApiCommand extends Command
                 }
                 $io->note('Bens em Venda Direta sincronizados. Total: ' . count($data['bens']));
             }
+
+            //
+
+            if (isset($data['banners']) && is_array($data['banners']) && count($data['banners'])) {
+                $io->note('Sincronizando banners');
+                foreach ($data['banners'] as $banner) {
+                    $this->apiService->processBanner($banner, true);
+                }
+                $io->note('Banners sincronizados. Total: ' . count($data['banners']));
+            }
+
+            if (isset($data['posts']) && is_array($data['posts']) && count($data['posts'])) {
+                $io->note('Sincronizando posts');
+                foreach ($data['posts'] as $post) {
+                    $this->apiService->processPost($post, true);
+                }
+                $io->note('Posts sincronizados. Total: ' . count($data['posts']));
+            }
+
+            if (isset($data['contents']) && is_array($data['contents']) && count($data['contents'])) {
+                $io->note('Sincronizando contents');
+                foreach ($data['contents'] as $content) {
+                    $this->apiService->processContent($content, true);
+                }
+                $io->note('Contents sincronizados. Total: ' . count($data['contents']));
+            }
+
+            //
+
             $this->em->flush();
             $this->em->clear();
             $this->apiService->geraCacheLotes();
