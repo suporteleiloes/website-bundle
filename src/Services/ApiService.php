@@ -364,6 +364,8 @@ class ApiService
         $lote->setLocalizacaoMapEmbed(@$data['bem']['localizacaoMapEmbed']);
         $lote->setVideos(@$data['bem']['videos']);
         $lote->setCamposExtras(@$data['bem']['camposExtras']);
+        $lote->setCampos($data['bem']['campos'] ?? []);
+        $lote->setTags($data['bem']['tags'] ?? []);
         $lote->setTour360(@$data['bem']['tour360']);
 
         if (isset($data['leilao']) || $leilao) {

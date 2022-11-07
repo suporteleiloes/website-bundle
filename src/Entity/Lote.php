@@ -372,9 +372,20 @@ class Lote extends ApiSync
     private $videos;
 
     /**
+     * @deprecated
      * @ORM\Column(type="array", nullable=true)
      */
     private $camposExtras;
+
+    /**
+     * @ORM\Column(type="json", nullable=true)
+     */
+    private $campos;
+
+    /**
+     * @ORM\Column(type="json", nullable=true)
+     */
+    private $tags;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -1649,6 +1660,38 @@ class Lote extends ApiSync
         $this->totalLances = $totalLances ?? 0;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getCampos()
+    {
+        return $this->campos;
+    }
+
+    /**
+     * @param mixed $campos
+     */
+    public function setCampos($campos): void
+    {
+        $this->campos = $campos;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTags()
+    {
+        return $this->tags;
+    }
+
+    /**
+     * @param mixed $tags
+     */
+    public function setTags($tags): void
+    {
+        $this->tags = $tags;
+    }
+
     public function getDadosParaJsonSite()
     {
         return [
@@ -1677,6 +1720,8 @@ class Lote extends ApiSync
             'parcelamentoIndices' => $this->parcelamentoIndices,
             'permitirPropostas' => $this->permitirPropostas,
             'totalLances' => $this->totalLances,
+            'campos' => $this->campos,
+            'tags' => $this->tags,
         ];
     }
 
