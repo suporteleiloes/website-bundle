@@ -483,7 +483,10 @@ class ApiService
 
     public function processContent($data, $autoFlush = true)
     {
-        $entityId = $data['entityId'];
+        if (isset($data['webhookStructure'])) {
+            $data = $data['data'];
+        }
+        $entityId = $data['id'];
         $em = $this->em;
         $entity = $em->getRepository(Content::class)->findOneByAid($entityId);
         if (!$entity) {
@@ -516,7 +519,10 @@ class ApiService
 
     public function processBanner($data, $autoFlush = true)
     {
-        $entityId = $data['entityId'];
+        if (isset($data['webhookStructure'])) {
+            $data = $data['data'];
+        }
+        $entityId = $data['id'];
         $em = $this->em;
         $banner = $em->getRepository(Banner::class)->findOneByAid($entityId);
         if (!$banner) {
@@ -554,7 +560,10 @@ class ApiService
 
     public function processPost($data, $autoFlush = true)
     {
-        $entityId = $data['entityId'];
+        if (isset($data['webhookStructure'])) {
+            $data = $data['data'];
+        }
+        $entityId = $data['id'];
         $em = $this->em;
         $entity = $em->getRepository(Post::class)->findOneByAid($entityId);
         if (!$entity) {
