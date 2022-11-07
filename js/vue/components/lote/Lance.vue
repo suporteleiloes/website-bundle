@@ -13,7 +13,7 @@
           </tr>
           </thead>
           <tbody>
-          <tr v-for="(lance, k) in lote.lances" :class="{meuLance: lance.arrematante.id === ARREMATANTEID}">
+          <tr v-for="(lance, k) in lancesLimited" :class="{meuLance: lance.arrematante.id === ARREMATANTEID}">
             <td>{{ lance.arrematante.apelido }} <span v-if="lance.arrematante.id === ARREMATANTEID"
                                                       class="label-meu-lance">você</span></td>
             <td>{{ lance.data|formatDate('dd/MM/yyyy HH:mm:ss') }}</td>
@@ -229,6 +229,12 @@ export default {
     }
   },
   computed: {
+    lancesLimited () {
+      if (this.lote.lances && this.lotes.lances.length) {
+        return this.lotes.lances.slice(0, 5)
+      }
+      return this.lote.lances
+    },
     lanceManualFormatado() {
       return convertRealToMoney(this.lance.lanceManual)
     },
