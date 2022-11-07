@@ -193,4 +193,20 @@ class Proposta
         $this->loteId = $loteId;
     }
 
+    public function __serialize()
+    {
+        return [
+            'id' => $this->id,
+            'nome' => $this->nome,
+            'telefone' => $this->telefone,
+            'email' => $this->email,
+            'assunto' => $this->assunto,
+            'mensagem' => $this->mensagem,
+            'data' => $this->data,
+            'ip' => $this->ip,
+            'bemId' => $this->bemId,
+            'loteId' => $this->loteId,
+        ];
+    }
+
 }

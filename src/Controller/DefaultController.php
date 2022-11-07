@@ -11,6 +11,8 @@ use SL\WebsiteBundle\Entity\Leilao;
 
 use SL\WebsiteBundle\Entity\Proposta;
 use SL\WebsiteBundle\Form\PropostaType;
+use SL\WebsiteBundle\Helpers\Utils;
+use SL\WebsiteBundle\Services\ApiService;
 use SL\WebsiteBundle\Services\LeilaoService;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Cookie;
@@ -168,13 +170,11 @@ class DefaultController extends SLAbstractController
     /**
      * @Route("/oferta/{tipoOferta}/{tipoPai}/{tipo}/{id}/id-{aid}/{slug}", name="lote")
      */
-    public function lote(Lote $lote, Request $request, ReCaptcha $reCaptcha, EntityManagerInterface $em)
+    public function lote(Lote $lote, Request $request, ReCaptcha $reCaptcha, EntityManagerInterface $em, ApiService $apiService)
     {
         if ($lote->getLeilao() && $lote->getLeilao()->isEncerrado() && (!isset($_ENV['MOSTRAR_LEILAO_ENCERRADO']) || !$_ENV['MOSTRAR_LEILAO_ENCERRADO'])) {
             return $this->redirectToRoute('leilao_encerrado', ['id' => $lote->getLeilao()->getId()]);
         }
-
-        $em = $this->getDoctrine()->getManager();
 
         if ($lote->getLeilao()) {
             if ($lote->getNumero()) {
@@ -243,6 +243,10 @@ class DefaultController extends SLAbstractController
                 $formPropostaSucesso = true;
             } else {
                 $model = new Proposta();
+                if ($this->isGranted('IS_AUTHENTICATED_FULLY') && $this->getUser()) {
+                    $model->setNome($this->getUser()->getExtraFields()['user']['name'] ?? null);
+                    $model->setEmail($this->getUser()->getExtraFields()['user']['email'] ?? null);
+                }
                 $formProposta = $this->createForm(PropostaType::class, $model);
                 $formProposta->handleRequest($request);
                 if ($formProposta->isSubmitted() && $formProposta->isValid()) {
@@ -253,8 +257,11 @@ class DefaultController extends SLAbstractController
                     }
 
                     if ($formProposta->isValid()) {
+                        $model->setBemId($lote->getAid());
+                        $model->setIp(Utils::get_client_ip_env());
                         $em->persist($model);
                         $em->flush();
+                        $apiService->enviarProposta($lote->getAid(), $model->__serialize());
                         $response = new RedirectResponse($request->getUri());
                         $cookie = Cookie::create($cookieName, 1)
                             ->withExpires((new \DateTime())->modify('+30 days')->getTimestamp())

@@ -41,7 +41,7 @@ class ApiService
 
     function getClient($token = null)
     {
-        if ($token) {
+        if ($token === true || ($token === 'both' && $this->security->getUser() && isset($this->security->getUser()->getExtraFields()['token']))) {
             $token = $this->security->getUser()->getExtraFields()['token'];
             if (!isset(self::$clientAuthenticated)) {
                 self::$clientAuthenticated = new Client(array(
@@ -726,6 +726,12 @@ class ApiService
     public function getCategorias()
     {
         return $this->callApi('GET', '/api/public/service/tiposBem');
+    }
+
+    public function enviarProposta($idBem, $proposta)
+    {
+        $data = [RequestOptions::JSON => $proposta];
+        return $this->callApi('POST', '/api/public/arrematantes/service/bem/' . $idBem . '/enviar-proposta', $data, 'both');
     }
 
 
