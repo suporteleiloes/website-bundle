@@ -230,8 +230,8 @@ export default {
   },
   computed: {
     lancesLimited () {
-      if (this.lote.lances && this.lotes.lances.length) {
-        return this.lotes.lances.slice(0, 5)
+      if (this.lote.lances && this.lote.lances.length) {
+        return this.lote.lances.slice(0, 5)
       }
       return this.lote.lances
     },
