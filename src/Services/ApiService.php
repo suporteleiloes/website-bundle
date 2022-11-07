@@ -493,8 +493,6 @@ class ApiService
             $entity = new Content();
         }
 
-        $data = $data['data'];
-
         if ($entity->getId()) {
             if ($data['deleted']) {
                 $em->remove($entity);
@@ -528,8 +526,6 @@ class ApiService
         if (!$banner) {
             $banner = new Banner();
         }
-
-        $data = $data['data'];
 
         $banner->setAid($entityId);
         if ($banner->getId()) {
@@ -569,8 +565,6 @@ class ApiService
         if (!$entity) {
             $entity = new Post();
         }
-
-        $data = $data['data'];
 
         $entity->setAid($entityId);
         if ($entity->getId()) {
