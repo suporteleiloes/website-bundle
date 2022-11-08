@@ -19,6 +19,25 @@ export default {
         if (typeof TOKEN !== "undefined" && TOKEN) {
             this.comunicatorClass.http.defaults.headers.common.Authorization = 'Bearer ' + TOKEN
         }
+        /* Check if JWT has expired */
+        http.interceptors.response.use(function (response) {
+            return response
+        }, function (error) {
+            if (typeof error.response === 'undefined') {
+                return Promise.reject(error)
+            }
+            if (error.response.data.status === 401) {
+                if (error.response.data.detail === 'Invalid Token' || error.response.data.detail === 'Expired JWT Token' || error.response.data.detail === 'Invalid JWT Token') {
+                    console.log('TOKEN EXPIRADO! Redirecionando...')
+                    delete http.defaults.headers.common.Authorization
+                    window.location = '/logout'
+                    // document.location.reload(true)
+                    return false
+                }
+            }
+            // Do something with response error
+            return Promise.reject(error)
+        })
         setHttp(this.comunicatorClass.http)
         this.getFavoritos()
         this.getFavoritos('leiloes')
