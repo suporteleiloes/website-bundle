@@ -20,7 +20,7 @@ export default {
             this.comunicatorClass.http.defaults.headers.common.Authorization = 'Bearer ' + TOKEN
         }
         /* Check if JWT has expired */
-        http.interceptors.response.use(function (response) {
+        this.comunicatorClass.http.interceptors.response.use(function (response) {
             return response
         }, function (error) {
             if (typeof error.response === 'undefined') {
@@ -29,7 +29,7 @@ export default {
             if (error.response.data.status === 401) {
                 if (error.response.data.detail === 'Invalid Token' || error.response.data.detail === 'Expired JWT Token' || error.response.data.detail === 'Invalid JWT Token') {
                     console.log('TOKEN EXPIRADO! Redirecionando...')
-                    delete http.defaults.headers.common.Authorization
+                    delete this.comunicatorClass.http.defaults.headers.common.Authorization
                     window.location = '/logout'
                     // document.location.reload(true)
                     return false
