@@ -206,6 +206,12 @@ class ApiService
         $leilao->setPraca($praca);
         $leilao->setInstancia($data['instancia'] ?? null);
         $leilao->setLeiloeiro($data['leiloeiro']['nome']);
+        $leilao->setLeiloeiroLogo($data['leiloeiro']['urlLogomarca']);
+        $leilao->setLeiloeiroUrl($data['leiloeiro']['urlSite']);
+        $leilao->setLeiloeiroMatricula($data['leiloeiro']['matricula']);
+        $leilao->setLeiloeiroUf($data['leiloeiro']['uf']);
+        $leilao->setClassificacaoId($data['classificacao']['id'] ?? null);
+        $leilao->setClassificacao($data['classificacao']['nome'] ?? null);
         $leilao->setLocal($data['patio']);
         $leilao->setInfoVisitacao($data['infoVisitacao']);
         $leilao->setInfoRetirada($data['infoRetirada']);

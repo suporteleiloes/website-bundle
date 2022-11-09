@@ -163,6 +163,21 @@ class Leilao extends ApiSync
     private $leiloeiroLogo;
 
     /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $leiloeiroUrl;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $leiloeiroMatricula;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $leiloeiroUf;
+
+    /**
      * @ORM\Column(type="array", nullable=true)
      */
     private $local;
@@ -319,6 +334,16 @@ class Leilao extends ApiSync
      * @ORM\Column(type="json", length=255, nullable=true)
      */
     private $sistemaTaxa;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $classificacaoId;
+
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $classificacao;
 
     /**
      * @ORM\OneToMany(targetEntity="SL\WebsiteBundle\Entity\Lote", mappedBy="leilao", cascade={"persist"})
@@ -1210,6 +1235,87 @@ class Leilao extends ApiSync
         $this->parcelamentoMinimoEntrada = $parcelamentoMinimoEntrada;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getLeiloeiroUrl()
+    {
+        return $this->leiloeiroUrl;
+    }
+
+    /**
+     * @param mixed $leiloeiroUrl
+     */
+    public function setLeiloeiroUrl($leiloeiroUrl): void
+    {
+        $this->leiloeiroUrl = $leiloeiroUrl;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLeiloeiroMatricula()
+    {
+        return $this->leiloeiroMatricula;
+    }
+
+    /**
+     * @param mixed $leiloeiroMatricula
+     */
+    public function setLeiloeiroMatricula($leiloeiroMatricula): void
+    {
+        $this->leiloeiroMatricula = $leiloeiroMatricula;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLeiloeiroUf()
+    {
+        return $this->leiloeiroUf;
+    }
+
+    /**
+     * @param mixed $leiloeiroUf
+     */
+    public function setLeiloeiroUf($leiloeiroUf): void
+    {
+        $this->leiloeiroUf = $leiloeiroUf;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getClassificacaoId()
+    {
+        return $this->classificacaoId;
+    }
+
+    /**
+     * @param mixed $classificacaoId
+     */
+    public function setClassificacaoId($classificacaoId): void
+    {
+        $this->classificacaoId = $classificacaoId;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getClassificacao()
+    {
+        return $this->classificacao;
+    }
+
+    /**
+     * @param mixed $classificacao
+     */
+    public function setClassificacao($classificacao): void
+    {
+        $this->classificacao = $classificacao;
+    }
+
+
     public function __serialize(): array
     {
         return [
@@ -1233,6 +1339,11 @@ class Leilao extends ApiSync
             'statusString' => $this->statusString,
             'leiloeiro' => $this->leiloeiro,
             'leiloeiroLogo' => $this->leiloeiroLogo,
+            'leiloeiroMatricula' => $this->leiloeiroMatricula,
+            'leiloeiroUf' => $this->leiloeiroUf,
+            'leiloeiroUrl' => $this->leiloeiroUrl,
+            'classificacaoId' => $this->classificacaoId,
+            'classificacao' => $this->classificacao,
             'sistemaTaxa' => $this->sistemaTaxa,
             'habilitacao' => $this->getHabilitacao(),
             'permitirParcelamento' => $this->permitirParcelamento,
