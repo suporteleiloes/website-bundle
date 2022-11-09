@@ -131,8 +131,8 @@
         <div class="aba-naologado">
           <p>É necessário estar logado para participar do leilão e efetuar lances</p>
 
-          <a href="#" class="btn login">Login</a>
-          <a href="#" class="btn cadastro">Cadastre-se</a>
+          <a href="/login" class="btn login">Login</a>
+          <a href="/cadastro" class="btn cadastro">Cadastre-se</a>
         </div>
         <div class="lancador">
           <div class="lance-options">
