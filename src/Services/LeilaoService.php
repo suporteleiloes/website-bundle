@@ -176,6 +176,18 @@ class LeilaoService
             );
         }
 
+        if (isset($filtros['bairro'])) {
+            $searchCriteria->andWhere(
+                Criteria::expr()->in('l.bairro', $convertArray($filtros['bairro']))
+            );
+        }
+
+        if (isset($filtros['codigo'])) {
+            $searchCriteria->andWhere(
+                Criteria::expr()->in('l.aid', $convertArray($filtros['codigo']))
+            );
+        }
+
         if (isset($filtros['busca'])) {
             $buscaOnlyDigits = preg_replace('/\D/', '$1', $filtros['busca']);
             if (empty(trim($buscaOnlyDigits))) {

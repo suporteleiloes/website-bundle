@@ -1,16 +1,18 @@
 import $ from 'jquery'
 import Vue from 'vue'
+window.Vue = Vue
 import createComunicator from './comunicator'
 import Mixin from './realtimeMixin'
 import UserMixin from './vue/mixins/userMixin'
+import StoreMixin from './vue/mixins/storeMixin'
 import Utils from './vue/plugins/utils'
 import Dialog from './vue/plugins/dialog'
 import Modal from './vue/plugins/modal'
-Vue.use(Utils)
-Vue.use(Dialog)
-Vue.use(Modal)
+window.Vue.use(Utils)
+window.Vue.use(Dialog)
+window.Vue.use(Modal)
 
-Vue.component(
+window.Vue.component(
     'lance',
     // A dynamic import returns a Promise.
     () => import('./vue/components/lote/Lance')
@@ -18,14 +20,20 @@ Vue.component(
 
 import '../css/app.scss'
 
-const app = new Vue({
+export const app = new window.Vue({
     el: '#app',
-    mixins: [Mixin, UserMixin],
+    provide: function () {
+        return {
+            app: this
+        }
+    },
+    mixins: [Mixin, UserMixin, StoreMixin],
     components: {},
     data() {
         return {
             testVue: 'VUE is OK!',
-            alerts: []
+            alerts: [],
+            currentView: null
         }
     },
     beforeCreate () {
