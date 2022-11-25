@@ -370,7 +370,15 @@ class ApiService
         $lote->setLocalizacaoMapEmbed(@$data['bem']['localizacaoMapEmbed']);
         $lote->setVideos(@$data['bem']['videos']);
         $lote->setCamposExtras(@$data['bem']['camposExtras']);
-        $lote->setCampos($data['bem']['campos'] ?? []);
+        if (isset($data['bem']['campos']) && is_array($data['bem']['campos'])) {
+            $campos = [];
+            foreach ($data['bem']['campos'] as $campo) {
+                if ($campo['campo']['public']) {
+                    $campos[] = $campo;
+                }
+            }
+            $lote->setCampos($campos);
+        }
         $lote->setTags($data['bem']['tags'] ?? []);
         $lote->setTour360(@$data['bem']['tour360']);
 
