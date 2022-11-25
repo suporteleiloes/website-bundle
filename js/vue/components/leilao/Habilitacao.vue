@@ -2,7 +2,7 @@
   <modal class="document-modal" ref="modal">
     <div class="modal-nav"><button @click="modal().close()" class="btn text-blue-grey-5">Fechar</button></div>
     <div class="pad">
-      <div class="mb-3 font-bold">Habilite-se para participar deste leilão</div>
+<!--      <div class="mb-3 font-bold">Habilite-se para participar deste leilão</div>-->
 
       <div v-if="loading" class="text-center"><i class="fa fa-spin fa-spinner" /></div>
       <div class="app-leilao-abilitacao-texto" v-else v-html="document"></div>
