@@ -272,7 +272,7 @@ class ApiService
         }
         $entityId = $data['id'];
         if (intval($data['status']) === 0) {
-            #return; // Rascunho ###@TODO: REMOVER
+            return; // Rascunho
         }
         // Verifica se já existe o lote. Se não existir, cria um.
         $em = $this->em;
