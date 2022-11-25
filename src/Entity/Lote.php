@@ -562,6 +562,17 @@ class Lote extends ApiSync
         return $this->documentos;
     }
 
+    public function getDocumentosPublicosSemFotos()
+    {
+        $docs = new ArrayCollection();
+        foreach ($this->documentos as $arquivo) {
+            if (strtolower($arquivo['tipo']['nome']) !== 'foto site' && empty($arquivo['permissao'])) {
+                $docs->add($arquivo);
+            }
+        }
+        return $docs;
+    }
+
     public function setDocumentos(?array $documentos): self
     {
         $this->documentos = $documentos;
