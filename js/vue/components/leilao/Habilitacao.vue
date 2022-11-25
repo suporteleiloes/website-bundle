@@ -8,7 +8,7 @@
       <div class="app-leilao-abilitacao-texto" v-else v-html="document"></div>
 
       <div class="text-right mt-3">
-        <div class="termos-input-aceite"><input type="checkbox" v-model="aceite" class="mr-2" /> Declado que li e aceito as condições do leilão</div>
+        <div class="termos-input-aceite"><input type="checkbox" v-model="aceite" class="mr-2" /> Declaro que li e aceito as condições do leilão</div>
         <button class="btn btn-info" @click="modal().close()">Cancelar</button>
         <button class="btn btn-success" @click="confirm">Habilitar</button>
       </div>
