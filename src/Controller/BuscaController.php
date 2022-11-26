@@ -60,7 +60,13 @@ class BuscaController extends AbstractController
             $requestFiltros['vendaDireta'] = 1;
         }
 
-        $lotes = $leilaoService->buscarBens(null, true, $limit, $offset, $requestFiltros);
+        $lotes = $leilaoService->buscarBens(
+            null,
+            true,
+            $limit,
+            $offset,
+            $requestFiltros
+        );
 
 
         $template = $request->attributes->get('_route') === 'print_leilao'

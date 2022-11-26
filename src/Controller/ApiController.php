@@ -26,56 +26,6 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 class ApiController extends AbstractController
 {
     /**
-     * @Route("/login/createSession", name="api_login_session", methods={"POST"})
-     */
-    public function createLoginSession(Request $request)
-    {
-        $data = \json_decode($request->getContent(), true);
-        if ($data === null) {
-            return $this->json(['status' => 'KO'], Response::HTTP_BAD_REQUEST);
-        }
-
-        try {
-            // dump($data);
-            $token = $data['session'];
-            if (empty($token)) {
-                throw new \Exception('Invalid session (t)');
-            }
-            $host = 'https://' . $request->server->get('HTTP_HOST');
-            $client = new Client(array(
-                'timeout' => 5,
-                'base_uri' => $_ENV['SL_API'],
-                'headers' => [
-                    'Authorization' => 'Bearer ' . $token,
-                    'Referer' => $host
-                ],
-                '',
-                'verify' => false
-            ));
-            $session = $client->request('GET', '/api/credentials');
-            if ($session->getStatusCode() !== 200) {
-                throw new \Exception('Invalid token');
-            }
-            // ->withDomain('.suporteleiloes.com')
-            // ->withSecure(true);
-            $data = json_decode($session->getBody()->getContents(), true);
-            $response = new JsonResponse(['status' => 'OK', 'session' => $data]);
-            $cookieExpires = time() + 86400; // TODO: Definir cookie baseado na data de expiração do token
-            $cookieSession = Cookie::create('sl_session')->withValue((string)$session->getBody())->withExpires($cookieExpires)->withSecure(true);
-            $cookieToken = Cookie::create('sl_session-token')->withValue($token)->withExpires($cookieExpires)->withSecure(true);
-            $cookiePerson = Cookie::create('sl_session-person')->withValue($data['user']['name'])->withExpires($cookieExpires)->withSecure(true);
-            $cookieUsername = Cookie::create('sl_session-username')->withValue($data['user']['username'])->withExpires($cookieExpires)->withSecure(true);
-            $response->headers->setCookie($cookieSession);
-            $response->headers->setCookie($cookieToken);
-            $response->headers->setCookie($cookiePerson);
-            $response->headers->setCookie($cookieUsername);
-            return $response;
-        } catch (\Exception $e) {
-            return $this->json(['status' => 'KO', 'error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
-        }
-    }
-
-    /**
      * @Route("/logout", name="api_logout", methods={"GET"})
      */
     public function logout(Request $request, TokenStorageInterface $tokenStorage)
@@ -101,7 +51,8 @@ class ApiController extends AbstractController
             $this->validateToken($request->headers->get('Token'));
             $this->proccessHookData($data, $apiService);
             return $this->json(['status' => 'OK'], 200);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
+            // @TODO: ENVIAR ERRO PARA API
             return $this->json(['status' => 'KO', 'error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }
     }
