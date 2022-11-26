@@ -17,10 +17,12 @@ export default {
     },
     beforeMount() {
         if (typeof TOKEN !== "undefined" && TOKEN) {
+            console.log('TOKEN ALIVE', TOKEN)
             this.comunicatorClass.http.defaults.headers.common.Authorization = 'Bearer ' + TOKEN
         }
         /* Check if JWT has expired */
         const http = this.comunicatorClass.http
+        const that = this
         http.interceptors.response.use(function (response) {
             return response
         }, function (error) {
@@ -31,7 +33,12 @@ export default {
                 if (error.response.data.detail === 'Invalid Token' || error.response.data.detail === 'Expired JWT Token' || error.response.data.detail === 'Invalid JWT Token') {
                     console.log('TOKEN EXPIRADO! Redirecionando...')
                     delete http.defaults.headers.common.Authorization
-                    window.location = '/logout'
+                    setTimeout(() => {
+                        that.$dialog.new({title: 'Ops', message: 'Sessão do seu login expirada. Faça o login novamente.'})
+                    }, 300)
+                    setTimeout(() => {
+                        window.location = '/logout'
+                    }, 8000)
                     // document.location.reload(true)
                     return false
                 }

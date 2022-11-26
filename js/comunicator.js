@@ -1,5 +1,5 @@
-const Comunicator = require('comunicator/src/index')
-const RealtimeInterface = require('comunicator/src/realtime-service/interface.js')
+import Comunicator from 'comunicator/src/index'
+import RealtimeInterface from 'comunicator/src/realtime-service/interface.js'
 import axios from 'axios'
 import Vue from 'vue'
 

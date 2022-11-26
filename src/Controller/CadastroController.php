@@ -150,9 +150,11 @@ class CadastroController extends AbstractController
         if (isset($_ENV['SL_PAINEL_TIPO'])) {
             if ($_ENV['SL_PAINEL_TIPO'] == 'externo') {
                 $url = $_ENV['SL_PAINEL_LOGIN_URL'] . '?token=' . $this->getUser()->getExtraFields()['token'];
+                $refer = urlencode($this->generateUrl('home', [], UrlGeneratorInterface::ABSOLUTE_URL));
                 if ($request->get('externalAutologin')) {
-                    $url = $url . '&redirectAfterLogin=' . $this->generateUrl('home', [], UrlGeneratorInterface::ABSOLUTE_URL);
+                    $url = $url . '&redirectAfterLogin=' . $refer;
                 }
+                $url = $url . '&refer=' . $refer;
                 return $this->redirect($url);
                 /*return $this->render('loginExterno.html.twig', [
                     'painelUrl' => $_ENV['SL_PAINEL_URL'],

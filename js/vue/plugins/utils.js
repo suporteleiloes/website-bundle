@@ -3,6 +3,11 @@ import { format, parseISO } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import {errorToString, systemError} from "../utils/printError"
 
+export const translateResponse = function (message) {
+  message = message.replace('Not privileged to request the resource.', 'Sessão do seu login expirada. Faça o login novamente.')
+  return message
+}
+
 /* eslint-disable */
 export default {
   install (Vue, options) {
@@ -63,7 +68,8 @@ export default {
         errorsToString: errorToString,
         alertApiError: function (response, title = null, color = null, message = null) {
           // alert(message || this.errorsToString(response))
-          this.$dialog.new({title: 'Ops', message: message || this.errorsToString(response)})
+          message = message || this.errorsToString(response)
+          this.$dialog.new({title: 'Ops', message: translateResponse(message)})
         },
       }
     })
