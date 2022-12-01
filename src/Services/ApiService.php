@@ -8,6 +8,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\RequestOptions;
+use SL\WebsiteBundle\Doctrine\DeletedFilter;
 use SL\WebsiteBundle\Entity\Banner;
 use SL\WebsiteBundle\Entity\Content;
 use SL\WebsiteBundle\Entity\Lance;
@@ -141,10 +142,10 @@ class ApiService
             $data = $data['data'];
         }
         $entityId = $data['id'];
-        //dump('Migrando leilão de ID ' . $entityId);
-        if (intval($data['status']) === 0) {
-            return; // Rascunho
-        }
+        $is_true = function ($val, $return_null = false) {
+            $boolval = (is_string($val) ? filter_var($val, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) : (bool)$val);
+            return ($boolval === null && !$return_null ? false : $boolval);
+        };
         // Verifica se já existe o leilao. Se não existir, cria um.
         $em = $this->em;
         $leilao = $em->getRepository(Leilao::class)->findOneByAid($entityId);
@@ -154,19 +155,18 @@ class ApiService
                 return;
             }
             $leilao = new Leilao();
+        } else {
+            if (intval($data['status']) === 0 || $data['deleted'] || !$is_true($data['publicarSite'])) {
+                $leilao->setDeleted(true);
+                if ($autoFlush) $em->flush();
+                $this->geraCacheLotes();
+                if ($autoFlush) $em->flush();
+                return; // Rascunho
+            }
         }
 
         $leilao->setAid($entityId);
-        $is_true = function ($val, $return_null = false) {
-            $boolval = (is_string($val) ? filter_var($val, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) : (bool)$val);
-            return ($boolval === null && !$return_null ? false : $boolval);
-        };
         if ($leilao->getId()) {
-            if ($data['deleted'] || !$is_true($data['publicarSite'])) {
-                $leilao->setDeleted(true);
-                if ($autoFlush) $em->flush();
-                return;
-            }
             $leilao->setAlastUpdate(new \DateTime());
         } else {
             $leilao->setAcreatedAt(new \DateTime());
@@ -256,7 +256,9 @@ class ApiService
         }
 
         //$this->geraCacheLotes();
+        DeletedFilter::$disableDeletedFilter = false;
         $this->geraCacheLeilao($leilao);
+        DeletedFilter::$disableDeletedFilter = true;
         //$this->em->clear();
     }
 
@@ -271,9 +273,6 @@ class ApiService
             $data = $data['data'];
         }
         $entityId = $data['id'];
-        if (intval($data['status']) === 0) {
-            return; // Rascunho
-        }
         // Verifica se já existe o lote. Se não existir, cria um.
         $em = $this->em;
         $lote = $em->getRepository(Lote::class)->findOneBy([
@@ -286,13 +285,25 @@ class ApiService
             }
             $lote = new Lote();
         } else {
-            #//dump('Achou lote ' . $data['id']);
-        }
-
-        if ((isset($_data) && $_data['remove']) || $data['deleted']) {
-            $em->remove($lote);
-            if ($autoFlush) $em->flush();
-            return;
+            if (intval($data['status']) === 0 || (isset($_data) && $_data['remove']) || $data['deleted']) {
+                $lote->setDeleted(true);
+                $em->persist($lote);
+                if ($autoFlush) $em->flush();
+                DeletedFilter::$disableDeletedFilter = false;
+                if (isset($data['leilao']) || $leilao) {
+                    /* @var Leilao $leilao */
+                    $leilao = $leilao ?? $em->getRepository(Leilao::class)->findOneByAid($data['leilao']['id']);
+                    if ($leilao) {
+                        $leilao->setTotalLotes($em->createQueryBuilder()->select('count(1)')->from(Lote::class, 'l')->where('l.leilao = :leilao')->setParameter('leilao', $leilao->getId())->getQuery()->getSingleScalarResult());
+                        $enableCache && $this->geraCacheLeilao($leilao);
+                    }
+                }
+                $enableCache && $this->geraCacheLotes();
+                $em->persist($leilao);
+                if ($autoFlush) $em->flush();
+                DeletedFilter::$disableDeletedFilter = true;
+                return; // Rascunho
+            }
         }
 
         $lote->setAid($entityId);
@@ -409,14 +420,18 @@ class ApiService
         }
 
         //if (isset($leilao) && !$isTree) $this->geraCacheLeilao($leilao);
+        DeletedFilter::$disableDeletedFilter = false;
         if ($enableCache && !$isTree) $this->geraCacheLotes();
+        DeletedFilter::$disableDeletedFilter = true;
 
         // Atualiza total lotes
         if (isset($leilao)) {
+            DeletedFilter::$disableDeletedFilter = false;
             $leilao->setTotalLotes($em->createQueryBuilder()->select('count(1)')->from(Lote::class, 'l')->where('l.leilao = :leilao')->setParameter('leilao', $leilao->getId())->getQuery()->getSingleScalarResult());
             $this->geraCacheLeilao($leilao);
             $em->persist($leilao);
             if ($autoFlush) $em->flush();
+            DeletedFilter::$disableDeletedFilter = true;
         }
     }
 

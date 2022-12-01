@@ -2,6 +2,7 @@
 
 namespace SL\WebsiteBundle\Controller;
 
+use SL\WebsiteBundle\Doctrine\DeletedFilter;
 use SL\WebsiteBundle\Entity\Banner;
 use SL\WebsiteBundle\Entity\Content;
 use SL\WebsiteBundle\Entity\Lance;
@@ -81,6 +82,7 @@ class ApiController extends AbstractController
      */
     private function proccessHookData(array $hook, ApiService $apiService)
     {
+        DeletedFilter::$disableDeletedFilter = true;
         if (!isset($hook['entity']) || !isset($hook['entityId']) || !isset($hook['data'])) {
             throw new \Exception('Para processar os dados do webhook é necessário passar os valores de `entity`, `entityId` e `data` com os dados.');
         }
@@ -108,6 +110,7 @@ class ApiController extends AbstractController
             default:
                 throw new \Exception('Tipo de dados a ser processado não é compatível com este website');
         }
+        DeletedFilter::$disableDeletedFilter = false;
     }
 
     public function validateToken($token)

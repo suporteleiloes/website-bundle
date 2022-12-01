@@ -48,7 +48,16 @@ class LeilaoRepository extends ServiceEntityRepository
             } else {
                 $id = '%1$s_id';
             }
-            $string = 'SELECT count(c.id) totalItens, c.__ID__ id, MAX(c.%1$s) nome, (SELECT GROUP_CONCAT(l.id) FROM lote l where l.leilao_id = :leilao and l.__ID__ = c.__ID__) lotes  FROM lote c WHERE c.leilao_id = :leilao %2$s GROUP BY c.__ID__ ORDER BY nome';
+            $string = '
+                            SELECT 
+                                count(c.id) totalItens, 
+                                c.__ID__ id, 
+                                MAX(c.%1$s) nome, 
+                                (SELECT GROUP_CONCAT(l.id) FROM lote l where l.leilao_id = :leilao and l.deleted = 0 and l.__ID__ = c.__ID__) lotes  
+                            FROM lote c 
+                            WHERE c.deleted = 0 and c.leilao_id = :leilao %2$s 
+                            GROUP BY c.__ID__ 
+                            ORDER BY nome';
             $string = str_replace('__ID__', $id, $string);
             $string = str_replace(':leilao', $leilao, $string);
             return sprintf(
@@ -64,6 +73,9 @@ class LeilaoRepository extends ServiceEntityRepository
             ->addScalarResult('lotes', 'lotes');
 
         // Status
+        dump($simpleCacheQuery('status', '', true),
+            $rsm
+        );
         $queryStatus= $this->getEntityManager()
             ->createNativeQuery($simpleCacheQuery('status', '', true),
                 $rsm

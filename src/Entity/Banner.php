@@ -18,7 +18,7 @@ class Banner extends ApiSync
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      */
-    private $id;
+    protected $id;
 
     /**
      * @ORM\Column(type="smallint")
