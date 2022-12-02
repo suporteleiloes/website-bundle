@@ -6,7 +6,10 @@ namespace SL\WebsiteBundle\Services;
 
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Query\Expr\Join;
+use Doctrine\ORM\QueryBuilder;
 use SL\WebsiteBundle\Entity\Banner;
+use SL\WebsiteBundle\Entity\Lance;
 use SL\WebsiteBundle\Entity\Leilao;
 use SL\WebsiteBundle\Entity\Lote;
 use SL\WebsiteBundle\Entity\LoteTipoCache;
@@ -266,6 +269,7 @@ class LeilaoService
      *          'tipoLeilao' => (int) 1 = Judicial; 2 = Extrajudicial; Null para ambos.
      *          'relevancia' => (int) 0 = Relevância baseado no número e acessos e lances; 1 = Pela data do leilão (Crescente) [Default]; 2 = Valor (Crescente); 3 = Valor (Decrescente)
      *          'classificacaoLeilao' => (array/int) Classificação do leilão. Iniciativa privada, Seguradoras etc.
+     *          'comPrimeiroLote' => (boolean) Faz o join do primeiro lote
      *      ]
      * @return array|Lote
      */
@@ -333,6 +337,22 @@ class LeilaoService
             }
         }
 
+        if (isset($filtros['comPrimeiroLote'])) {
+            $qbLance = $this->em->createQueryBuilder()
+                ->select('MAX(lance.id) maiorLance')
+                ->from(Lance::class, 'lance')
+                ->join('lance.lote', 'loteLance')
+                ->where('loteLance.leilao = l');
+
+            $qbLote = $this->em->createQueryBuilder()
+                ->select('MIN(lote.numero) primeiroLote')
+                ->from(Lote::class, 'lote')
+                ->where('lote.leilao = l');
+            $qb->leftJoin('l.lotes', 'lotes', Join::WITH, $qb->expr()->eq( 'lotes.id', '('.$qbLote->getDQL().')' ));
+            $qb->leftJoin('lotes.lances', 'lances', Join::WITH, $qb->expr()->eq( 'lances.id', '('.$qbLance->getDQL().')' ));
+            $qb->addSelect('lotes, lances');
+        }
+
         $qb->addCriteria($searchCriteria);
         $qbCount->addCriteria($searchCriteria);
 
@@ -341,8 +361,14 @@ class LeilaoService
         // Filters
 
         $total = intval($qbCount->getQuery()->getSingleScalarResult());
+
+        if (isset($filtros['responseType']) && $filtros['responseType'] === 'array') {
+            $result = $qb->getQuery()->getArrayResult();
+        } else {
+            $result = $qb->getQuery()->getResult();
+        }
         return [
-            'result' => $qb->getQuery()->getResult(),
+            'result' => $result,
             'limit' => $limit,
             'page' => ($offset + $limit) / $limit,
             'offset' => $offset,

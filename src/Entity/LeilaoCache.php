@@ -23,8 +23,7 @@ class LeilaoCache
     private $filtros = [];
 
     /**
-     * @ORM\OneToOne(targetEntity="SL\WebsiteBundle\Entity\Leilao", inversedBy="cache")
-     * @ORM\JoinColumn(name="leilao_id", referencedColumnName="id")
+     * @ORM\OneToOne(targetEntity="SL\WebsiteBundle\Entity\Leilao")
      */
     private $leilao;
 
@@ -59,5 +58,8 @@ class LeilaoCache
     public function setLeilao(Leilao $leilao)
     {
         $this->leilao = $leilao;
+        if ($leilao) {
+            $leilao->setCache($this);
+        }
     }
 }

@@ -346,13 +346,18 @@ class Leilao extends ApiSync
     private $classificacao;
 
     /**
+     * @ORM\Column(type="integer", nullable=true, options={"default": 0})
+     */
+    private $visitas;
+
+    /**
      * @ORM\OneToMany(targetEntity="SL\WebsiteBundle\Entity\Lote", mappedBy="leilao", cascade={"persist"})
      * @ORM\OrderBy({"numero" = "ASC", "id" = "ASC"})
      */
     private $lotes;
 
     /**
-     * @ORM\OneToOne(targetEntity="SL\WebsiteBundle\Entity\LeilaoCache", mappedBy="leilao", orphanRemoval=true)
+     * @ORM\OneToOne(targetEntity="SL\WebsiteBundle\Entity\LeilaoCache")
      */
     private $cache;
 
@@ -1313,6 +1318,22 @@ class Leilao extends ApiSync
     public function setClassificacao($classificacao): void
     {
         $this->classificacao = $classificacao;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getVisitas()
+    {
+        return $this->visitas;
+    }
+
+    /**
+     * @param mixed $visitas
+     */
+    public function setVisitas($visitas): void
+    {
+        $this->visitas = $visitas;
     }
 
 
