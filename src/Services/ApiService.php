@@ -384,7 +384,7 @@ class ApiService
         if (isset($data['bem']['campos']) && is_array($data['bem']['campos'])) {
             $campos = [];
             foreach ($data['bem']['campos'] as $campo) {
-                if ($campo['campo']['public']) {
+                if (isset($campo['campo']['publico']) && $campo['campo']['publico']) {
                     $campos[] = $campo;
                 }
             }
