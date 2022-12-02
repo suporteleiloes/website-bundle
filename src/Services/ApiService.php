@@ -196,7 +196,7 @@ class ApiService
         $leilao->setDataProximoLeilao(isset($data['dataProximoLeilao']) ? \DateTime::createFromFormat('Y-m-d H:i:s+', $data['dataProximoLeilao']['date']) : null);
 
         $leilao->setActive($data['active'] ?: true);
-        $leilao->setOrder($data['order'] ?: 99);
+        $leilao->setOrder($data['order']);
         $leilao->setDeleted($data['deleted'] ?: false);
         $leilao->setJudicial($data['judicial']);
         $leilao->setTotalLotes($data['totalLotes']);
@@ -324,7 +324,7 @@ class ApiService
         $lote->setNumero($data['numero']);
         $lote->setNumeroString($data['numeroString'] ?? null);
         $lote->setDeleted($data['deleted'] ?: false);
-        $lote->setOrder($data['order'] ?? 99);
+        $lote->setOrder($data['order']);
         $lote->setValorInicial($data['valorInicial']);
         $lote->setValorInicial2($data['valorInicial2']);
         $lote->setValorInicial3($data['valorInicial3']);
