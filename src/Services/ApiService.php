@@ -203,6 +203,7 @@ class ApiService
         $leilao->setStatus($data['status']);
         $leilao->setStatusString(@$data['statusString']);
         $leilao->setStatusTipo(@$data['statusTipo']);
+        $leilao->setVisitas(@$data['statsVisitas']);
         $leilao->setPraca($praca);
         $leilao->setInstancia($data['instancia'] ?? null);
         $leilao->setLeiloeiro($data['leiloeiro']['nome']);
