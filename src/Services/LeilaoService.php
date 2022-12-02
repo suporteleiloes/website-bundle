@@ -235,8 +235,9 @@ class LeilaoService
 
         $qb->setMaxResults($limit)->setFirstResult($offset);
 
+        $qb->addOrderBy('l.order', 'ASC');
+
         if ($leilao) {
-            $qb->addOrderBy('l.order', 'ASC');
             $qb->addOrderBy('l.numero', 'ASC');
         }
 
