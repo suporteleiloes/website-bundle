@@ -49,6 +49,8 @@ class LeilaoService
      *          'destaque' => (boolean) Buscar pelo destaque ou não.
      *          'destaqueComVendaDireta' => (boolean) Adicionar bens em venda direta aos destaques
      *          'vendaDireta' => (boolean) Buscar por venda direta ou não. Null não aplica filtro
+     *          'comUltimoLance' => (boolean) Adiciona o último lance à query
+     *          'responseType' => (string|'array','object' ? default = 'object') Adiciona o último lance à query
      *      ]
      * @return array|Lote
      */
@@ -236,6 +238,24 @@ class LeilaoService
         $qb->addCriteria($searchCriteria);
         $qbCount->addCriteria($searchCriteria);
 
+        if (isset($filtros['comUltimoLance'])) {
+            $qbLance = $this->em->createQueryBuilder()
+                ->select('MAX(lance.id) maiorLance')
+                ->from(Lance::class, 'lance')
+                ->where('lance.lote = l')
+                ->setMaxResults(1);
+
+            $qb->leftJoin('l.lances', 'lances', Join::WITH, $qb->expr()->eq( 'lances.id', '('.$qbLance->getDQL().')' ));
+            $qb->addSelect('lances');
+        }
+
+        if (isset($filtros['addLeftjoin'])) {
+            $qb->leftJoin($filtros['addLeftjoin'][0], $filtros['addLeftjoin'][1]);
+        }
+        if (isset($filtros['addSelect'])) {
+            $qb->addSelect($filtros['addSelect']);
+        }
+
         $qb->setMaxResults($limit)->setFirstResult($offset);
 
         $qb->addOrderBy('l.order', 'ASC');
@@ -245,8 +265,15 @@ class LeilaoService
         }
 
         $total = intval($qbCount->getQuery()->getSingleScalarResult());
+
+        if (isset($filtros['responseType']) && $filtros['responseType'] === 'array') {
+            $result = $qb->getQuery()->getArrayResult();
+        } else {
+            $result = $qb->getQuery()->getResult();
+        }
+
         return [
-            'result' => $qb->getQuery()->getResult(),
+            'result' => $result,
             'limit' => $limit,
             'page' => ($offset + $limit) / $limit,
             'offset' => $offset,
@@ -342,12 +369,14 @@ class LeilaoService
                 ->select('MAX(lance.id) maiorLance')
                 ->from(Lance::class, 'lance')
                 ->join('lance.lote', 'loteLance')
-                ->where('loteLance.leilao = l');
+                ->where('loteLance.leilao = l')
+                ->setMaxResults(1);
 
             $qbLote = $this->em->createQueryBuilder()
                 ->select('MIN(lote.numero) primeiroLote')
                 ->from(Lote::class, 'lote')
-                ->where('lote.leilao = l');
+                ->where('lote.leilao = l')
+                ->setMaxResults(1);
             $qb->leftJoin('l.lotes', 'lotes', Join::WITH, $qb->expr()->eq( 'lotes.id', '('.$qbLote->getDQL().')' ));
             $qb->leftJoin('lotes.lances', 'lances', Join::WITH, $qb->expr()->eq( 'lances.id', '('.$qbLance->getDQL().')' ));
             $qb->addSelect('lotes, lances');
