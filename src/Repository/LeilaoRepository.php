@@ -73,9 +73,6 @@ class LeilaoRepository extends ServiceEntityRepository
             ->addScalarResult('lotes', 'lotes');
 
         // Status
-        dump($simpleCacheQuery('status', '', true),
-            $rsm
-        );
         $queryStatus= $this->getEntityManager()
             ->createNativeQuery($simpleCacheQuery('status', '', true),
                 $rsm
