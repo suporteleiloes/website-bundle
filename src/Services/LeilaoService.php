@@ -365,21 +365,24 @@ class LeilaoService
         }
 
         if (isset($filtros['comPrimeiroLote'])) {
-            $qbLance = $this->em->createQueryBuilder()
+            /*$qbLance = $this->em->createQueryBuilder()
                 ->select('MAX(lance.id) maiorLance')
                 ->from(Lance::class, 'lance')
                 ->join('lance.lote', 'loteLance')
                 ->where('loteLance.leilao = l')
-                ->setMaxResults(1);
+                ->setMaxResults(1);*/
 
             $qbLote = $this->em->createQueryBuilder()
-                ->select('MIN(lote.numero) primeiroLote')
+                ->select('MIN(lote.id)')
                 ->from(Lote::class, 'lote')
                 ->where('lote.leilao = l')
+                ->orderBy('lote.order', 'ASC')
+                ->addOrderBy('lote.numero', 'ASC')
                 ->setMaxResults(1);
             $qb->leftJoin('l.lotes', 'lotes', Join::WITH, $qb->expr()->eq( 'lotes.id', '('.$qbLote->getDQL().')' ));
-            $qb->leftJoin('lotes.lances', 'lances', Join::WITH, $qb->expr()->eq( 'lances.id', '('.$qbLance->getDQL().')' ));
-            $qb->addSelect('lotes, lances');
+            //$qb->leftJoin('lotes.lances', 'lances', Join::WITH, $qb->expr()->eq( 'lances.id', '('.$qbLance->getDQL().')' ));
+            //$qb->addSelect('lotes, lances');
+            $qb->addSelect('lotes');
         }
 
         $qb->addCriteria($searchCriteria);
