@@ -429,7 +429,7 @@ class Lote extends ApiSync
 
     /**
      * @ORM\OneToMany(targetEntity="SL\WebsiteBundle\Entity\Lance", mappedBy="lote", orphanRemoval=true, cascade={"persist", "remove"})
-     * @ORM\OrderBy({"valor" = "DESC", "data" = "ASC"})
+     * @ORM\OrderBy({"valor" = "DESC", "data" = "DESC"})
      */
     private $lances;
 

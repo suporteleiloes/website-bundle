@@ -210,7 +210,10 @@ class DefaultController extends SLAbstractController
                 ->createQueryBuilder('l')
                 ->where('l.lote = :lote')
                 ->setParameter('lote', $lote->getId())
-                ->orderBy('l.id', 'DESC')
+                ->orderBy('l.valor', 'DESC')
+                ->addOrderBy('l.order', 'DESC')
+                ->addOrderBy('l.data', 'DESC')
+                ->addOrderBy('l.id', 'DESC')
                 ->setMaxResults(10)
                 ->getQuery()->getArrayResult();
         } else {
