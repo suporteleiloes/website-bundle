@@ -1,7 +1,7 @@
 <template>
   <div class="prevent-app-load">
     <div id="lote-lance" class="app-lance">
-      <div class="col1">
+      <div class="col1" v-if="showHistoricoLances">
         <h2 class="al-title"><strong>Últimos lances</strong></h2>
 
         <table class="app-lance-history">
@@ -26,7 +26,7 @@
           </tbody>
         </table>
       </div>
-      <div class="col2 valores">
+      <div class="col2 valores" v-if="showTaxas">
         <div class="avaliacao"><span>Avaliação:</span> R$ {{ lote.valorAvaliacao|moeda }}</div>
         <div class="lance-minimo"><span>Lance Mínimo:</span> R$ {{ lote.valorAtual|moeda }}</div>
         <div class="incremento"><span>Incremento:</span> R$ {{ lote.valorIncremento|moeda }}</div>
@@ -177,6 +177,16 @@ import {analisadorLote, cancelarLanceAutomaticoLote, registrarLanceAutomaticoLot
 
 export default {
   name: "Lance",
+  props: {
+    showHistoricoLances: {
+      type: Boolean,
+      default: true
+    },
+    showTaxas: {
+      type: Boolean,
+      default: true
+    }
+  },
   components: {HabilitacaoBtn},
   provide: function () {
     return {
