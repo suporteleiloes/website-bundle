@@ -47,7 +47,7 @@
       </div>
       <div class="col3" :class="{naologado: !ARREMATANTEID, isLancando: isLancando}">
         <h2 class="al-title"><strong>Tem interesse? Dê seu lance</strong></h2>
-        <div v-if="isLancando && leilao.permitirParcelamento && lote.permitirParcelamento">
+        <div v-if="isLancando && leilao.permitirParcelamento && lote.permitirParcelamento" class="lancando-tipoLance">
           <div>
             <label>Tipo do lance</label>
             <select class="seletor-parcelas" v-model="lance.parcelamento.lanceParcelado">
