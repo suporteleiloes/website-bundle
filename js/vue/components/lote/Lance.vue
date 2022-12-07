@@ -156,7 +156,7 @@
               <p>Ou digite o valor do lance que você deseja:</p>
               <div>
                 <input v-money.lazy="money" v-model="lance.lanceManual" class="input" />
-                <button @click="confirmarLanceManual" class="btn auditorio">
+                <button @click="confirmarLanceManual" v-if="lance.lanceManual > 0" class="btn auditorio">
                   Confirmar Lance de {{ lance.lanceManual }}
                 </button>
               </div>
