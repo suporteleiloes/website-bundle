@@ -6,7 +6,7 @@
 
       <div v-if="loading" class="text-center"><i class="fa fa-spin fa-spinner" /></div>
       <div class="app-leilao-abilitacao-texto" v-else v-html="document"></div>
-      <div v-if="leilao.direitoPreferencia">
+      <div> <!--  v-if="leilao.direitoPreferencia" -->
         <div class="termos-input-direito-preferencia"><input type="checkbox" v-model="direitoPreferencia" /> Exercer direito de preferência</div>
         <div class="box-direito-preferencia" v-if="direitoPreferencia">
           <div class="text-justify">
