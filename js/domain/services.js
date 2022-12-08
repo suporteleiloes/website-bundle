@@ -30,9 +30,9 @@ export const getPublicDocument = (code) => {
         })
 }
 
-export const leilaoHabilitar = (id) => {
+export const leilaoHabilitar = (id, extra = {}) => {
     const url = `/api/public/arrematantes/service/leiloes/${id}/habilitar`
-    return http.post(url)
+    return http.post(url, extra)
         .then(response => {
             return Promise.resolve(response)
         })
@@ -43,6 +43,17 @@ export const leilaoHabilitar = (id) => {
 
 export const getTextoHabilitacaoLeilao = (id) => {
     const url = `/api/public/arrematantes/service/leiloes/${id}/habilitar`
+    return http.get(url)
+        .then(response => {
+            return Promise.resolve(response)
+        })
+        .catch(({response}) => {
+            return Promise.reject(response)
+        })
+}
+
+export const getLotesMinimo = (id) => {
+    const url = `/api/public/arrematantes/service/leiloes/${id}/lotes-min`
     return http.get(url)
         .then(response => {
             return Promise.resolve(response)
