@@ -74,7 +74,8 @@ class LeilaoService
             $searchCriteria->andWhere(
                 Criteria::expr()->orX(
                     Criteria::expr()->eq('l.leilao', null),
-                    Criteria::expr()->lte('leilao.statusTipo', 2)
+                    Criteria::expr()->lte('leilao.statusTipo', 2),
+                    Criteria::expr()->eq('l.vendaDireta', true)
                 )
             );
             $joins[] = ['l.leilao', 'leilao', true];
