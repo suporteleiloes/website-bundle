@@ -138,6 +138,10 @@ class ApiService
      */
     public function processLeilao($data, $autoFlush = true)
     {
+        $synchronize = false;
+        if (isset($data['webhookStructure']) && $data['webhookStructure']) {
+            $synchronize = true;
+        }
         if (isset($data['webhookStructure'])) {
             $data = $data['data'];
         }
@@ -249,10 +253,28 @@ class ApiService
         #//dump('Persistindo leilão ID ' . $data['id']);
         if ($autoFlush) $em->flush();
 
+        $lotesIds = [];
         if (isset($data['lotes']) && is_array($data['lotes']) && count($data['lotes'])) {
             #//dump('Migrando lotes: ' . count($data['lotes']));
             foreach ($data['lotes'] as $lote) {
                 $this->processLote($lote, true, false, $leilao);
+                $lotesIds[] = $lote['id'];
+            }
+        }
+
+        if ($synchronize) {
+            if (count($lotesIds)) {
+                foreach ($leilao->getLotes() as $lote) {
+                    if(!in_array($lote->getId(), $lotesIds)) {
+                        if ($lote->getLances()) {
+                            foreach ($lote->getLances() as $lance) {
+                                $em->remove($lance);
+                            }
+                        }
+                        $em->remove($lote);
+                    }
+                }
+                $em->flush();
             }
         }
 
