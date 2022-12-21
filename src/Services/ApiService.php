@@ -257,6 +257,8 @@ class ApiService
         if (isset($data['lotes']) && is_array($data['lotes']) && count($data['lotes'])) {
             #//dump('Migrando lotes: ' . count($data['lotes']));
             foreach ($data['lotes'] as $lote) {
+                dump('Processando lote: ');
+                dump($lote['id']);
                 $this->processLote($lote, true, false, $leilao);
                 $lotesIds[] = $lote['id'];
             }
@@ -302,11 +304,29 @@ class ApiService
             'aid' => $entityId,
             'bemId' => $data['bem']['id']
         ]);
+        $isNew = false;
         if (!$lote) {
             if (@$data['deleted']) {
                 return;
             }
             $lote = new Lote();
+            $isNew = true;
+        }
+
+        $lote->setAid($entityId);
+        if ($lote->getId()) {
+            $lote->setAlastUpdate(new \DateTime());
+        } else {
+            $lote->setAcreatedAt(new \DateTime());
+        }
+
+        $lote->setSlug(!empty($data['slug']) ? substr($data['slug'], 0, 254) : (!empty($data['bem']['slug']) ? substr($data['bem']['slug'], 0, 254) : 'lote'));
+
+        // Lt
+        if (isset($data['active']) && $data['active']) {
+            $lote->setActive(true);
+        } else {
+            $lote->setActive(intval($data['status']) < 5); // @TODO: Provisório ou permanente?
         }
 
         if (intval($data['status']) === 0 || (isset($_data) && $_data['remove']) || $data['deleted']) {
@@ -326,24 +346,9 @@ class ApiService
             $em->persist($leilao);
             if ($autoFlush) $em->flush();
             DeletedFilter::$disableDeletedFilter = true;
-            return; // Rascunho
+            // if (!$isNew) return; // Rascunho
         }
 
-        $lote->setAid($entityId);
-        if ($lote->getId()) {
-            $lote->setAlastUpdate(new \DateTime());
-        } else {
-            $lote->setAcreatedAt(new \DateTime());
-        }
-
-        $lote->setSlug(!empty($data['slug']) ? substr($data['slug'], 0, 254) : (!empty($data['bem']['slug']) ? substr($data['bem']['slug'], 0, 254) : 'lote'));
-
-        // Lt
-        if (isset($data['active']) && $data['active']) {
-            $lote->setActive(true);
-        } else {
-            $lote->setActive(intval($data['status']) < 5); // @TODO: Provisório ou permanente?
-        }
         $lote->setNumero($data['numero']);
         $lote->setNumeroString($data['numeroString'] ?? null);
         $lote->setDeleted($data['deleted'] ?: false);
