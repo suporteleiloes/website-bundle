@@ -42,6 +42,7 @@ class ApiController extends AbstractController
      */
     public function webhookCapture(Request $request, ApiService $apiService)
     {
+        set_time_limit(60);
         $data = \json_decode($request->getContent(), true);
         if ($data === null) {
             return $this->json(['status' => 'KO'], Response::HTTP_BAD_REQUEST);
