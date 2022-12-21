@@ -263,19 +263,17 @@ class ApiService
         }
 
         if ($synchronize) {
-            if (count($lotesIds)) {
-                foreach ($leilao->getLotes() as $lote) {
-                    if(!in_array($lote->getId(), $lotesIds)) {
-                        if ($lote->getLances()) {
-                            foreach ($lote->getLances() as $lance) {
-                                $em->remove($lance);
-                            }
+            foreach ($leilao->getLotes() as $lote) {
+                if (!in_array($lote->getId(), $lotesIds)) {
+                    if ($lote->getLances()) {
+                        foreach ($lote->getLances() as $lance) {
+                            $em->remove($lance);
                         }
-                        $em->remove($lote);
                     }
+                    $em->remove($lote);
                 }
-                $em->flush();
             }
+            $em->flush();
         }
 
         //$this->geraCacheLotes();
@@ -427,7 +425,7 @@ class ApiService
             $lote->setVendaDireta(@$data['bem']['vendaDireta']);
             #//dump('Lote sem leilão');
         }
-        if(!$leilao && (!isset($data['bem']['vendaDireta']) || !$data['bem']['vendaDireta'])) {
+        if (!$leilao && (!isset($data['bem']['vendaDireta']) || !$data['bem']['vendaDireta'])) {
             return; // Lote atualizado de leilão encerrado e inexistente na base do site
         }
         #//dump('Persistindo lote ID ' . $data['id']);
@@ -437,7 +435,7 @@ class ApiService
 
         if (isset($data['lances']) && is_array($data['lances']) && count($data['lances'])) {
             sort($data['lances'], SORT_DESC);
-            foreach($data['lances'] as $lance) {
+            foreach ($data['lances'] as $lance) {
                 $this->processLance($lance);
             }
         }
