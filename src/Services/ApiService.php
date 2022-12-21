@@ -331,11 +331,11 @@ class ApiService
 
         if (intval($data['status']) === 0 || (isset($_data) && $_data['remove']) || $data['deleted']) {
             $lote->setDeleted(true);
-            $em->persist($lote);
+            /*$em->persist($lote);
             if ($autoFlush) $em->flush();
             DeletedFilter::$disableDeletedFilter = false;
             if (isset($data['leilao']) || $leilao) {
-                /* @var Leilao $leilao */
+                /* @var Leilao $leilao *1/
                 $leilao = $leilao ?? $em->getRepository(Leilao::class)->findOneByAid($data['leilao']['id']);
                 if ($leilao) {
                     $leilao->setTotalLotes($em->createQueryBuilder()->select('count(1)')->from(Lote::class, 'l')->where('l.leilao = :leilao')->setParameter('leilao', $leilao->getId())->getQuery()->getSingleScalarResult());
@@ -345,7 +345,7 @@ class ApiService
             $enableCache && $this->geraCacheLotes();
             $em->persist($leilao);
             if ($autoFlush) $em->flush();
-            DeletedFilter::$disableDeletedFilter = true;
+            DeletedFilter::$disableDeletedFilter = true;*/
             // if (!$isNew) return; // Rascunho
         }
 
