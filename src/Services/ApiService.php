@@ -257,16 +257,12 @@ class ApiService
         if (isset($data['lotes']) && is_array($data['lotes']) && count($data['lotes'])) {
             #//dump('Migrando lotes: ' . count($data['lotes']));
             foreach ($data['lotes'] as $lote) {
-                dump('Processando lote: ');
-                dump($lote['id']);
                 $this->processLote($lote, true, false, $leilao);
                 $lotesIds[] = $lote['id'];
             }
         }
 
         if ($synchronize) {
-            dump('Sincronizar');
-            dump($lotesIds);
             foreach ($leilao->getLotes() as $lote) {
                 if (!in_array($lote->getAid(), $lotesIds)) {
                     if ($lote->getLances()) {
