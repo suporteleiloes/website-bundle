@@ -268,7 +268,7 @@ class ApiService
             dump('Sincronizar');
             dump($lotesIds);
             foreach ($leilao->getLotes() as $lote) {
-                if (!in_array($lote->getId(), $lotesIds)) {
+                if (!in_array($lote->getAid(), $lotesIds)) {
                     if ($lote->getLances()) {
                         foreach ($lote->getLances() as $lance) {
                             $em->remove($lance);
