@@ -262,7 +262,7 @@ class ApiService
             }
         }
 
-        if ($synchronize) {
+        /*if ($synchronize) {
             foreach ($leilao->getLotes() as $lote) {
                 if (!in_array($lote->getId(), $lotesIds)) {
                     if ($lote->getLances()) {
@@ -274,7 +274,7 @@ class ApiService
                 }
             }
             $em->flush();
-        }
+        }*/
 
         //$this->geraCacheLotes();
         DeletedFilter::$disableDeletedFilter = false;
