@@ -139,7 +139,7 @@ class ApiService
     public function processLeilao($data, $autoFlush = true)
     {
         $synchronize = false;
-        if (isset($data['webhookStructure']) && $data['webhookStructure']) {
+        if (isset($data['synchronize']) && $data['synchronize']) {
             $synchronize = true;
         }
         if (isset($data['webhookStructure'])) {
