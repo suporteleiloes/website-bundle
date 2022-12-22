@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use SL\WebsiteBundle\Entity\Banner;
 use SL\WebsiteBundle\Entity\Lance;
 use SL\WebsiteBundle\Entity\Leilao;
@@ -293,11 +294,13 @@ class LeilaoService
      *          'busca' => (string) Busca inteligente por leilões
      *          'data1' => (datetime) Data inicial
      *          'data2' => (datetime) Data final
+     *          'status' => (mixed|int) Status do Leilão
      *          'statusTipo' => (mixed|int) Tipo do Status do Leilão (prop statusTipo)
      *          'tipoLeilao' => (int) 1 = Judicial; 2 = Extrajudicial; Null para ambos.
      *          'relevancia' => (int) 0 = Relevância baseado no número e acessos e lances; 1 = Pela data do leilão (Crescente) [Default]; 2 = Valor (Crescente); 3 = Valor (Decrescente)
      *          'classificacaoLeilao' => (array/int) Classificação do leilão. Iniciativa privada, Seguradoras etc.
      *          'comPrimeiroLote' => (boolean) Faz o join do primeiro lote
+     *          'order' => (array) Define por qual campo ordenar o resultado. Ex.: ['l.dataProximoLeilao', 'DESC']
      *      ]
      * @return array|Lote
      */
@@ -328,13 +331,13 @@ class LeilaoService
         }
 
         if (isset($filtros['statusTipo'])) {
-            if (!in_array($filtros['statusTipo'], [Leilao::STATUS_TIPO_ABERTO, Leilao::STATUS_TIPO_EM_LEILAO, Leilao::STATUS_TIPO_ENCERRADO])) {
-                throw new \Exception('Filtro statusTipo inválido');
-            }
-            /*$qb->andWhere('l.statusTipo IN (:statusTipo)')
-                ->setParameter('statusTipo', is_array($filtros['statusTipo']) ? $filtros['statusTipo'] : [$filtros['statusTipo']]);*/
             $searchCriteria->andWhere(
                 Criteria::expr()->in('l.statusTipo', is_array($filtros['statusTipo']) ? $filtros['statusTipo'] : [$filtros['statusTipo']]));
+        }
+
+        if (isset($filtros['status'])) {
+            $searchCriteria->andWhere(
+                Criteria::expr()->in('l.status', is_array($filtros['status']) ? $filtros['status'] : [$filtros['status']]));
         }
 
         if (isset($filtros['tipoLeilao'])) {
@@ -354,7 +357,16 @@ class LeilaoService
             ->select('COUNT(1) total')
             ->from(Leilao::class, 'l');
 
-        if (!isset($filtros['relevancia']) || $filtros['relevancia'] == '1') {
+        if (isset($filtros['order'])) {
+            if (!is_array($filtros['order'])) {
+                $order = $filtros['order'];
+                $orderType = 'ASC';
+            } else {
+                $order = $filtros['order'][0];
+                $orderType = $filtros['order'][1];
+            }
+            $qb->orderBy($order, $orderType);
+        } elseif (!isset($filtros['relevancia']) || $filtros['relevancia'] == '1') {
             $qb->orderBy('l.dataProximoLeilao', 'ASC');
         }
 
@@ -398,14 +410,19 @@ class LeilaoService
         if (isset($filtros['responseType']) && $filtros['responseType'] === 'array') {
             $result = $qb->getQuery()->getArrayResult();
         } else {
+            /*$paginator = new Paginator($qb->getQuery(), true);
+            $result = (array)$paginator->getIterator();
+            $total = count($paginator);*/
             $result = $qb->getQuery()->getResult();
         }
+        $page = ($offset + $limit) / $limit;
         return [
             'result' => $result,
             'limit' => $limit,
-            'page' => ($offset + $limit) / $limit,
+            'page' => $page,
             'offset' => $offset,
             'offsetEnd' => $total > $limit ? ($offset + $limit) : $total,
+            "totalPages" => intval(ceil(intval($total) / $limit)),
             'total' => $total
         ];
     }

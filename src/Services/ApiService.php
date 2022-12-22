@@ -249,6 +249,10 @@ class ApiService
         $leilao->setTextoPropostas(@$data['textoPropostas']);
         $leilao->setSistemaTaxa($data['sistemaTaxa'] ?? null);
 
+        $leilao->setCodigo($data['codigo'] ?? null);
+        $leilao->setNumero($data['numero'] ?? null);
+        $leilao->setAno($data['ano'] ?? null);
+
         $em->persist($leilao);
         #//dump('Persistindo leilão ID ' . $data['id']);
         if ($autoFlush) $em->flush();
@@ -516,7 +520,15 @@ class ApiService
             ->setParameter('lote', $lote->getId())
             ->getQuery()->getSingleScalarResult();
         $lote->setTotalLances($totalLances);
+        $leilao = $lote->getLeilao();
+        $leilao->setLances($em->getRepository(Lance::class)->createQueryBuilder('l')
+            ->select('count(1)')
+            ->join('l.lote', 'lote')
+            ->where('lote.leilao = :leilao')
+            ->setParameter('leilao', $leilao->getId())
+            ->getQuery()->getSingleScalarResult());
         $em->persist($lote);
+        $em->persist($leilao);
         if ($autoFlush) $em->flush();
     }
 

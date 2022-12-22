@@ -24,6 +24,16 @@ class Leilao extends ApiSync
     const LEILAO_PRESENCIAL = 2;
     const LEILAO_ONLINE_PRESENCIAL = 3;
 
+    const STATUS_RASCUNHO = 0;
+    const STATUS_EM_BREVE = 1;
+    const STATUS_EM_LOTEAMENTO = 2;
+    const STATUS_ABERTO_PARA_LANCES = 3;
+    const STATUS_EM_LEILAO = 4;
+    const STATUS_CANCELADO = 96;
+    const STATUS_ADIADO = 97;
+    const STATUS_SUSPENSO = 98;
+    const STATUS_ENCERRADO = 99;
+
     const STATUS_TIPO_ABERTO = 1;
     const STATUS_TIPO_EM_LEILAO = 2;
     const STATUS_TIPO_ENCERRADO = 100;
@@ -48,6 +58,21 @@ class Leilao extends ApiSync
      * @ORM\Column(type="integer")
      */
     protected $id;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $codigo;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $numero;
+
+    /**
+     * @ORM\Column(type="integer", length=255, nullable=true)
+     */
+    private $ano;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -349,6 +374,11 @@ class Leilao extends ApiSync
      * @ORM\Column(type="integer", nullable=true, options={"default": 0})
      */
     private $visitas;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true, options={"default": 0})
+     */
+    private $lances;
 
     /**
      * @ORM\OneToMany(targetEntity="SL\WebsiteBundle\Entity\Lote", mappedBy="leilao", cascade={"persist"})
@@ -1336,6 +1366,69 @@ class Leilao extends ApiSync
         $this->visitas = $visitas;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getLances()
+    {
+        return $this->lances;
+    }
+
+    /**
+     * @param mixed $lances
+     */
+    public function setLances($lances): void
+    {
+        $this->lances = $lances;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCodigo()
+    {
+        return $this->codigo;
+    }
+
+    /**
+     * @param mixed $codigo
+     */
+    public function setCodigo($codigo): void
+    {
+        $this->codigo = $codigo;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getNumero()
+    {
+        return $this->numero;
+    }
+
+    /**
+     * @param mixed $numero
+     */
+    public function setNumero($numero): void
+    {
+        $this->numero = $numero;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAno()
+    {
+        return $this->ano;
+    }
+
+    /**
+     * @param mixed $ano
+     */
+    public function setAno($ano): void
+    {
+        $this->ano = $ano;
+    }
 
     public function __serialize(): array
     {
@@ -1343,6 +1436,9 @@ class Leilao extends ApiSync
             'id' => $this->id,
             'aid' => $this->getAid(),
             'slug' => $this->slug,
+            'codigo',
+            'numero',
+            'ano',
             'data1',
             'data2',
             'data3',
@@ -1366,7 +1462,9 @@ class Leilao extends ApiSync
             'classificacaoId' => $this->classificacaoId,
             'classificacao' => $this->classificacao,
             'sistemaTaxa' => $this->sistemaTaxa,
-            'habilitacao' => $this->getHabilitacao(),
+            'habilitacao' => $this->habilitacao,
+            'visitas' => $this->visitas,
+            'lances' => $this->lances,
             'permitirParcelamento' => $this->permitirParcelamento,
             'parcelamentoMinimoEntrada' => $this->parcelamentoMinimoEntrada,
             'parcelamentoQtdParcelas' => $this->parcelamentoQtdParcelas,
