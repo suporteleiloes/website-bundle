@@ -27,7 +27,7 @@ class BuscaController extends AbstractController
         $routeName = $request->attributes->get('_route');
         $page = $request->query->getInt('page', 1);
         $page = $page === 0 ? 1 : $page;
-        $limit = 100;
+        $limit = $request->query->getInt('limit', 4);
         $offset = ($page * $limit) - $limit;
 
         $tipoId = $request->get('tipo');
@@ -58,6 +58,24 @@ class BuscaController extends AbstractController
 
         if ($routeName === 'busca_vendaDireta') {
             $requestFiltros['vendaDireta'] = 1;
+        }
+
+        if ($request->get('order')) {
+            $order = $request->get('order');
+            switch ($order) {
+                case 'valorAsc':
+                    $requestFiltros['order'] = ['l.valorInicial', 'ASC'];
+                    break;
+                case 'valorDesc':
+                    $requestFiltros['order'] = ['l.valorInicial', 'DESC'];
+                    break;
+                case 'dataLeilaoAsc':
+                    $requestFiltros['order'] = ['leilao.dataProximoLeilao', 'ASC'];
+                    break;
+                case 'dataLeilaoDesc':
+                    $requestFiltros['order'] = ['leilao.dataProximoLeilao', 'DESC'];
+                    break;
+            }
         }
 
         $lotes = $leilaoService->buscarBens(

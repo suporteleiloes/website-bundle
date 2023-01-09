@@ -237,6 +237,7 @@ class ApiService
         $leilao->setTimezone(@$data['timezone']);
         $leilao->setVendaDireta(@$data['vendaDireta']);
         $leilao->setHabilitacao(@$data['habilitacao']);
+        $leilao->setHabilitados(@$data['habilitados']);
 
         $leilao->setPermitirParcelamento(@$data['permitirParcelamento']);
         $leilao->setParcelamentoQtdParcelas(@$data['parcelamentoQtdParcelas']);
@@ -367,6 +368,7 @@ class ApiService
         $lote->setPermitirPropostas(@$data['permitirPropostas']);
         $lote->setStatus($data['status']);
         $lote->setStatusString($data['statusString']);
+        $lote->setTaxas($data['taxas']);
         //$lote->setStatusCor($data['statusCor']);
 
         // Bem
@@ -388,6 +390,11 @@ class ApiService
         $lote->setModelo(@$data['bem']['modelo']['nome']);
         $lote->setAno(@$data['bem']['anoModelo']);
         $lote->setCidade(@$data['bem']['cidade']);
+        $lote->setPais(@$data['bem']['pais']);
+        $lote->setEndereco(@$data['bem']['endereco']);
+        $lote->setEndNumero(@$data['bem']['numero']);
+        $lote->setEndComplemento(@$data['bem']['endComplemento']);
+        $lote->setCep(@$data['bem']['cep']);
         $lote->setUf(@$data['bem']['uf']);
         $lote->setBairro(@$data['bem']['bairro']);
         $lote->setTipoId(@$data['bem']['tipo']['id']);

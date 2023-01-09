@@ -232,6 +232,31 @@ class Lote extends ApiSync
     private $ano;
 
     /**
+     * @ORM\Column(type="string", length=50, nullable=true, options={"default": 0})
+     */
+    private $pais;
+
+    /**
+     * @ORM\Column(type="string", length=50, nullable=true)
+     */
+    private $cep;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $endereco;
+
+    /**
+     * @ORM\Column(type="string", length=50, nullable=true)
+     */
+    private $endNumero;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $endComplemento;
+
+    /**
      * @ORM\Column(type="string", length=100, nullable=true)
      */
     private $uf;
@@ -391,6 +416,11 @@ class Lote extends ApiSync
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $textoTaxas;
+
+    /**
+     * @ORM\Column(type="json", nullable=true)
+     */
+    private $taxas;
 
     /**
      * @ORM\Column(type="integer", options={"default": 0})
@@ -1703,6 +1733,112 @@ class Lote extends ApiSync
         $this->tags = $tags;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getTaxas()
+    {
+        return $this->taxas;
+    }
+
+    /**
+     * @param mixed $taxas
+     */
+    public function setTaxas($taxas): void
+    {
+        $this->taxas = $taxas;
+    }
+
+    public function getValorImpostos () {
+        $total = 0;
+        if ($this->taxas && count($this->taxas)) {
+            foreach ($this->taxas as $taxa) {
+                $total = bcadd($total, $taxa['valor'], 2);
+            }
+        }
+        return $total;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPais()
+    {
+        return $this->pais;
+    }
+
+    /**
+     * @param mixed $pais
+     */
+    public function setPais($pais): void
+    {
+        $this->pais = $pais;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCep()
+    {
+        return $this->cep;
+    }
+
+    /**
+     * @param mixed $cep
+     */
+    public function setCep($cep): void
+    {
+        $this->cep = $cep;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getEndereco()
+    {
+        return $this->endereco;
+    }
+
+    /**
+     * @param mixed $endereco
+     */
+    public function setEndereco($endereco): void
+    {
+        $this->endereco = $endereco;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getEndNumero()
+    {
+        return $this->endNumero;
+    }
+
+    /**
+     * @param mixed $endNumero
+     */
+    public function setEndNumero($endNumero): void
+    {
+        $this->endNumero = $endNumero;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getEndComplemento()
+    {
+        return $this->endComplemento;
+    }
+
+    /**
+     * @param mixed $endComplemento
+     */
+    public function setEndComplemento($endComplemento): void
+    {
+        $this->endComplemento = $endComplemento;
+    }
+
     public function getDadosParaJsonSite()
     {
         return [
@@ -1733,6 +1869,7 @@ class Lote extends ApiSync
             'totalLances' => $this->totalLances,
             'campos' => $this->campos,
             'tags' => $this->tags,
+            'taxas' => $this->taxas,
         ];
     }
 

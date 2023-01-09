@@ -1,5 +1,5 @@
 <template>
-  <modal class="document-modal" ref="modal">
+  <modal class="document-modal modal-habilitacao" ref="modal">
     <div class="modal-nav"><button @click="modal().close()" class="btn text-blue-grey-5">Fechar</button></div>
     <div class="pad">
 <!--      <div class="mb-3 font-bold">Habilite-se para participar deste leilão</div>-->
@@ -7,7 +7,7 @@
       <div v-if="loading" class="text-center"><i class="fa fa-spin fa-spinner" /></div>
       <div class="app-leilao-abilitacao-texto" v-else v-html="document"></div>
       <div> <!--  v-if="leilao.direitoPreferencia" -->
-        <div class="termos-input-direito-preferencia"><input type="checkbox" v-model="direitoPreferencia" /> Exercer direito de preferência</div>
+        <div class="termos-input-direito-preferencia"><input type="checkbox" v-model="direitoPreferencia" /><span>Exercer direito de preferência</span></div>
         <div class="box-direito-preferencia" v-if="direitoPreferencia">
           <div class="text-justify">
             O direito de preferência permite você igualar o valor do lote e, em caso de empate, ter preferência na disputa.
@@ -26,8 +26,8 @@
         </div>
       </div>
 
-      <div class="text-right mt-3">
-        <div class="termos-input-aceite"><input type="checkbox" v-model="aceite" class="mr-2" /> Declaro que li e aceito as condições do leilão</div>
+      <div class="text-right mt-3 footer-btns">
+        <div class="termos-input-aceite"><input type="checkbox" v-model="aceite" /><span>Declaro que li e aceito as condições do leilão</span></div>
         <button class="btn btn-success" @click="confirm">Concordo e solicito a habilitação</button>
         <button class="btn btn-negative" @click="modal().close()">Não concordo</button>
       </div>
@@ -71,6 +71,7 @@ export default {
   },
   methods: {
     show () {
+      this.$root.needLogged()
       this.$refs.modal.open()
       this.loading = true
       this.carregaTexto()

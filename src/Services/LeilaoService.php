@@ -51,6 +51,7 @@ class LeilaoService
      *          'destaqueComVendaDireta' => (boolean) Adicionar bens em venda direta aos destaques
      *          'vendaDireta' => (boolean) Buscar por venda direta ou não. Null não aplica filtro
      *          'comUltimoLance' => (boolean) Adiciona o último lance à query
+     *          'order' => (array) [field, orderType]
      *          'responseType' => (string|'array','object' ? default = 'object') Adiciona o último lance à query
      *      ]
      * @return array|Lote
@@ -260,10 +261,14 @@ class LeilaoService
 
         $qb->setMaxResults($limit)->setFirstResult($offset);
 
-        $qb->addOrderBy('l.order', 'ASC');
+        if (isset($filtros['order'])) {
+            $qb->addOrderBy($filtros['order'][0], $filtros['order'][1]);
+        } else {
+            $qb->addOrderBy('l.order', 'ASC');
 
-        if ($leilao) {
-            $qb->addOrderBy('l.numero', 'ASC');
+            if ($leilao) {
+                $qb->addOrderBy('l.numero', 'ASC');
+            }
         }
 
         $total = intval($qbCount->getQuery()->getSingleScalarResult());

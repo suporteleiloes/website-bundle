@@ -313,6 +313,10 @@ class Leilao extends ApiSync
      * @ORM\Column(type="smallint", nullable=true, options={"default": 1})
      */
     private $habilitacao = 1;
+    /**
+     * @ORM\Column(type="integer", nullable=true, options={"default": 0})
+     */
+    private $habilitados = 0;
 
     /**
      * @ORM\Column(type="boolean", nullable=true)
@@ -903,6 +907,22 @@ class Leilao extends ApiSync
     }
 
     /**
+     * @return int
+     */
+    public function getHabilitados(): int
+    {
+        return $this->habilitados;
+    }
+
+    /**
+     * @param int $habilitados
+     */
+    public function setHabilitados(int $habilitados): void
+    {
+        $this->habilitados = $habilitados;
+    }
+
+    /**
      * @return mixed
      */
     public function getPermitirParcelamento()
@@ -1463,6 +1483,7 @@ class Leilao extends ApiSync
             'classificacao' => $this->classificacao,
             'sistemaTaxa' => $this->sistemaTaxa,
             'habilitacao' => $this->habilitacao,
+            'habilitados' => $this->habilitados,
             'visitas' => $this->visitas,
             'lances' => $this->lances,
             'permitirParcelamento' => $this->permitirParcelamento,
