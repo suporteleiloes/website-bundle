@@ -233,6 +233,8 @@ class ApiService
         $leilao->setEnderecoNumero(@$data['enderecoNumero']);
         $leilao->setBairro(@$data['bairro']);
         $leilao->setEnderecoReferencia(@$data['enderecoReferencia']);
+        $leilao->setUf(@$data['uf']);
+        $leilao->setCidade(@$data['cidade']);
 
         $leilao->setTimezone(@$data['timezone']);
         $leilao->setVendaDireta(@$data['vendaDireta']);
