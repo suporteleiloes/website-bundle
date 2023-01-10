@@ -27,7 +27,7 @@ class BuscaController extends AbstractController
         $routeName = $request->attributes->get('_route');
         $page = $request->query->getInt('page', 1);
         $page = $page === 0 ? 1 : $page;
-        $limit = $request->query->getInt('limit', 4);
+        $limit = $request->query->getInt('limit', 20);
         $offset = ($page * $limit) - $limit;
 
         $tipoId = $request->get('tipo');
