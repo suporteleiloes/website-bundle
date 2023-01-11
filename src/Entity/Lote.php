@@ -247,6 +247,11 @@ class Lote extends ApiSync
     private $km;
 
     /**
+     * @ORM\Column(type="string", length=40, nullable=true)
+     */
+    private $combustivel;
+
+    /**
      * @ORM\Column(type="string", length=50, nullable=true, options={"default": 0})
      */
     private $pais;
@@ -1900,6 +1905,22 @@ class Lote extends ApiSync
     public function setKm($km): void
     {
         $this->km = $km;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCombustivel()
+    {
+        return $this->combustivel;
+    }
+
+    /**
+     * @param mixed $combustivel
+     */
+    public function setCombustivel($combustivel): void
+    {
+        $this->combustivel = $combustivel;
     }
 
     public function getDadosParaJsonSite()

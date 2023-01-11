@@ -393,6 +393,7 @@ class ApiService
         $lote->setPlaca(@$data['bem']['placa']);
         $lote->setChassi(@$data['bem']['chassi']);
         $lote->setKm(@$data['bem']['km']);
+        $lote->setCombustivel($data['bem']['tipoCombustivel']['nome'] ?? null);
         $lote->setAno(@$data['bem']['anoModelo']);
         $lote->setCidade(@$data['bem']['cidade']);
         $lote->setPais(@$data['bem']['pais']);
