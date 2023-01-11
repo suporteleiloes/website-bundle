@@ -390,6 +390,9 @@ class ApiService
         $lote->setMarca(@$data['bem']['marca']['nome']);
         $lote->setModeloId(@$data['bem']['modelo']['id']);
         $lote->setModelo(@$data['bem']['modelo']['nome']);
+        $lote->setPlaca(@$data['bem']['placa']);
+        $lote->setChassi(@$data['bem']['chassi']);
+        $lote->setKm(@$data['bem']['km']);
         $lote->setAno(@$data['bem']['anoModelo']);
         $lote->setCidade(@$data['bem']['cidade']);
         $lote->setPais(@$data['bem']['pais']);

@@ -232,6 +232,21 @@ class Lote extends ApiSync
     private $ano;
 
     /**
+     * @ORM\Column(type="string", length=20, nullable=true)
+     */
+    private $placa;
+
+    /**
+     * @ORM\Column(type="string", length=20, nullable=true)
+     */
+    private $chassi;
+
+    /**
+     * @ORM\Column(type="string", length=20, nullable=true)
+     */
+    private $km;
+
+    /**
      * @ORM\Column(type="string", length=50, nullable=true, options={"default": 0})
      */
     private $pais;
@@ -1837,6 +1852,54 @@ class Lote extends ApiSync
     public function setEndComplemento($endComplemento): void
     {
         $this->endComplemento = $endComplemento;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPlaca()
+    {
+        return $this->placa;
+    }
+
+    /**
+     * @param mixed $placa
+     */
+    public function setPlaca($placa): void
+    {
+        $this->placa = $placa;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getChassi()
+    {
+        return $this->chassi;
+    }
+
+    /**
+     * @param mixed $chassi
+     */
+    public function setChassi($chassi): void
+    {
+        $this->chassi = $chassi;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getKm()
+    {
+        return $this->km;
+    }
+
+    /**
+     * @param mixed $km
+     */
+    public function setKm($km): void
+    {
+        $this->km = $km;
     }
 
     public function getDadosParaJsonSite()
