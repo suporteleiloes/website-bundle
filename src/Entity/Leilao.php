@@ -153,6 +153,16 @@ class Leilao extends ApiSync
     private $judicial;
 
     /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $vendaDireta;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $dataLimitePropostas;
+
+    /**
      * @ORM\Column(type="smallint", nullable=true)
      */
     private $totalLotes;
@@ -1450,6 +1460,22 @@ class Leilao extends ApiSync
         $this->ano = $ano;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getDataLimitePropostas()
+    {
+        return $this->dataLimitePropostas;
+    }
+
+    /**
+     * @param mixed $dataLimitePropostas
+     */
+    public function setDataLimitePropostas($dataLimitePropostas): void
+    {
+        $this->dataLimitePropostas = $dataLimitePropostas;
+    }
+
     public function __serialize(): array
     {
         return [
@@ -1489,7 +1515,9 @@ class Leilao extends ApiSync
             'permitirParcelamento' => $this->permitirParcelamento,
             'parcelamentoMinimoEntrada' => $this->parcelamentoMinimoEntrada,
             'parcelamentoQtdParcelas' => $this->parcelamentoQtdParcelas,
-            'parcelamentoIndices' => $this->parcelamentoIndices
+            'parcelamentoIndices' => $this->parcelamentoIndices,
+            'vendaDireta' => $this->vendaDireta,
+            'dataLimitePropostas' => $this->dataLimitePropostas,
         ];
     }
 

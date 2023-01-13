@@ -256,6 +256,9 @@ class ApiService
         $leilao->setNumero($data['numero'] ?? null);
         $leilao->setAno($data['ano'] ?? null);
 
+        $leilao->setVendaDireta($data['vendaDireta'] ?? false);
+        $leilao->setDataLimitePropostas(isset($data['dataLimitePropostas']) ? \DateTime::createFromFormat('Y-m-d H:i:s+', $data['dataLimitePropostas']['date']) : null);
+
         $em->persist($leilao);
         #//dump('Persistindo leilão ID ' . $data['id']);
         if ($autoFlush) $em->flush();
