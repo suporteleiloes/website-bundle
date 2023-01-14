@@ -240,7 +240,7 @@ class DefaultController extends SLAbstractController
 
         $formProposta = null;
         $formPropostaSucesso = null;
-        if (!$lote->getLeilao() && $lote->getVendaDireta()) {
+        if ((!$lote->getLeilao() && $lote->getVendaDireta()) || ($lote->getLeilao() && $lote->getLeilao()->getVendaDireta())) {
             $cookieName = 'bem_proposta_' . $lote->getAid();
             if ($request->cookies->get($cookieName)) {
                 $formPropostaSucesso = true;
