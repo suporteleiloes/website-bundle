@@ -354,6 +354,15 @@ class LeilaoService
             );
         }
 
+        if (isset($filtros['busca'])) {
+            $searchCriteria->andWhere(
+                Criteria::expr()->orX(
+                    Criteria::expr()->contains('l.titulo', $filtros['busca']),
+                    Criteria::expr()->contains('l.descricao', $filtros['busca']),
+                    Criteria::expr()->contains('l.leiloeiro', $filtros['busca'])
+                )
+            );
+        }
 
         $qb = $this->em->createQueryBuilder();
         $qb->select('l')->from(Leilao::class, 'l');
