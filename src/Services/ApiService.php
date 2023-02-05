@@ -373,7 +373,7 @@ class ApiService
         $lote->setPermitirPropostas(@$data['permitirPropostas']);
         $lote->setStatus($data['status']);
         $lote->setStatusString($data['statusString']);
-        $lote->setTaxas($data['taxas']);
+        $lote->setTaxas($data['taxas'] ?? null);
         //$lote->setStatusCor($data['statusCor']);
 
         // Bem
