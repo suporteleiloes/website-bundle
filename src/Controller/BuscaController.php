@@ -30,7 +30,7 @@ class BuscaController extends AbstractController
         $limit = $request->query->getInt('limit', 20);
         $offset = ($page * $limit) - $limit;
 
-        $tipoId = $request->get('tipo');
+        $tipoId = $request->get('tipoId');
 
         $requestFiltros = [];
 
