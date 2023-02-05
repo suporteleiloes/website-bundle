@@ -124,6 +124,15 @@ class LeilaoService
             );
         }
 
+        if (isset($filtros['tipoId'])) {
+            if (!is_array($filtros['tipoId'])) {
+                $filtros['tipoId'] = explode(',', $filtros['tipoId']);
+            }
+            $searchCriteria->andWhere(
+                Criteria::expr()->in('l.tipoId', $filtros['tipoId'])
+            );
+        }
+
         if (isset($filtros['marca'])) {
             $marcaSearch = Criteria::expr()->in('l.marcaId', $convertArray($filtros['marca']));
             if (!is_array($filtros['marca'])) {
