@@ -153,6 +153,7 @@ class ApiService
         // Verifica se já existe o leilao. Se não existir, cria um.
         $em = $this->em;
         $leilao = $em->getRepository(Leilao::class)->findOneByAid($entityId);
+        $forceDeleted = false;
         if (!$leilao) {
             //dump('Leilão de ID ' . $entityId . ' não encontrado, criando novo!');
             if (@$data['deleted']) {
@@ -162,6 +163,7 @@ class ApiService
         } else {
             if (intval($data['status']) === 0 || $data['deleted'] || !$is_true($data['publicarSite'])) {
                 $leilao->setDeleted(true);
+                $forceDeleted = true;
                 if ($autoFlush) $em->flush();
                 $this->geraCacheLotes();
                 if ($autoFlush) $em->flush();
@@ -201,7 +203,9 @@ class ApiService
 
         $leilao->setActive($data['active'] ?: true);
         $leilao->setOrder($data['order']);
-        $leilao->setDeleted($data['deleted'] ?: false);
+        if (!$forceDeleted) {
+            $leilao->setDeleted($data['deleted'] ?: false);
+        }
         $leilao->setJudicial($data['judicial']);
         $leilao->setTotalLotes($data['totalLotes']);
         $leilao->setStatus($data['status']);
@@ -335,8 +339,10 @@ class ApiService
             $lote->setActive(intval($data['status']) < 5); // @TODO: Provisório ou permanente?
         }
 
+        $forceDeleted = false;
         if (intval($data['status']) === 0 || (isset($_data) && $_data['remove']) || $data['deleted']) {
             $lote->setDeleted(true);
+            $forceDeleted = true;
             /*$em->persist($lote);
             if ($autoFlush) $em->flush();
             DeletedFilter::$disableDeletedFilter = false;
@@ -357,7 +363,9 @@ class ApiService
 
         $lote->setNumero($data['numero']);
         $lote->setNumeroString($data['numeroString'] ?? null);
-        $lote->setDeleted($data['deleted'] ?: false);
+        if (!$forceDeleted) {
+            $lote->setDeleted($data['deleted'] ?: false);
+        }
         $lote->setOrder($data['order']);
         $lote->setValorInicial($data['valorInicial']);
         $lote->setValorInicial2($data['valorInicial2']);

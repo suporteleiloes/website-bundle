@@ -110,7 +110,7 @@ class LoteRepository extends ServiceEntityRepository
             $r,
             'select distinct modelo valor, marca, COUNT(marca) total from lote WHERE lote.deleted = 0 GROUP BY marca, modelo',
             'marca',
-            'marca'
+            'modelo'
         );
 
         foreach($r as $cache) {
