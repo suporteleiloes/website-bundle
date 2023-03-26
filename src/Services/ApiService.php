@@ -527,7 +527,11 @@ class ApiService
         $lance->setActive($data['active'] ?: true);
         $lance->setDeleted($data['deleted'] ?: false);
         /* @var Lote $lote */
-        $lote = $em->getRepository(Lote::class)->findOneByAid($data['lote']['id']);
+        $lote = $em->getRepository(Lote::class)->createQueryBuilder('l')
+            ->where('l.aid = :aid and l.leilao is not null')
+            ->setParameter('aid', $data['lote']['id'])
+            ->getQuery()
+            ->getOneOrNullResult();
         if ($lote) {
             $lance->setLote($lote);
             $lote->addLance($lance);
