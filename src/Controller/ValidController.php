@@ -16,12 +16,18 @@ class ValidController extends AbstractController
     public function validaNotaArrematacao(Request $request, ApiService $apiService, $numero = null)
     {
         $nota = null;
+        $erro = null;
         if ($request->get('numero') || $numero) {
-            $nota = $apiService->consultaNotaArrematacao($request->get('numero') ?: $numero);
+            try {
+                $nota = $apiService->consultaNotaArrematacao($request->get('numero') ?: $numero);
+            } catch (\Throwable $exception) {
+                $erro = $exception->getMessage();
+            }
         }
 
-        return $this->render('validaNota.html.twig', [
-            'nora' => $nota
+        return $this->render('@SLWebsite/valid/validaNota.html.twig', [
+            'nota' => $nota,
+            'erro' => $erro
         ]);
     }
 

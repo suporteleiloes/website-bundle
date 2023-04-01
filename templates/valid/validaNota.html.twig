@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Verificação de Nota</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+    <!-- Adiciona o Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="icon" href="https://static.suporteleiloes.com.br/assets/favicon.png" id="app-favicon">
+
+    <style>
+        html, body {
+            height: 100%
+        }
+        body {
+            background: rgb(0,163,255);
+            background: -webkit-linear-gradient(rgba(0,163,255,1) 0%, rgba(0,118,184,1) 100%);
+            background: -o-linear-gradient(rgba(0,163,255,1) 0%, rgba(0,118,184,1) 100%);
+            background: linear-gradient(rgba(0,163,255,1) 0%, rgba(0,118,184,1) 100%);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center
+        }
+        form {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            width: 400px;
+            height: auto;
+            margin: 0 auto;
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+        input[type=text] {
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        input[type=submit] {
+            background-color: green;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+<form action="" method="get" class="form-horizontal">
+    {% if nota is null and erro is null %}
+    <div class="form-group">
+        <label for="nota" class="col-sm-12 control-label_ text-center">Número da Nota:</label>
+        <div class="col-sm-12">
+            <input type="text" class="form-control text-center" id="numero" name="numero" placeholder="Digite o número da nota...">
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-12 text-center">
+            <button type="submit" class="btn btn-primary">Verificar validade</button>
+        </div>
+    </div>
+    {% elseif nota and erro is null %}
+        {% if not nota.cancelada %}
+            <div style="color: green; font-weight: bold">✅ Esta é uma nota válida</div>
+            <div style="padding: 10px 0">
+                Data de emissão: <strong>{{ nota.createdAt|date('d/m/Y H:i:s') }}</strong><br>
+                Valor: <strong>R$ {{ nota.valor|number_format(2, ',', '.') }}</strong><br>
+                Titular: <strong>{{ nota.arremates[0].arrematante.pessoa.name }}</strong><br>
+                Número: <strong>{{ nota.numero }}</strong>
+            </div>
+        {% else %}
+            <div style="color: red; font-weight: bold">Esta nota foi cancelada.</div>
+        {% endif %}
+    {% elseif erro %}
+        <div style="color: red; font-weight: bold">Nota não encontrada em nossa base de dados.</div>
+    {% endif %}
+    <br><br>
+    <div style="font-size: 10px; display: flex; flex-direction: column; align-items: center">
+        <a href="https://www.suporteleiloes.com.br"><img width="20" src="https://static.suporteleiloes.com.br/assets/favicon.png"></a> Tecnologia mantida pela <a href="https://www.suporteleiloes.com.br">Suporte Leilões</a></div>
+</form>
+
+<!-- Adiciona o script do Bootstrap -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</body>
+</html>
