@@ -832,5 +832,10 @@ class ApiService
         return $this->callApi('POST', '/api/public/arrematantes/service/bem/' . $idBem . '/enviar-proposta', $data, 'both');
     }
 
+    public function consultaNotaArrematacao($numero)
+    {
+        return $this->callApi('GET', '/api/public/services/consultaNota/' . $numero, [], true);
+    }
+
 
 }
