@@ -33,7 +33,8 @@ class ApiController extends AbstractController
     {
         $tokenStorage->setToken();
         if (!empty($_ENV['SL_PAINEL_LOGOUT_URL'])) {
-            return $this->redirect($_ENV['SL_PAINEL_LOGOUT_URL']);
+            $refer = urlencode($this->generateUrl('home', [], UrlGeneratorInterface::ABSOLUTE_URL));
+            return $this->redirect($_ENV['SL_PAINEL_LOGOUT_URL'] . '?refer=' . $refer);
         }
         $response = new RedirectResponse($this->generateUrl('home', [], UrlGeneratorInterface::ABSOLUTE_URL));
         return $response;
