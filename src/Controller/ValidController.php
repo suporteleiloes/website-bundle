@@ -15,7 +15,10 @@ class ValidController extends AbstractController
      */
     public function validaNotaArrematacao(Request $request, ApiService $apiService, $numero = null)
     {
-        $nota = $apiService->consultaNotaArrematacao($request->get('numero') ?: $numero);
+        $nota = null;
+        if ($request->get('numero') || $numero) {
+            $nota = $apiService->consultaNotaArrematacao($request->get('numero') ?: $numero);
+        }
 
         return $this->render('validaNota.html.twig', [
             'nora' => $nota
