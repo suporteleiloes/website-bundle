@@ -32,6 +32,9 @@ class ApiController extends AbstractController
     public function logout(Request $request, TokenStorageInterface $tokenStorage)
     {
         $tokenStorage->setToken();
+        if (!empty($_ENV['SL_PAINEL_LOGOUT_URL'])) {
+            return $this->redirect($_ENV['SL_PAINEL_LOGOUT_URL']);
+        }
         $response = new RedirectResponse($this->generateUrl('home', [], UrlGeneratorInterface::ABSOLUTE_URL));
         return $response;
     }
