@@ -76,11 +76,17 @@
                 Titular: <strong>{{ nota.arremates[0].arrematante.pessoa.name }}</strong><br>
                 Número: <strong>{{ nota.numero }}</strong>
             </div>
+            <br><br>
+            <a href="">Consultar uma nota nota</a>
         {% else %}
             <div style="color: red; font-weight: bold">Esta nota foi cancelada.</div>
+            <br><br>
+            <a href="">Consultar novamente</a>
         {% endif %}
     {% elseif erro %}
         <div style="color: red; font-weight: bold">Nota não encontrada em nossa base de dados.</div>
+        <br><br>
+        <a href="">Consultar novamente</a>
     {% endif %}
     <br><br>
     <div style="font-size: 10px; display: flex; flex-direction: column; align-items: center">
