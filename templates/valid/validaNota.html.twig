@@ -71,7 +71,7 @@
         {% if not nota.cancelada %}
             <div style="color: green; font-weight: bold">✅ Esta é uma nota válida</div>
             <div style="padding: 10px 0">
-                Data de emissão: <strong>{{ nota.createdAt }}</strong><br>
+                Data de emissão: <strong>{{ nota.createdAt.date }}</strong><br>
                 Valor: <strong>R$ {{ nota.valor|number_format(2, ',', '.') }}</strong><br>
                 Titular: <strong>{{ nota.arremates[0].arrematante.pessoa.name }}</strong><br>
                 Número: <strong>{{ nota.numero }}</strong>
