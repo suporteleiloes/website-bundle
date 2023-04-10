@@ -153,7 +153,7 @@ class Lance extends ApiSync
      */
     public function setUf($uf): void
     {
-        $this->uf = mb_substr(trim($uf), 0, 2)
+        $this->uf = mb_substr(trim($uf), 0, 2);
     }
 
     /**
