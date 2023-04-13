@@ -315,6 +315,8 @@ class LeilaoService
      *          'relevancia' => (int) 0 = Relevância baseado no número e acessos e lances; 1 = Pela data do leilão (Crescente) [Default]; 2 = Valor (Crescente); 3 = Valor (Decrescente)
      *          'classificacaoLeilao' => (array/int) Classificação do leilão. Iniciativa privada, Seguradoras etc.
      *          'comPrimeiroLote' => (boolean) Faz o join do primeiro lote
+     *          'vendaDireta' => (int) 0/Null = Ambos; 1 = Somente Venda Direta; 2 = Somente Leilões
+     *          'somente' => (boolean)
      *          'order' => (array) Define por qual campo ordenar o resultado. Ex.: ['l.dataProximoLeilao', 'DESC']
      *      ]
      * @return array|Lote
@@ -371,6 +373,12 @@ class LeilaoService
                     Criteria::expr()->contains('l.descricao', $filtros['busca']),
                     Criteria::expr()->contains('l.leiloeiro', $filtros['busca'])
                 )
+            );
+        }
+
+        if (isset($filtros['vendaDireta']) && $filtros['vendaDireta']) {
+            $searchCriteria->andWhere(
+                Criteria::expr()->eq('l.vendaDireta', $filtros['vendaDireta'] === 1)
             );
         }
 
