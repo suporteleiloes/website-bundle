@@ -27,6 +27,7 @@ use Doctrine\ORM\Mapping as ORM;
  *     @ORM\Index(name="modelo_id", columns={"modelo_id"}),
  *     @ORM\Index(name="modelo", columns={"modelo"}),
  *     @ORM\Index(name="valorMinimo", columns={"valor_minimo"}),
+ *     @ORM\Index(name="comitente", columns={"comitente"}),
  *     @ORM\Index(name="comitenteId", columns={"comitente_id"}),
  *     @ORM\Index(name="ocupado", columns={"ocupado"}),
  *     @ORM\Index(name="visitas", columns={"visitas"}),
