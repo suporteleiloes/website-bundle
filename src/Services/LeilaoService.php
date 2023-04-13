@@ -229,6 +229,7 @@ class LeilaoService
                     Criteria::expr()->contains('l.processo', $buscaOnlyDigits),
                     Criteria::expr()->contains('l.executado', $filtros['busca']),
                     Criteria::expr()->contains('l.exequente', $filtros['busca']),
+                    Criteria::expr()->contains('l.comitente', $filtros['busca'])
                 )
             );
         }
