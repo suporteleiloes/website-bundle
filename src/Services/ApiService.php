@@ -433,7 +433,7 @@ class ApiService
         $lote->setLocalizacaoMapEmbed(@$data['bem']['localizacaoMapEmbed']);
         $lote->setVideos(@$data['bem']['videos']);
         $lote->setCamposExtras(@$data['bem']['camposExtras']);
-        $lote->setInfoVisitacao($data['infoVisitacao'] ?? null);
+        $lote->setInfoVisitacao($data['bem']['infoVisitacao'] ?? null);
         if (isset($data['bem']['campos']) && is_array($data['bem']['campos'])) {
             $campos = [];
             foreach ($data['bem']['campos'] as $campo) {
