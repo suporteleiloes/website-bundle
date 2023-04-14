@@ -83,14 +83,19 @@ class Proposta extends ApiSync
     private $parcelado = false;
 
     /**
-     * @ORM\Column(type="decimal", precision=15, scale=2, nullable=true)
+     * @ORM\Column(type="decimal", precision=4, scale=2, nullable=true)
      */
-    private $valorEntrada;
+    private $porcentagemEntrada;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
      */
     private $quantidadeParcelas;
+
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $indiceCorrecao;
 
     public function __construct()
     {
@@ -253,17 +258,17 @@ class Proposta extends ApiSync
     /**
      * @return mixed
      */
-    public function getValorEntrada()
+    public function getPorcentagemEntrada()
     {
-        return $this->valorEntrada;
+        return $this->porcentagemEntrada;
     }
 
     /**
-     * @param mixed $valorEntrada
+     * @param mixed $porcentagemEntrada
      */
-    public function setValorEntrada($valorEntrada): void
+    public function setPorcentagemEntrada($porcentagemEntrada): void
     {
-        $this->valorEntrada = $valorEntrada;
+        $this->porcentagemEntrada = $porcentagemEntrada;
     }
 
     /**
@@ -282,7 +287,21 @@ class Proposta extends ApiSync
         $this->quantidadeParcelas = $quantidadeParcelas;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getIndiceCorrecao()
+    {
+        return $this->indiceCorrecao;
+    }
 
+    /**
+     * @param mixed $indiceCorrecao
+     */
+    public function setIndiceCorrecao($indiceCorrecao): void
+    {
+        $this->indiceCorrecao = $indiceCorrecao;
+    }
 
     public function __serialize()
     {
@@ -299,8 +318,9 @@ class Proposta extends ApiSync
             'loteId' => $this->loteId,
             'valor' => $this->valor,
             'parcelado' => $this->parcelado,
-            'valorEntrada' => $this->valorEntrada,
-            'quantidadeParcelas' => $this->quantidadeParcelas
+            'porcentagemEntrada' => $this->porcentagemEntrada,
+            'quantidadeParcelas' => $this->quantidadeParcelas,
+            'indiceCorrecao' => $this->indiceCorrecao
         ];
     }
 
