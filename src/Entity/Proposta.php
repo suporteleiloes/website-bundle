@@ -72,6 +72,26 @@ class Proposta extends ApiSync
      */
     private $loteId;
 
+    /**
+     * @ORM\Column(type="decimal", precision=15, scale=2, nullable=true)
+     */
+    private $valor;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $parcelado = false;
+
+    /**
+     * @ORM\Column(type="decimal", precision=15, scale=2, nullable=true)
+     */
+    private $valorEntrada;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $quantidadeParcelas;
+
     public function __construct()
     {
         $this->data = new \DateTime();
@@ -198,6 +218,72 @@ class Proposta extends ApiSync
         $this->loteId = $loteId;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getValor()
+    {
+        return $this->valor;
+    }
+
+    /**
+     * @param mixed $valor
+     */
+    public function setValor($valor): void
+    {
+        $this->valor = $valor;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isParcelado(): bool
+    {
+        return $this->parcelado;
+    }
+
+    /**
+     * @param bool $parcelado
+     */
+    public function setParcelado(bool $parcelado): void
+    {
+        $this->parcelado = $parcelado;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getValorEntrada()
+    {
+        return $this->valorEntrada;
+    }
+
+    /**
+     * @param mixed $valorEntrada
+     */
+    public function setValorEntrada($valorEntrada): void
+    {
+        $this->valorEntrada = $valorEntrada;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getQuantidadeParcelas()
+    {
+        return $this->quantidadeParcelas;
+    }
+
+    /**
+     * @param mixed $quantidadeParcelas
+     */
+    public function setQuantidadeParcelas($quantidadeParcelas): void
+    {
+        $this->quantidadeParcelas = $quantidadeParcelas;
+    }
+
+
+
     public function __serialize()
     {
         return [
@@ -211,6 +297,10 @@ class Proposta extends ApiSync
             'ip' => $this->ip,
             'bemId' => $this->bemId,
             'loteId' => $this->loteId,
+            'valor' => $this->valor,
+            'parcelado' => $this->parcelado,
+            'valorEntrada' => $this->valorEntrada,
+            'quantidadeParcelas' => $this->quantidadeParcelas
         ];
     }
 
