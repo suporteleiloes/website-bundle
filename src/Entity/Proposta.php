@@ -7,9 +7,14 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
+ * @ORM\Table(indexes={
+ *     @ORM\Index(name="data", columns={"data"}),
+ *     @ORM\Index(name="bem_id", columns={"bem_id"}),
+ *     @ORM\Index(name="lote_id", columns={"lote_id"}),
+ * })
  * @ORM\Entity(repositoryClass=PropostaRepository::class)
  */
-class Proposta
+class Proposta extends ApiSync
 {
     /**
      * @ORM\Id()
