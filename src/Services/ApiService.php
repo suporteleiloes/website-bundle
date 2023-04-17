@@ -672,13 +672,13 @@ class ApiService
             $entity->setAcreatedAt(new \DateTime());
         }
 
-        $entity->setTitle(@$data['title']);
-        $entity->setImage(@$data['image']);
-        $entity->setDescription(@$data['description']);
-        $entity->setTemplate(@$data['template']);
-        $entity->setUrl(@$data['url']);
-        $entity->setActive(@$data['active']);
-        $entity->setOrder(@$data['order']);
+        $entity->setTitle($data['title'] ?? null);
+        $entity->setImage($data['image'] ?? null);
+        $entity->setDescription($data['description'] ?? null);
+        $entity->setTemplate($data['template'] ?? null);
+        $entity->setUrl($data['url'] ?? null);
+        $entity->setActive($data['active'] ?? true);
+        $entity->setOrder($data['order'] ?? 0);
         if (isset($data['category'])) {
             $entity->setCategoryId(@$data['category']['id']);
             $entity->setCategory(@$data['category']['name']);
