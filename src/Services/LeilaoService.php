@@ -316,7 +316,7 @@ class LeilaoService
      *          'classificacaoLeilao' => (array/int) Classificação do leilão. Iniciativa privada, Seguradoras etc.
      *          'comPrimeiroLote' => (boolean) Faz o join do primeiro lote
      *          'vendaDireta' => (int) 0/Null = Ambos; 1 = Somente Venda Direta; 2 = Somente Leilões
-     *          'somente' => (boolean)
+     *          'modalidade' => (int) 1 = Online; 2 = Presencial; Null para ambos.
      *          'order' => (array) Define por qual campo ordenar o resultado. Ex.: ['l.dataProximoLeilao', 'DESC']
      *      ]
      * @return array|Lote
@@ -363,6 +363,15 @@ class LeilaoService
             }
             $searchCriteria->andWhere(
                 Criteria::expr()->eq('l.judicial', $filtros['tipoLeilao'] === 1)
+            );
+        }
+
+        if (isset($filtros['modalidade'])) {
+            if (!in_array($filtros['modalidade'], [1, 2])) {
+                throw new \Exception('Filtro modalidade inválido');
+            }
+            $searchCriteria->andWhere(
+                Criteria::expr()->eq('l.tipo', $filtros['modalidade'])
             );
         }
 
