@@ -44,6 +44,11 @@ class BuscaController extends AbstractController
             $requestFiltros['tipo'] = $request->get('tipo');
         }
 
+        if($request->get('tipo-not')) {
+            $requestFiltros['tipo-not'] = $request->get('tipo-not');
+        }
+
+
         if (!empty($tipoId)) {
             $requestFiltros['tipoId'] = $tipoId;
         }
@@ -66,12 +71,28 @@ class BuscaController extends AbstractController
 
         if ($request->get('order')) {
             $order = $request->get('order');
+            $desc = $request->get('desc');
             switch ($order) {
+                case 'valor':
+                    $requestFiltros['order'] = ['l.valorInicial', $desc && ($desc == '1' || $desc === 'true') ? 'DESC' : 'ASC'];
+                    break;
                 case 'valorAsc':
                     $requestFiltros['order'] = ['l.valorInicial', 'ASC'];
                     break;
                 case 'valorDesc':
                     $requestFiltros['order'] = ['l.valorInicial', 'DESC'];
+                    break;
+                case 'valorAvaliacao':
+                    $requestFiltros['order'] = ['l.valorAvaliacao', $desc && ($desc == '1' || $desc === 'true') ? 'DESC' : 'ASC'];
+                    break;
+                case 'valorAvaliacaoAsc':
+                    $requestFiltros['order'] = ['l.valorAvaliacao', 'ASC'];
+                    break;
+                case 'valorAvaliacaoDesc':
+                    $requestFiltros['order'] = ['l.valorAvaliacao', 'DESC'];
+                    break;
+                case 'dataLeilao':
+                    $requestFiltros['order'] = ['leilao.dataProximoLeilao', $desc && ($desc == '1' || $desc === 'true') ? 'DESC' : 'ASC'];
                     break;
                 case 'dataLeilaoAsc':
                     $requestFiltros['order'] = ['leilao.dataProximoLeilao', 'ASC'];
@@ -80,6 +101,8 @@ class BuscaController extends AbstractController
                     $requestFiltros['order'] = ['leilao.dataProximoLeilao', 'DESC'];
                     break;
             }
+        } else {
+            $requestFiltros['order'] = ['leilao.dataProximoLeilao', 'ASC'];
         }
 
         $lotes = $leilaoService->buscarBens(

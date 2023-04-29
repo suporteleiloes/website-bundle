@@ -63,7 +63,10 @@ class LeilaoService
         $hoje = new \DateTime();
         $joins = [];
 
-        $convertArray = function ($value) {
+        $convertArray = function ($value, $separador = null) {
+            if ($separador && !is_array($value)) {
+                return explode($separador, $value);
+            }
             return is_array($value) ? $value : [$value];
         };
 
@@ -73,6 +76,7 @@ class LeilaoService
 
         if ($somenteAtivos) {
             $searchCriteria->andWhere(Criteria::expr()->eq('l.active', true));
+            $searchCriteria->andWhere(Criteria::expr()->lt('l.status', 5));
             $searchCriteria->andWhere(
                 Criteria::expr()->orX(
                     Criteria::expr()->eq('l.leilao', null),
@@ -119,6 +123,28 @@ class LeilaoService
                     );
                 }
             }
+            $searchCriteria->andWhere(
+                $tipoSearch
+            );
+        }
+
+        if (isset($filtros['tipo-not'])) {
+            $filtros['tipo-not'] = $convertArray($filtros['tipo-not'], ',');
+            $tipoSearch = Criteria::expr()->andX(
+                Criteria::expr()->notIn('l.tipo', $filtros['tipo-not']),
+                Criteria::expr()->notIn('l.tipoPai', $filtros['tipo-not']),
+            );
+            $searchCriteria->andWhere(
+                $tipoSearch
+            );
+        }
+
+        if (isset($filtros['tipo-id-not'])) {
+            $filtros['tipo-id-not'] = $convertArray($filtros['tipo-id-not'], ',');
+            $tipoSearch = Criteria::expr()->orX(
+                Criteria::expr()->in('l.tipoId', $filtros['tipo-id-not']),
+                Criteria::expr()->in('l.tipoPaiId', $filtros['tipo-id-not']),
+            );
             $searchCriteria->andWhere(
                 $tipoSearch
             );
@@ -258,7 +284,7 @@ class LeilaoService
                 ->where('lance.lote = l')
                 ->setMaxResults(1);
 
-            $qb->leftJoin('l.lances', 'lances', Join::WITH, $qb->expr()->eq( 'lances.id', '('.$qbLance->getDQL().')' ));
+            $qb->leftJoin('l.lances', 'lances', Join::WITH, $qb->expr()->eq('lances.id', '(' . $qbLance->getDQL() . ')'));
             $qb->addSelect('lances');
         }
 
@@ -433,7 +459,7 @@ class LeilaoService
                 ->orderBy('lote.order', 'ASC')
                 ->addOrderBy('lote.numero', 'ASC')
                 ->setMaxResults(1);
-            $qb->leftJoin('l.lotes', 'lotes', Join::WITH, $qb->expr()->eq( 'lotes.id', '('.$qbLote->getDQL().')' ));
+            $qb->leftJoin('l.lotes', 'lotes', Join::WITH, $qb->expr()->eq('lotes.id', '(' . $qbLote->getDQL() . ')'));
             //$qb->leftJoin('lotes.lances', 'lances', Join::WITH, $qb->expr()->eq( 'lances.id', '('.$qbLance->getDQL().')' ));
             //$qb->addSelect('lotes, lances');
             $qb->addSelect('lotes');

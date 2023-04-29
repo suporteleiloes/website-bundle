@@ -33,7 +33,7 @@ class LoteRepository extends ServiceEntityRepository
             ->addScalarResult('total', 'total');
 
         $query = $this->getEntityManager()
-            ->createNativeQuery('select distinct tipo_pai_id, tipo_pai, (select count(1) from lote l2 where l2.tipo_pai_id = lote.tipo_pai_id and l2.status < 5) total from lote where lote.status < 5 and lote.deleted = 0',
+            ->createNativeQuery('select distinct tipo_pai_id, tipo_pai, (select count(1) from lote l2 left join leilao on leilao.id = l2.leilao_id where l2.tipo_pai_id = lote.tipo_pai_id and l2.status < 5 and l2.deleted = 0 and (leilao.id is null or (leilao.status_tipo <= 2 and leilao.deleted = 0))) total from lote where lote.status < 5 and lote.deleted = 0 and lote.active = 1',
                 $rsm
             );
 
@@ -49,7 +49,7 @@ class LoteRepository extends ServiceEntityRepository
             ->addScalarResult('total', 'total');
 
         $query = $this->getEntityManager()
-            ->createNativeQuery('select distinct tipo_id, tipo, tipo_pai_id, (select count(1) from lote l2 where l2.tipo_id = lote.tipo_id and l2.status < 5) total from lote where lote.status < 5 and lote.deleted = 0',
+            ->createNativeQuery('select distinct tipo_id, tipo, tipo_pai_id, (select count(1) from lote l2 left join leilao on leilao.id = l2.leilao_id where l2.tipo_id = lote.tipo_id and l2.status < 5 and l2.deleted = 0 and (leilao.id is null or (leilao.status_tipo <= 2 and leilao.deleted = 0))) total from lote where lote.status < 5 and lote.deleted = 0 and lote.active = 1',
                 $rsm
             );
 
