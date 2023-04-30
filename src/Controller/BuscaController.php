@@ -28,6 +28,9 @@ class BuscaController extends AbstractController
         $page = $request->query->getInt('page', 1);
         $page = $page === 0 ? 1 : $page;
         $limit = $request->query->getInt('limit', 20);
+        if ($limit > 100) {
+            $limit = 100;
+        }
         $offset = ($page * $limit) - $limit;
 
         $tipoId = $request->get('tipoId');
@@ -53,16 +56,37 @@ class BuscaController extends AbstractController
             $requestFiltros['tipoId'] = $tipoId;
         }
 
+        /**
+         * @deprecated
+         */
         if ($request->get('f-comitente')) {
             $requestFiltros['comitente'] = $request->get('f-comitente');
+        }
+
+        if ($request->get('comitente')) {
+            $requestFiltros['comitente'] = $request->get('comitente');
         }
 
         if ($request->get('f-uf')) {
             $requestFiltros['uf'] = $request->get('f-uf');
         }
 
+        /**
+         * @deprecated
+         */
         if ($request->get('f-cidade')) {
             $requestFiltros['cidade'] = $request->get('f-cidade');
+        }
+        if ($request->get('cidade')) {
+            $requestFiltros['cidade'] = $request->get('cidade');
+        }
+
+        if ($request->get('precoMinimo')) {
+            $requestFiltros['precoMinimo'] = $request->get('precoMinimo');
+        }
+
+        if ($request->get('precoMaximo')) {
+            $requestFiltros['precoMaximo'] = $request->get('precoMaximo');
         }
 
         if ($routeName === 'busca_vendaDireta') {

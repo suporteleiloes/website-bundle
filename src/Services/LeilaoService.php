@@ -35,7 +35,7 @@ class LeilaoService
      *          'precoMinimo' => (decimal) Valor mínimo
      *          'precoMaximo' => (decimal) Valor máximo
      *          'comitente' => (array|int) Tipo do Bem
-     *          'tipo' => (array|int) Tipo do Bem
+     *          'tipo' => (array|int|string(separator: ;)) Tipo do Bem
      *          'tipoLeilao' => (array|int) 1 = Judicial; 2 = Extrajudicial;
      *          'relevancia' => (int) 0 = Relevância baseado no número e acessos e lances; 1 = Pela data do leilão (Crescente); 2 = Valor (Crescente); 3 = Valor (Decrescente)
      *          'qtdLeiloes' => (int) 0 = Leilão único; 1 - Primeiro leilão; 2 = Segundo leilão; 3 = Terceiro leilão (falência)
@@ -74,6 +74,8 @@ class LeilaoService
             $searchCriteria->andWhere(Criteria::expr()->eq('l.leilao', $leilao));
         }
 
+        $joins[] = ['l.leilao', 'leilao', true];
+
         if ($somenteAtivos) {
             $searchCriteria->andWhere(Criteria::expr()->eq('l.active', true));
             $searchCriteria->andWhere(Criteria::expr()->lt('l.status', 5));
@@ -84,7 +86,6 @@ class LeilaoService
                     Criteria::expr()->eq('l.vendaDireta', true)
                 )
             );
-            $joins[] = ['l.leilao', 'leilao', true];
         }
 
         if (isset($filtros['relevancia'])) {
@@ -112,15 +113,23 @@ class LeilaoService
         }
 
         if (isset($filtros['tipo'])) {
-            $tipoSearch = Criteria::expr()->in('l.tipoId', $convertArray($filtros['tipo']));
-            if (!is_array($filtros['tipo'])) {
-                if (!is_numeric($filtros['tipo'])) {
-                    $tipoSearch = Criteria::expr()->orX(
-                        Criteria::expr()->eq('l.tipo', $filtros['tipo']),
-                        Criteria::expr()->eq('l.tipo', $filtros['tipo'] . 's'),
-                        Criteria::expr()->eq('l.tipoPai', $filtros['tipo']),
-                        Criteria::expr()->eq('l.tipoPai', $filtros['tipo'] . 's')
-                    );
+            $tipoArr = $convertArray($filtros['tipo'], ';');
+            if (count($tipoArr) > 0) {
+                $tipoSearch = Criteria::expr()->orX(
+                    Criteria::expr()->in('l.tipo', $tipoArr),
+                    Criteria::expr()->in('l.tipoPai', $tipoArr),
+            );
+            } else {
+                $tipoSearch = Criteria::expr()->in('l.tipoId', $convertArray($filtros['tipo']));
+                if (!is_array($filtros['tipo'])) {
+                    if (!is_numeric($filtros['tipo'])) {
+                        $tipoSearch = Criteria::expr()->orX(
+                            Criteria::expr()->eq('l.tipo', $filtros['tipo']),
+                            Criteria::expr()->eq('l.tipo', $filtros['tipo'] . 's'),
+                            Criteria::expr()->eq('l.tipoPai', $filtros['tipo']),
+                            Criteria::expr()->eq('l.tipoPai', $filtros['tipo'] . 's')
+                        );
+                    }
                 }
             }
             $searchCriteria->andWhere(
@@ -205,7 +214,7 @@ class LeilaoService
 
         if (isset($filtros['comitente'])) {
             $searchCriteria->andWhere(
-                Criteria::expr()->in('l.comitenteId', $convertArray($filtros['comitente']))
+                Criteria::expr()->in('l.comitenteId', $convertArray($filtros['comitente'], ','))
             );
         }
 
@@ -217,7 +226,7 @@ class LeilaoService
 
         if (isset($filtros['cidade'])) {
             $searchCriteria->andWhere(
-                Criteria::expr()->in('l.cidade', $convertArray($filtros['cidade']))
+                Criteria::expr()->in('l.cidade', $convertArray($filtros['cidade'], ','))
             );
         }
 
@@ -230,6 +239,24 @@ class LeilaoService
         if (isset($filtros['codigo'])) {
             $searchCriteria->andWhere(
                 Criteria::expr()->in('l.aid', $convertArray($filtros['codigo']))
+            );
+        }
+
+        if (isset($filtros['precoMinimo'])) {
+            $searchCriteria->andWhere(
+                Criteria::expr()->orX(
+                    Criteria::expr()->gte('l.valorInicial', $filtros['precoMinimo']),
+                    Criteria::expr()->gte('l.valorInicial2', $filtros['precoMinimo']),
+                )
+            );
+        }
+
+        if (isset($filtros['precoMaximo'])) {
+            $searchCriteria->andWhere(
+                Criteria::expr()->orX(
+                    Criteria::expr()->lte('l.valorInicial', $filtros['precoMaximo']),
+                    Criteria::expr()->lte('l.valorInicial2', $filtros['precoMaximo']),
+                )
             );
         }
 
