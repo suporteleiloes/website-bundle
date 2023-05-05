@@ -14,13 +14,46 @@ class PropostaType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+
+        $builder->get('valor')
+            ->addModelTransformer(new CallbackTransformer(
+                function ($money) {
+                    return $money;
+                },
+                function ($string) {
+                    if (strpos($string, 'R$') !== false) {
+                        $string = str_replace('.', '', $string); // remove o ponto
+                        $string = str_replace(',', '.', $string); // substitui a vírgula por ponto
+                        return floatval($string);
+                    }
+
+                    return $string;
+                }
+            ))
+        ;
+        $builder->get('valorEntrada')
+            ->addModelTransformer(new CallbackTransformer(
+                function ($money) {
+                    return $money;
+                },
+                function ($string) {
+                    if (strpos($string, 'R$') !== false) {
+                        $string = str_replace('.', '', $string); // remove o ponto
+                        $string = str_replace(',', '.', $string); // substitui a vírgula por ponto
+                        return floatval($string);
+                    }
+
+                    return $string;
+                }
+            ))
+        ;
         $builder
             ->add('nome')
             ->add('email')
             ->add('telefone')
             ->add('assunto')
             ->add('valor', MoneyType::class, [
-                'invalid_message' => 'Valor dos débitos inválido. Formato: 0.00',
+                'invalid_message' => 'Valor inválido. Formato: 0.00',
                 'currency' => ''
             ])
             ->add('parcelado', ChoiceType::class, [
@@ -30,7 +63,7 @@ class PropostaType extends AbstractType
                 ],
             ])
             ->add('valorEntrada', MoneyType::class, [
-                'invalid_message' => 'Valor dos débitos inválido. Formato: 0.00',
+                'invalid_message' => 'Valor de entrada inválido. Formato: 0.00',
                 'currency' => ''
             ])
             ->add('quantidadeParcelas')
@@ -48,41 +81,6 @@ class PropostaType extends AbstractType
             ->add('mensagem')
             ->add('bemId')
             ->add('loteId')
-        ;
-
-        $builder->get('valor')
-            ->addModelTransformer(new CallbackTransformer(
-                function ($string) {
-                    if (strpos($string, 'R$') !== false) {
-                        $string = str_replace('.', '', $string); // remove o ponto
-                        $string = str_replace(',', '.', $string); // substitui a vírgula por ponto
-                        return floatval($string);
-                    }
-
-                    return $string;
-                },
-                function ($money) {
-                    // transform the string back to an array
-                    return $money;
-                }
-            ))
-        ;
-        $builder->get('valorEntrada')
-            ->addModelTransformer(new CallbackTransformer(
-                function ($string) {
-                    if (strpos($string, 'R$') !== false) {
-                        $string = str_replace('.', '', $string); // remove o ponto
-                        $string = str_replace(',', '.', $string); // substitui a vírgula por ponto
-                        return floatval($string);
-                    }
-
-                    return $string;
-                },
-                function ($money) {
-                    // transform the string back to an array
-                    return $money;
-                }
-            ))
         ;
     }
 
