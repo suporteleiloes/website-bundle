@@ -51,6 +51,9 @@ class PropostaType extends AbstractType
             ->add('loteId')
         ;
 
+        $builder->get('valor')->addModelTransformer(new MoneyTransform());
+        $builder->get('valorEntrada')->addModelTransformer(new MoneyTransform());
+
         /*$builder->get('valor')
             ->addModelTransformer(new CallbackTransformer(
                 function ($money) {
