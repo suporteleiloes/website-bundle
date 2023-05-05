@@ -4,6 +4,7 @@ namespace SL\WebsiteBundle\Form;
 
 use SL\WebsiteBundle\Entity\Proposta;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -47,6 +48,24 @@ class PropostaType extends AbstractType
             ->add('mensagem')
             ->add('bemId')
             ->add('loteId')
+        ;
+
+        $builder->get('valor')
+            ->addModelTransformer(new CallbackTransformer(
+                function ($string) {
+                    if (strpos($string, 'R$') !== false) {
+                        $string = str_replace('.', '', $string); // remove o ponto
+                        $string = str_replace(',', '.', $string); // substitui a vírgula por ponto
+                        return floatval($string);
+                    }
+
+                    return $string;
+                },
+                function ($money) {
+                    // transform the string back to an array
+                    return $money;
+                }
+            ))
         ;
     }
 
