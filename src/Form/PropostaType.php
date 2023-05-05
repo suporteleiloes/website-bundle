@@ -22,7 +22,8 @@ class PropostaType extends AbstractType
             ->add('assunto')
             ->add('valor', MoneyType::class, [
                 'invalid_message' => 'Valor inválido. Formato: 0.00',
-                'currency' => ''
+                'currency' => '',
+                'input' => 'float',
             ])
             ->add('parcelado', ChoiceType::class, [
                 'choices'  => [
@@ -32,7 +33,8 @@ class PropostaType extends AbstractType
             ])
             ->add('valorEntrada', MoneyType::class, [
                 'invalid_message' => 'Valor de entrada inválido. Formato: 0.00',
-                'currency' => ''
+                'currency' => '',
+                'input' => 'float',
             ])
             ->add('quantidadeParcelas')
             ->add('indiceCorrecao', ChoiceType::class, [
