@@ -105,6 +105,7 @@ class Proposta extends ApiSync
     public function __construct()
     {
         $this->data = new \DateTime();
+        $this->setAcreatedAt(new \DateTime());
     }
 
     public function getId(): ?int
