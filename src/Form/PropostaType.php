@@ -67,6 +67,23 @@ class PropostaType extends AbstractType
                 }
             ))
         ;
+        $builder->get('valorEntrada')
+            ->addModelTransformer(new CallbackTransformer(
+                function ($string) {
+                    if (strpos($string, 'R$') !== false) {
+                        $string = str_replace('.', '', $string); // remove o ponto
+                        $string = str_replace(',', '.', $string); // substitui a vírgula por ponto
+                        return floatval($string);
+                    }
+
+                    return $string;
+                },
+                function ($money) {
+                    // transform the string back to an array
+                    return $money;
+                }
+            ))
+        ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void
