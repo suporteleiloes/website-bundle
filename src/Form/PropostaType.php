@@ -51,7 +51,7 @@ class PropostaType extends AbstractType
             ->add('loteId')
         ;
 
-        $builder->get('valor')
+        /*$builder->get('valor')
             ->addModelTransformer(new CallbackTransformer(
                 function ($money) {
                     return $money;
@@ -82,7 +82,7 @@ class PropostaType extends AbstractType
                     return $string;
                 }
             ))
-        ;
+        ;*/
     }
 
     public function configureOptions(OptionsResolver $resolver): void
