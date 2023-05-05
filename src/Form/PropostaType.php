@@ -92,6 +92,7 @@ class PropostaType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Proposta::class,
+            'allow_extra_fields' => true
         ]);
     }
 }
