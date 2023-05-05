@@ -21,6 +21,7 @@ class PropostaType extends AbstractType
             ->add('telefone')
             ->add('assunto')
             ->add('valor', MoneyType::class, [
+                'invalid_message' => 'Valor inválido. Formato: 0.00',
                 'currency' => ''
             ])
             ->add('parcelado', ChoiceType::class, [
@@ -30,6 +31,7 @@ class PropostaType extends AbstractType
                 ],
             ])
             ->add('valorEntrada', MoneyType::class, [
+                'invalid_message' => 'Valor de entrada inválido. Formato: 0.00',
                 'currency' => ''
             ])
             ->add('quantidadeParcelas')

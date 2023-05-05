@@ -8,7 +8,12 @@ class MoneyTransform implements DataTransformerInterface
 {
     public function transform($value)
     {
-        // Transforma o valor em uma string no formato "R$ x,xx"
+        // Remove o símbolo "R$" e transforma a string em um número de ponto flutuante
+        if (strpos($value, 'R$') !== false) {
+            $value = str_replace('.', '', $value);
+            $value = str_replace(',', '.', substr($value, 3));
+            return floatval($value);
+        }
         return $value;
     }
 
