@@ -32,8 +32,11 @@ class PropostaType extends AbstractType
             ->add('valorEntrada', MoneyType::class, [
                 'invalid_message' => 'Valor de entrada inválido. Formato: 0.00',
                 'currency' => '',
+                'required' => false
             ])
-            ->add('quantidadeParcelas')
+            ->add('quantidadeParcelas', null, [
+                'required' => false
+            ])
             ->add('indiceCorrecao', ChoiceType::class, [
                 'choices'  => [
                     'Qualquer' => null,
@@ -44,6 +47,7 @@ class PropostaType extends AbstractType
                     'INCC' => 'INCC',
                     'Taxa Selic' => 'Taxa Selic',
                 ],
+                'required' => false
             ])
             ->add('mensagem')
             ->add('bemId')
