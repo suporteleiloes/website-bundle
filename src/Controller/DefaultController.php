@@ -261,6 +261,7 @@ class DefaultController extends SLAbstractController
                     }
 
                     if ($formProposta->isValid()) {
+                        $model->setAid(0);
                         $model->setBemId($lote->getAid());
                         $model->setIp(Utils::get_client_ip_env());
                         $em->persist($model);
