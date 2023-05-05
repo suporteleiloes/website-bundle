@@ -15,38 +15,6 @@ class PropostaType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
 
-        $builder->get('valor')
-            ->addModelTransformer(new CallbackTransformer(
-                function ($money) {
-                    return $money;
-                },
-                function ($string) {
-                    if (strpos($string, 'R$') !== false) {
-                        $string = str_replace('.', '', $string); // remove o ponto
-                        $string = str_replace(',', '.', $string); // substitui a vírgula por ponto
-                        return floatval($string);
-                    }
-
-                    return $string;
-                }
-            ))
-        ;
-        $builder->get('valorEntrada')
-            ->addModelTransformer(new CallbackTransformer(
-                function ($money) {
-                    return $money;
-                },
-                function ($string) {
-                    if (strpos($string, 'R$') !== false) {
-                        $string = str_replace('.', '', $string); // remove o ponto
-                        $string = str_replace(',', '.', $string); // substitui a vírgula por ponto
-                        return floatval($string);
-                    }
-
-                    return $string;
-                }
-            ))
-        ;
         $builder
             ->add('nome')
             ->add('email')
@@ -81,6 +49,39 @@ class PropostaType extends AbstractType
             ->add('mensagem')
             ->add('bemId')
             ->add('loteId')
+        ;
+
+        $builder->get('valor')
+            ->addModelTransformer(new CallbackTransformer(
+                function ($money) {
+                    return $money;
+                },
+                function ($string) {
+                    if (strpos($string, 'R$') !== false) {
+                        $string = str_replace('.', '', $string); // remove o ponto
+                        $string = str_replace(',', '.', $string); // substitui a vírgula por ponto
+                        return floatval($string);
+                    }
+
+                    return $string;
+                }
+            ))
+        ;
+        $builder->get('valorEntrada')
+            ->addModelTransformer(new CallbackTransformer(
+                function ($money) {
+                    return $money;
+                },
+                function ($string) {
+                    if (strpos($string, 'R$') !== false) {
+                        $string = str_replace('.', '', $string); // remove o ponto
+                        $string = str_replace(',', '.', $string); // substitui a vírgula por ponto
+                        return floatval($string);
+                    }
+
+                    return $string;
+                }
+            ))
         ;
     }
 
