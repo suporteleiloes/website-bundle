@@ -19,12 +19,12 @@ class ApiSync
     /**
      * @ORM\Column(type="integer")
      */
-    private $aid = 0;
+    private $aid;
 
     /**
      * @ORM\Column(type="datetime")
      */
-    private $acreatedAt = '1999-01-01 00:00:00';
+    private $acreatedAt;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
@@ -44,7 +44,7 @@ class ApiSync
     /**
      * @ORM\Column(type="boolean", options={"unsigned":true, "default":1})
      */
-    private $active = true;
+    private $active;
 
     /**
      * @ORM\Column(type="smallint", name="ordering", options={"default":99})
