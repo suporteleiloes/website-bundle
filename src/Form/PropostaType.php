@@ -18,11 +18,13 @@ class PropostaType extends AbstractType
             ->add('telefone')
             ->add('assunto')
             ->add('valor', MoneyType::class, [
-                'invalid_message' => 'Valor dos débitos inválido. Formato: 0.00'
+                'invalid_message' => 'Valor dos débitos inválido. Formato: 0.00',
+                'currency' => ''
             ])
             ->add('parcelado')
             ->add('valorEntrada', MoneyType::class, [
-                'invalid_message' => 'Valor dos débitos inválido. Formato: 0.00'
+                'invalid_message' => 'Valor dos débitos inválido. Formato: 0.00',
+                'currency' => ''
             ])
             ->add('quantidadeParcelas')
             ->add('indiceCorrecao')
