@@ -6,6 +6,8 @@ import StoreMixin from './vue/mixins/storeMixin'
 import Utils from './vue/plugins/utils'
 import Dialog from './vue/plugins/dialog'
 import Modal from './vue/plugins/modal'
+import {REAL_BRL} from "./vue/utils/money"
+import {VMoney} from 'v-money'
 
 import '../css/app.scss'
 
@@ -27,11 +29,13 @@ const createApp = () => {
                 app: this
             }
         },
+        directives: {money: VMoney},
         mixins: [Mixin, UserMixin, StoreMixin],
         components: {},
         data() {
             return {
                 testVue: 'VUE is OK!',
+                money: REAL_BRL,
                 alerts: [],
                 currentView: null
             }
