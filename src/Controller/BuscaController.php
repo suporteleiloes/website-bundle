@@ -89,6 +89,14 @@ class BuscaController extends AbstractController
             $requestFiltros['precoMaximo'] = $request->get('precoMaximo');
         }
 
+        if ($request->get('intervaloPreco')) {
+            $intervaloPreco = explode(';', $request->get('intervaloPreco'));
+            if (count($intervaloPreco) === 2) {
+                $requestFiltros['precoMinimo'] = $intervaloPreco[0];
+                $requestFiltros['precoMaximo'] = $intervaloPreco[1];
+            }
+        }
+
         if ($routeName === 'busca_vendaDireta') {
             $requestFiltros['vendaDireta'] = 1;
         }
