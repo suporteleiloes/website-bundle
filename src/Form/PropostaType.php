@@ -4,7 +4,6 @@ namespace SL\WebsiteBundle\Form;
 
 use SL\WebsiteBundle\Entity\Proposta;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -23,7 +22,6 @@ class PropostaType extends AbstractType
             ->add('valor', MoneyType::class, [
                 'invalid_message' => 'Valor inválido. Formato: 0.00',
                 'currency' => '',
-                'input' => 'float',
             ])
             ->add('parcelado', ChoiceType::class, [
                 'choices'  => [
@@ -34,7 +32,6 @@ class PropostaType extends AbstractType
             ->add('valorEntrada', MoneyType::class, [
                 'invalid_message' => 'Valor de entrada inválido. Formato: 0.00',
                 'currency' => '',
-                'input' => 'float',
             ])
             ->add('quantidadeParcelas')
             ->add('indiceCorrecao', ChoiceType::class, [
@@ -52,42 +49,6 @@ class PropostaType extends AbstractType
             ->add('bemId')
             ->add('loteId')
         ;
-
-        $builder->get('valor')->addModelTransformer(new MoneyTransform());
-        $builder->get('valorEntrada')->addModelTransformer(new MoneyTransform());
-
-        /*$builder->get('valor')
-            ->addModelTransformer(new CallbackTransformer(
-                function ($money) {
-                    return $money;
-                },
-                function ($string) {
-                    if (strpos($string, 'R$') !== false) {
-                        $string = str_replace('.', '', $string); // remove o ponto
-                        $string = str_replace(',', '.', $string); // substitui a vírgula por ponto
-                        return floatval($string);
-                    }
-
-                    return $string;
-                }
-            ))
-        ;
-        $builder->get('valorEntrada')
-            ->addModelTransformer(new CallbackTransformer(
-                function ($money) {
-                    return $money;
-                },
-                function ($string) {
-                    if (strpos($string, 'R$') !== false) {
-                        $string = str_replace('.', '', $string); // remove o ponto
-                        $string = str_replace(',', '.', $string); // substitui a vírgula por ponto
-                        return floatval($string);
-                    }
-
-                    return $string;
-                }
-            ))
-        ;*/
     }
 
     public function configureOptions(OptionsResolver $resolver): void
