@@ -82,6 +82,7 @@ class DefaultController extends SLAbstractController
 
     /**
      * @Route("/leiloes/{id}", name="leilao")
+     * @Route("/leiloes/{id}/{classificacao}/{titulo}", name="leilao_link2")
      * @Route("/print/leiloes/{id}", name="print_leilao")
      */
     public function leilao(Request $request, Leilao $leilao, LeilaoService $leilaoService)
