@@ -83,6 +83,11 @@ class Proposta extends ApiSync
     private $parcelado = false;
 
     /**
+     * @ORM\Column(type="decimal", precision=15, scale=2, nullable=true)
+     */
+    private $valorEntrada;
+
+    /**
      * @ORM\Column(type="decimal", precision=4, scale=2, nullable=true)
      */
     private $porcentagemEntrada;
@@ -303,6 +308,22 @@ class Proposta extends ApiSync
         $this->indiceCorrecao = $indiceCorrecao;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getValorEntrada()
+    {
+        return $this->valorEntrada;
+    }
+
+    /**
+     * @param mixed $valorEntrada
+     */
+    public function setValorEntrada($valorEntrada): void
+    {
+        $this->valorEntrada = $valorEntrada;
+    }
+
     public function __serialize()
     {
         return [
@@ -317,10 +338,11 @@ class Proposta extends ApiSync
             'bemId' => $this->bemId,
             'loteId' => $this->loteId,
             'valor' => $this->valor,
+            'valorEntrada' => $this->valorEntrada,
             'parcelado' => $this->parcelado,
             'porcentagemEntrada' => $this->porcentagemEntrada,
-            'quantidadeParcelas' => $this->quantidadeParcelas,
-            'indiceCorrecao' => $this->indiceCorrecao
+            'parcelas' => $this->quantidadeParcelas,
+            'indice' => $this->indiceCorrecao
         ];
     }
 

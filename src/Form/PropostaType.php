@@ -4,6 +4,7 @@ namespace SL\WebsiteBundle\Form;
 
 use SL\WebsiteBundle\Entity\Proposta;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -16,6 +17,15 @@ class PropostaType extends AbstractType
             ->add('email')
             ->add('telefone')
             ->add('assunto')
+            ->add('valor', MoneyType::class, [
+                'invalid_message' => 'Valor dos débitos inválido. Formato: 0.00'
+            ])
+            ->add('parcelado')
+            ->add('valorEntrada', MoneyType::class, [
+                'invalid_message' => 'Valor dos débitos inválido. Formato: 0.00'
+            ])
+            ->add('quantidadeParcelas')
+            ->add('indiceCorrecao')
             ->add('mensagem')
             ->add('bemId')
             ->add('loteId')
