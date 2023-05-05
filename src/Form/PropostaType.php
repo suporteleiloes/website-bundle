@@ -33,7 +33,17 @@ class PropostaType extends AbstractType
                 'currency' => ''
             ])
             ->add('quantidadeParcelas')
-            ->add('indiceCorrecao')
+            ->add('indiceCorrecao', ChoiceType::class, [
+                'choices'  => [
+                    'Qualquer' => null,
+                    'IPCA' => 'IPCA',
+                    'IGP-M' => 'IGP-M',
+                    'IPA' => 'IPA',
+                    'IPC' => 'IPC',
+                    'INCC' => 'INCC',
+                    'Taxa Selic' => 'Taxa Selic',
+                ],
+            ])
             ->add('mensagem')
             ->add('bemId')
             ->add('loteId')
