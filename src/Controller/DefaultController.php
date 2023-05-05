@@ -240,6 +240,7 @@ class DefaultController extends SLAbstractController
 
         $formProposta = null;
         $formPropostaSucesso = null;
+        $modelProposta = null;
         if ((!$lote->getLeilao() && $lote->getVendaDireta()) || ($lote->getLeilao() && $lote->getLeilao()->getVendaDireta())) {
             $cookieName = 'bem_proposta_' . $lote->getAid();
             if ($request->cookies->get($cookieName)) {
@@ -277,6 +278,7 @@ class DefaultController extends SLAbstractController
                         // Error
                     }
                 }
+                $modelProposta = $model;
             }
         }
 
@@ -289,6 +291,7 @@ class DefaultController extends SLAbstractController
             'prev' => $prev,
             'formProposta' => $formProposta ? $formProposta->createView() : null,
             'formPropostaSucesso' => $formPropostaSucesso,
+            'proposta' => $modelProposta
         ]);
     }
 
