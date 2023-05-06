@@ -18,6 +18,8 @@ class BuscaController extends AbstractController
     /**
      * @Route("/busca", name="busca", methods={"GET", "POST"})
      * @Route("/ofertas", name="busca_vendaDireta", methods={"GET", "POST"})
+     * @Route("/imoveis", name="busca_imoveis", methods={"GET", "POST"})
+     * @Route("/veiculos", name="busca_veiculos", methods={"GET", "POST"})
      *
      * @param Request $request
      * @return mixed
