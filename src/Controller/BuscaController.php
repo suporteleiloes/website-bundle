@@ -43,12 +43,24 @@ class BuscaController extends AbstractController
 
         if ($request->get('f-tipo')) {
             $requestFiltros['tipo'] = $request->get('f-tipo');
-        } elseif($request->get('tipo')) {
+        } elseif ($request->get('tipo')) {
             $requestFiltros['tipo'] = $request->get('tipo');
         }
 
-        if($request->get('tipo-not')) {
+        if ($request->get('tipo-not')) {
             $requestFiltros['tipo-not'] = $request->get('tipo-not');
+        }
+
+        if ($request->get('ocupacao')) {
+            $requestFiltros['ocupacao'] = $request->get('ocupacao');
+        }
+
+        if ($request->get('judicial')) {
+            $requestFiltros['judicial'] = $request->get('judicial');
+        }
+
+        if ($request->get('vendaDireta')) {
+            $requestFiltros['vendaDireta'] = $request->get('vendaDireta');
         }
 
 
