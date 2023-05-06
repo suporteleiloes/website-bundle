@@ -113,7 +113,7 @@ class LeilaoService
 
         if (isset($filtros['vendaDireta'])) {
             $searchCriteria->andWhere(
-                Criteria::expr()->orX(
+                Criteria::expr()->andX(
                     Criteria::expr()->eq('l.vendaDireta', $isTrue($filtros['vendaDireta'])),
                     Criteria::expr()->orX(
                         Criteria::expr()->isNull('l.leilao'),
@@ -140,7 +140,7 @@ class LeilaoService
             if (count($tipoArr) > 0) {
                 $tipoSearch = Criteria::expr()->orX(
                     Criteria::expr()->in('l.tipo', $tipoArr),
-                    Criteria::expr()->in('l.tipoPai', $tipoArr),
+                    Criteria::expr()->in('l.tipoPai', $tipoArr)
             );
             } else {
                 $tipoSearch = Criteria::expr()->in('l.tipoId', $convertArray($filtros['tipo']));
