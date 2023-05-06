@@ -435,6 +435,7 @@ class ApiService
         $lote->setCamposExtras(@$data['bem']['camposExtras']);
         $lote->setInfoVisitacao($data['bem']['infoVisitacao'] ?? null);
         $lote->setFinalidade($data['bem']['imovel']['finalidade']['nome'] ?? null);
+        $lote->setOcupado($data['bem']['imovel']['ocupado'] ?? null);
         if (isset($data['bem']['campos']) && is_array($data['bem']['campos'])) {
             $campos = [];
             foreach ($data['bem']['campos'] as $campo) {
