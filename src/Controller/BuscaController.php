@@ -44,7 +44,7 @@ class BuscaController extends AbstractController
         }
 
         if ($routeName === 'busca_veiculos') {
-            $requestFiltros['tipo'] = 'Veículo';
+            $requestFiltros['tipo'] = 'Veículos';
         }
 
         if ($request->get('busca')) {
