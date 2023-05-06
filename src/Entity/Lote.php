@@ -208,6 +208,11 @@ class Lote extends ApiSync
     private $mostrarComitente;
 
     /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $finalidade;
+
+    /**
      * @ORM\Column(type="integer", nullable=true)
      */
     private $marcaId;
@@ -1922,6 +1927,22 @@ class Lote extends ApiSync
     public function setCombustivel($combustivel): void
     {
         $this->combustivel = $combustivel;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFinalidade()
+    {
+        return $this->finalidade;
+    }
+
+    /**
+     * @param mixed $finalidade
+     */
+    public function setFinalidade($finalidade): void
+    {
+        $this->finalidade = $finalidade;
     }
 
     public function getDadosParaJsonSite()
