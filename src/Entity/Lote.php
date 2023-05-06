@@ -209,9 +209,9 @@ class Lote extends ApiSync
     private $mostrarComitente;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="string", length=255, nullable=false, options={"default": "Indefinida"})
      */
-    private $finalidade;
+    private $finalidade = 'Indefinida';
 
     /**
      * @ORM\Column(type="integer", nullable=true)
