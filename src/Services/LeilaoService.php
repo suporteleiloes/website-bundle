@@ -70,6 +70,11 @@ class LeilaoService
             return is_array($value) ? $value : [$value];
         };
 
+        $isTrue = function ($value) {
+            $values = is_string($value) ? strtolower($value) : $value;
+            return $value === true || $values == 1 || $values == 's' || $values == 'sim' || $values == 'y';
+        };
+
         if ($leilao) {
             $searchCriteria->andWhere(Criteria::expr()->eq('l.leilao', $leilao));
         }
@@ -108,7 +113,19 @@ class LeilaoService
 
         if (isset($filtros['vendaDireta'])) {
             $searchCriteria->andWhere(
-                Criteria::expr()->eq('l.vendaDireta', $filtros['vendaDireta'])
+                Criteria::expr()->eq('l.vendaDireta', $isTrue($filtros['vendaDireta']))
+            );
+        }
+
+        if (isset($filtros['ocupacao'])) {
+            $searchCriteria->andWhere(
+                Criteria::expr()->eq('l.ocupado', $isTrue($filtros['ocupacao']))
+            );
+        }
+
+        if (isset($filtros['judicial'])) {
+            $searchCriteria->andWhere(
+                Criteria::expr()->eq('leilao.judicial', $isTrue($filtros['judicial']))
             );
         }
 
