@@ -35,6 +35,7 @@ use Doctrine\ORM\Mapping as ORM;
  *     @ORM\Index(name="processo", columns={"processo"}),
  *     @ORM\Index(name="valor_inicial", columns={"valor_inicial"}),
  *     @ORM\Index(name="titulo", columns={"titulo"}),
+ *     @ORM\Index(name="finalidade", columns={"finalidade"}),
  * })
  * @ORM\Entity(repositoryClass=LoteRepository::class)
  */
