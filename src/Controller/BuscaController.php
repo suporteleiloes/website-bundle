@@ -63,7 +63,6 @@ class BuscaController extends AbstractController
             $requestFiltros['vendaDireta'] = $request->get('vendaDireta');
         }
 
-
         if (!empty($tipoId)) {
             $requestFiltros['tipoId'] = $tipoId;
         }

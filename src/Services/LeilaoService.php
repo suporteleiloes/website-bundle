@@ -113,7 +113,13 @@ class LeilaoService
 
         if (isset($filtros['vendaDireta'])) {
             $searchCriteria->andWhere(
-                Criteria::expr()->eq('l.vendaDireta', $isTrue($filtros['vendaDireta']))
+                Criteria::expr()->andX(
+                    Criteria::expr()->eq('l.vendaDireta', $isTrue($filtros['vendaDireta'])),
+                    Criteria::expr()->orX(
+                        Criteria::expr()->isNull('l.leilao'),
+                        Criteria::expr()->eq('leilao.vendaDireta', $isTrue($filtros['vendaDireta']))
+                    )
+                )
             );
         }
 
