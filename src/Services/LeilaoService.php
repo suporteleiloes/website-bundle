@@ -218,6 +218,12 @@ class LeilaoService
             );
         }
 
+        if (isset($filtros['finalidade'])) {
+            $searchCriteria->andWhere(
+                Criteria::expr()->in('l.finalidade', $convertArray($filtros['finalidade'], ','))
+            );
+        }
+
         if (isset($filtros['uf'])) {
             $searchCriteria->andWhere(
                 Criteria::expr()->in('l.uf', $convertArray($filtros['uf']))

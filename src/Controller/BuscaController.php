@@ -67,6 +67,10 @@ class BuscaController extends AbstractController
             $requestFiltros['comitente'] = $request->get('comitente');
         }
 
+        if ($request->get('finalidade')) {
+            $requestFiltros['finalidade'] = $request->get('finalidade');
+        }
+
         if ($request->get('f-uf')) {
             $requestFiltros['uf'] = $request->get('f-uf');
         }
