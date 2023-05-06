@@ -114,7 +114,10 @@ class LeilaoService
         if (isset($filtros['vendaDireta'])) {
             if ($filtros['vendaDireta'] == 0) {
                 $vdCrit = Criteria::expr()->andX(
-                    Criteria::expr()->eq('l.vendaDireta', false),
+                    Criteria::expr()->orX(
+                        Criteria::expr()->eq('l.vendaDireta', false),
+                        Criteria::expr()->isNull('l.vendaDireta')
+                    ),
                     Criteria::expr()->neq('l.leilao', null)
                 );
             } else {
