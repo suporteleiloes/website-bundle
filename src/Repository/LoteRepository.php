@@ -32,7 +32,7 @@ class LoteRepository extends ServiceEntityRepository
             ->addScalarResult('tipo_pai_id', 'tipo_pai_id')
             ->addScalarResult('total', 'total');
 
-        $query = 'select distinct tipo_pai_id, tipo_pai, (select count(1) from lote l2 left join leilao on leilao.id = l2.leilao_id where l2.tipo_pai_id = lote.tipo_pai_id and l2.status < 5 and l2.deleted = 0 and (leilao.id is null or (leilao.status_tipo <= 2 and leilao.deleted = 0)) __UPDATE2__) total from lote where lote.status < 5 and lote.deleted = 0 and lote.active = 1 ORDER BY tipo_pai ASC';
+        $query = 'select distinct tipo_pai_id, tipo_pai, (select count(1) from lote l2 left join leilao on leilao.id = l2.leilao_id where l2.tipo_pai_id = lote.tipo_pai_id and l2.status < 5 and l2.deleted = 0 and (leilao.id is null or (leilao.status_tipo <= 2 and leilao.deleted = 0)) __UPDATE2__) total from lote where lote.status < 5 and lote.deleted = 0 and lote.active = 1';
 
         if ($leilao) {
             $query = $query . ' and lote.leilao_id = ' . $leilao;
@@ -57,7 +57,7 @@ class LoteRepository extends ServiceEntityRepository
             ->addScalarResult('tipo_pai_id', 'tipo_pai_id')
             ->addScalarResult('total', 'total');
 
-        $query = 'select distinct tipo_id, tipo, tipo_pai_id, (select count(1) from lote l2 left join leilao on leilao.id = l2.leilao_id where l2.tipo_id = lote.tipo_id and l2.status < 5 and l2.deleted = 0 and (leilao.id is null or (leilao.status_tipo <= 2 and leilao.deleted = 0)) __UPDATE2__) total from lote where lote.status < 5 and lote.deleted = 0 and lote.active = 1 ORDER BY tipo ASC';
+        $query = 'select distinct tipo_id, tipo, tipo_pai_id, (select count(1) from lote l2 left join leilao on leilao.id = l2.leilao_id where l2.tipo_id = lote.tipo_id and l2.status < 5 and l2.deleted = 0 and (leilao.id is null or (leilao.status_tipo <= 2 and leilao.deleted = 0)) __UPDATE2__) total from lote where lote.status < 5 and lote.deleted = 0 and lote.active = 1';
 
         if ($leilao) {
             $query = $query . ' and lote.leilao_id = ' . $leilao;
