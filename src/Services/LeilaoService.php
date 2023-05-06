@@ -112,14 +112,25 @@ class LeilaoService
         }
 
         if (isset($filtros['vendaDireta'])) {
-            $searchCriteria->andWhere(
-                Criteria::expr()->andX(
-                    Criteria::expr()->eq('l.vendaDireta', $isTrue($filtros['vendaDireta'])),
+            if ($filtros['vendaDireta'] == 0) {
+                $vdCrit = Criteria::expr()->orX(
+                    Criteria::expr()->eq('l.vendaDireta', false),
                     Criteria::expr()->orX(
                         Criteria::expr()->isNull('l.leilao'),
-                        Criteria::expr()->eq('leilao.vendaDireta', $isTrue($filtros['vendaDireta']))
+                        Criteria::expr()->eq('leilao.vendaDireta', false)
                     )
-                )
+                );
+            } else {
+                $vdCrit = Criteria::expr()->andX(
+                    Criteria::expr()->eq('l.vendaDireta', true),
+                    Criteria::expr()->orX(
+                        Criteria::expr()->isNull('l.leilao'),
+                        Criteria::expr()->eq('leilao.vendaDireta', true)
+                    )
+                );
+            }
+            $searchCriteria->andWhere(
+                $vdCrit
             );
         }
 
@@ -141,7 +152,7 @@ class LeilaoService
                 $tipoSearch = Criteria::expr()->orX(
                     Criteria::expr()->in('l.tipo', $tipoArr),
                     Criteria::expr()->in('l.tipoPai', $tipoArr)
-            );
+                );
             } else {
                 $tipoSearch = Criteria::expr()->in('l.tipoId', $convertArray($filtros['tipo']));
                 if (!is_array($filtros['tipo'])) {
