@@ -122,6 +122,13 @@ class BuscaController extends AbstractController
             }
         }
 
+        if ($request->get('marca')) {
+            $requestFiltros['marca'] = $request->get('marca');
+        }
+        if ($request->get('modelo')) {
+            $requestFiltros['modelo'] = $request->get('modelo');
+        }
+
         if ($routeName === 'busca_vendaDireta') {
             $requestFiltros['vendaDireta'] = 1;
         }
