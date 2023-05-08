@@ -1164,7 +1164,7 @@ class Lote extends ApiSync
     public function valorAtual()
     {
         if (!$this->getLeilao()) {
-            return $this->valorInicial;
+            return $this->valorInicial ?? $this->valorMinimo;
         }
 
         if ($this->lances->count() > 0) {
