@@ -369,6 +369,11 @@ class Lote extends ApiSync
     private $exequente;
 
     /**
+     * @ORM\Column(type="decimal", precision=15, scale=2, nullable=true)
+     */
+    private $valorDebitos;
+
+    /**
      * @ORM\Column(type="text", nullable=true)
      */
     private $formasPagamento;
@@ -1944,6 +1949,22 @@ class Lote extends ApiSync
     public function setFinalidade($finalidade): void
     {
         $this->finalidade = $finalidade;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getValorDebitos()
+    {
+        return $this->valorDebitos;
+    }
+
+    /**
+     * @param mixed $valorDebitos
+     */
+    public function setValorDebitos($valorDebitos): void
+    {
+        $this->valorDebitos = $valorDebitos;
     }
 
     public function getDadosParaJsonSite()
