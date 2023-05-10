@@ -459,7 +459,7 @@ class ApiService
             $lote->setVendaDireta(@$data['bem']['vendaDireta']);
             #//dump('Lote sem leilão');
         }
-        if (!$leilao && (!isset($data['bem']['vendaDireta']) || !$data['bem']['vendaDireta'])) {
+        if (!$leilao && (!$data['deleted'] && (!isset($data['bem']['vendaDireta']) || !$data['bem']['vendaDireta']))) {
             return; // Lote atualizado de leilão encerrado e inexistente na base do site
         }
         #//dump('Persistindo lote ID ' . $data['id']);
