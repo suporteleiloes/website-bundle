@@ -152,7 +152,7 @@ class CadastroController extends AbstractController
                 $url = $_ENV['SL_PAINEL_LOGIN_URL'] . '?token=' . $this->getUser()->getExtraFields()['token'];
                 $refer = urlencode($this->generateUrl('home', [], UrlGeneratorInterface::ABSOLUTE_URL));
                 if ($request->get('externalAutologin')) {
-                    $url = $url . '&redirectAfterLogin=' . $refer;
+                    $url = $url . '&forceLogin=true&redirectAfterLogin=' . $refer;
                 }
                 $url = $url . '&refer=' . $refer;
                 return $this->redirect($url);
