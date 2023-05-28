@@ -83,10 +83,17 @@ class DefaultController extends SLAbstractController
     /**
      * @Route("/leiloes/{id}", name="leilao")
      * @Route("/leiloes/{id}/{classificacao}/{titulo}", name="leilao_link2")
+     * @Route("/leiloes/0/{classificacao}/{titulo}/{aid}", name="leilao_link2_aid", priority="2")
      * @Route("/print/leiloes/{id}", name="print_leilao")
      */
-    public function leilao(Request $request, Leilao $leilao, LeilaoService $leilaoService)
+    public function leilao(Request $request, LeilaoService $leilaoService, EntityManagerInterface $em, Leilao $leilao = null, $aid = null)
     {
+        if ($aid) {
+            $leilao = $em->getRepository(Leilao::class)->findOneBy(['aid' => $aid]);
+            if (!$aid) {
+                return $this->createNotFoundException();
+            }
+        }
         if ($leilao) {
             if ($leilao->isEncerrado() && (!isset($_ENV['MOSTRAR_LEILAO_ENCERRADO']) || !$_ENV['MOSTRAR_LEILAO_ENCERRADO'])) {
                 return $this->redirectToRoute('leilao_encerrado', ['id' => $leilao->getId()]);
