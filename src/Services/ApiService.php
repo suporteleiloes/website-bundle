@@ -840,5 +840,16 @@ class ApiService
         return $this->callApi('GET', '/api/public/services/consultaNota/' . $numero, [], false);
     }
 
+    public function enviarEmail($destinatario, $destinatarioNome, $assunto, $mensagem, $remetente = null)
+    {
+        $data = [RequestOptions::JSON => [
+            'remetente' => $remetente,
+            'destinatario' => $destinatario,
+            'destinatarioNome' => $destinatarioNome,
+            'assunto' => $assunto,
+            'mensagem' => $mensagem
+        ]];
+        return $this->callApi('POST', '/api/public/service/enviarEmail', $data, false);
+    }
 
 }
