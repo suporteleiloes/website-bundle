@@ -189,7 +189,8 @@ class DefaultController extends SLAbstractController
                 ]);
             } else {
                 $lote = $em->getRepository(Lote::class)->findOneBy([
-                    'aid' => $aid
+                    'aid' => $aid,
+                    'bemId' => $aid
                 ]);
             }
             if (!$lote) {
