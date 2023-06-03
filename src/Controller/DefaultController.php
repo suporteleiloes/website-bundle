@@ -90,7 +90,7 @@ class DefaultController extends SLAbstractController
     {
         if ($aid) {
             $leilao = $em->getRepository(Leilao::class)->findOneBy(['aid' => $aid]);
-            if (!$aid) {
+            if (!$leilao) {
                 return $this->createNotFoundException();
             }
         }
@@ -177,9 +177,25 @@ class DefaultController extends SLAbstractController
 
     /**
      * @Route("/oferta/{tipoOferta}/{tipoPai}/{tipo}/{id}/id-{aid}/{slug}", name="lote")
+     * @Route("/ofertas/{tipoOferta}/{tipoPai}/{tipo}/{aid}/{bemid}/{slug}", name="lote_aid")
      */
-    public function lote(Lote $lote, Request $request, ReCaptcha $reCaptcha, EntityManagerInterface $em, ApiService $apiService)
+    public function lote(Lote $lote, Request $request, ReCaptcha $reCaptcha, EntityManagerInterface $em, ApiService $apiService, $aid = null, $bemid = null)
     {
+        if ($aid) {
+            if (!empty($bemid)) {
+                $lote = $em->getRepository(Lote::class)->findOneBy([
+                    'aid' => $aid,
+                    'bemId' => $bemid
+                ]);
+            } else {
+                $lote = $em->getRepository(Lote::class)->findOneBy([
+                    'aid' => $aid
+                ]);
+            }
+            if (!$lote) {
+                return $this->createNotFoundException();
+            }
+        }
         if ($lote->getLeilao() && $lote->getLeilao()->isEncerrado() && (!isset($_ENV['MOSTRAR_LEILAO_ENCERRADO']) || !$_ENV['MOSTRAR_LEILAO_ENCERRADO'])) {
             return $this->redirectToRoute('leilao_encerrado', ['id' => $lote->getLeilao()->getId()]);
         }
