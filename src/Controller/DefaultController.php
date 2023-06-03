@@ -91,7 +91,7 @@ class DefaultController extends SLAbstractController
         if ($aid) {
             $leilao = $em->getRepository(Leilao::class)->findOneBy(['aid' => $aid]);
             if (!$leilao) {
-                return $this->createNotFoundException();
+                throw $this->createNotFoundException();
             }
         }
         if ($leilao) {
@@ -196,7 +196,7 @@ class DefaultController extends SLAbstractController
         }
 
         if (!$lote) {
-            return $this->createNotFoundException();
+            throw $this->createNotFoundException();
         }
 
         if ($lote->getLeilao() && $lote->getLeilao()->isEncerrado() && (!isset($_ENV['MOSTRAR_LEILAO_ENCERRADO']) || !$_ENV['MOSTRAR_LEILAO_ENCERRADO'])) {
