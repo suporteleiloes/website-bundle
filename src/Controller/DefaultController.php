@@ -179,7 +179,7 @@ class DefaultController extends SLAbstractController
      * @Route("/oferta/{tipoOferta}/{tipoPai}/{tipo}/{id}/id-{aid}/{slug}", name="lote")
      * @Route("/ofertas/{tipoOferta}/{tipoPai}/{tipo}/{aid}/{bemid}/{slug}", name="lote_aid")
      */
-    public function lote(Lote $lote, Request $request, ReCaptcha $reCaptcha, EntityManagerInterface $em, ApiService $apiService, $aid = null, $bemid = null)
+    public function lote(Request $request, ReCaptcha $reCaptcha, EntityManagerInterface $em, ApiService $apiService, Lote $lote = null, $aid = null, $bemid = null)
     {
         if ($aid) {
             if (!empty($bemid)) {
@@ -193,10 +193,12 @@ class DefaultController extends SLAbstractController
                     'bemId' => $aid
                 ]);
             }
-            if (!$lote) {
-                return $this->createNotFoundException();
-            }
         }
+
+        if (!$lote) {
+            return $this->createNotFoundException();
+        }
+
         if ($lote->getLeilao() && $lote->getLeilao()->isEncerrado() && (!isset($_ENV['MOSTRAR_LEILAO_ENCERRADO']) || !$_ENV['MOSTRAR_LEILAO_ENCERRADO'])) {
             return $this->redirectToRoute('leilao_encerrado', ['id' => $lote->getLeilao()->getId()]);
         }
