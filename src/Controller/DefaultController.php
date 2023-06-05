@@ -176,12 +176,12 @@ class DefaultController extends SLAbstractController
     }
 
     /**
-     * @Route("/oferta/{tipoOferta}/{tipoPai}/{tipo}/{id}/id-{aidtmp}/{slug}", name="lote")
+     * @Route("/oferta/{tipoOferta}/{tipoPai}/{tipo}/{id}/id-{aid}/{slug}", name="lote")
      * @Route("/ofertas/{tipoOferta}/{tipoPai}/{tipo}/{aid}/{bemid}/{slug}", name="lote_aid")
      */
     public function lote(Request $request, ReCaptcha $reCaptcha, EntityManagerInterface $em, ApiService $apiService, Lote $lote = null, $aid = null, $bemid = null)
     {
-        if ($aid) {
+        if (!$lote && $aid) {
             if (!empty($bemid)) {
                 $lote = $em->getRepository(Lote::class)->findOneBy([
                     'aid' => $aid,
