@@ -984,13 +984,34 @@ class Lote extends ApiSync
                 'url' => $foto['full']['url'],
                 'resolution' => @$foto['full']['resolution']['width'] . 'x' . @$foto['full']['resolution']['height'],
                 'versions' => $foto,
-                'nome' => null
+                'nome' => null,
+                'order' => -1
             ]);
         }
         foreach ($this->documentos as $arquivo) {
             if (strtolower($arquivo['tipo']['nome']) === 'foto site' && $arquivo['site']) {
                 $fotos->add($arquivo);
             }
+        }
+        if (count($fotos)) {
+            $compareFunction = function ($obj1, $obj2) {
+                $order1 = $obj1['order'];
+                $order2 = $obj2['order'];
+
+                // Realiza a comparação
+                if ($order1 === $order2) {
+                    return 0; // Igual, mantém a ordem atual
+                } elseif ($order1 < $order2) {
+                    return -1; // Menor, coloca $obj1 antes de $obj2
+                } else {
+                    return 1; // Maior, coloca $obj1 depois de $obj2
+                }
+            };
+
+            $array = $fotos->getIterator()->getArrayCopy();
+            usort($array, $compareFunction);
+            return $array;
+
         }
         return $fotos;
     }
@@ -1003,7 +1024,27 @@ class Lote extends ApiSync
                 $fotos->add($arquivo);
             }
         }
-        return count($fotos) ? $fotos : $this->getFotos();
+        if (count($fotos)) {
+            $compareFunction = function ($obj1, $obj2) {
+                $order1 = $obj1['order'];
+                $order2 = $obj2['order'];
+
+                // Realiza a comparação
+                if ($order1 === $order2) {
+                    return 0; // Igual, mantém a ordem atual
+                } elseif ($order1 < $order2) {
+                    return -1; // Menor, coloca $obj1 antes de $obj2
+                } else {
+                    return 1; // Maior, coloca $obj1 depois de $obj2
+                }
+            };
+
+            $array = $fotos->getIterator()->getArrayCopy();
+            usort($array, $compareFunction);
+            return $array;
+
+        }
+        return $this->getFotos();
     }
 
     /**
@@ -1681,7 +1722,8 @@ class Lote extends ApiSync
         $this->subtitulo = $subtitulo;
     }
 
-    public function isRetirado () {
+    public function isRetirado()
+    {
         return trim(mb_strtolower($this->statusString)) === 'retirado';
     }
 
@@ -1781,7 +1823,8 @@ class Lote extends ApiSync
         $this->taxas = $taxas;
     }
 
-    public function getValorImpostos () {
+    public function getValorImpostos()
+    {
         $total = 0;
         if ($this->taxas && count($this->taxas)) {
             foreach ($this->taxas as $taxa) {
