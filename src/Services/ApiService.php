@@ -528,6 +528,7 @@ class ApiService
         $lance->setCidade(isset($data['autor']) ? $data['autor']['cidade'] : null);
         $lance->setUf(isset($data['autor']) ? $data['autor']['uf'] : null);
         $lance->setValor($data['valor']);
+        $lance->setParcelado($data['parcelado'] ?? null);
         $lance->setActive($data['active'] ?: true);
         $lance->setDeleted($data['deleted'] ?: false);
         /* @var Lote $lote */

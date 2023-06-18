@@ -54,6 +54,11 @@ class Lance extends ApiSync
     private $valor;
 
     /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $parcelado;
+
+    /**
      * @ORM\ManyToOne(targetEntity="SL\WebsiteBundle\Entity\Lote", inversedBy="lances")
      * @ORM\JoinColumn(nullable=false)
      */
@@ -172,6 +177,22 @@ class Lance extends ApiSync
         $this->arrematanteId = $arrematanteId;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getParcelado()
+    {
+        return $this->parcelado;
+    }
+
+    /**
+     * @param mixed $parcelado
+     */
+    public function setParcelado($parcelado): void
+    {
+        $this->parcelado = $parcelado;
+    }
+
     public function __serialize(): array
     {
         return [
@@ -184,6 +205,7 @@ class Lance extends ApiSync
             'cidade' => $this->cidade,
             'uf' => $this->uf,
             'valor' => $this->valor,
+            'parcelado' => $this->parcelado,
             'lote' => [
                 'id' => $this->getLote()->getId(),
                 'numero' => $this->getLote()->getNumero(),
