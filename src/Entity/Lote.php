@@ -628,7 +628,7 @@ class Lote extends ApiSync
     {
         $docs = new ArrayCollection();
         foreach ($this->documentos as $arquivo) {
-            if (strtolower($arquivo['tipo']['nome']) !== 'foto site' && empty($arquivo['permissao'])) {
+            if ((!$arquivo['tipo'] || strtolower($arquivo['tipo']['nome']) !== 'foto site') && empty($arquivo['permissao'])) {
                 $docs->add($arquivo);
             }
         }
@@ -989,7 +989,7 @@ class Lote extends ApiSync
             ]);
         }
         foreach ($this->documentos as $arquivo) {
-            if (strtolower($arquivo['tipo']['nome']) === 'foto site' && $arquivo['site']) {
+            if ($arquivo['tipo'] && strtolower($arquivo['tipo']['nome']) === 'foto site' && $arquivo['site']) {
                 $fotos->add($arquivo);
             }
         }
@@ -1020,7 +1020,7 @@ class Lote extends ApiSync
     {
         $fotos = new ArrayCollection();
         foreach ($this->documentos as $arquivo) {
-            if (strtolower($arquivo['tipo']['nome']) === 'foto site' && $arquivo['site']) {
+            if ($arquivo['tipo'] && strtolower($arquivo['tipo']['nome']) === 'foto site' && $arquivo['site']) {
                 $fotos->add($arquivo);
             }
         }
