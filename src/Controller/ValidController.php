@@ -19,7 +19,8 @@ class ValidController extends AbstractController
         $erro = null;
         if ($request->get('numero') || $numero) {
             try {
-                $nota = $apiService->consultaNotaArrematacao($request->get('numero') ?: $numero);
+                $numero = preg_replace('/\D/', '$1', str_replace(' ', '', $request->get('numero') ?: $numero));
+                $nota = $apiService->consultaNotaArrematacao($numero);
             } catch (\Throwable $exception) {
                 $erro = $exception->getMessage();
             }
