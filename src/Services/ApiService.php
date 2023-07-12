@@ -211,7 +211,11 @@ class ApiService
         $leilao->setStatus($data['status']);
         $leilao->setStatusString(@$data['statusString']);
         $leilao->setStatusTipo(@$data['statusTipo']);
-        $leilao->setVisitas(@$data['statsVisitas']);
+        if (isset($data['statsVisitas'])) {
+            if (intval($data['statsVisitas']) > $leilao->getVisitas()) {
+                $leilao->setVisitas($data['statsVisitas']);
+            }
+        }
         $leilao->setPraca($praca);
         $leilao->setInstancia($data['instancia'] ?? null);
         $leilao->setLeiloeiro($data['leiloeiro']['nome']);
@@ -436,7 +440,11 @@ class ApiService
         $lote->setInfoVisitacao($data['bem']['infoVisitacao'] ?? null);
         $lote->setFinalidade($data['bem']['imovel']['finalidade']['nome'] ?? null);
         $lote->setOcupado($data['bem']['imovel']['ocupado'] ?? null);
-        $lote->setVisitas($data['statsVisitas'] ?? 0);
+        if (isset($data['statsVisitas'])) {
+            if (intval($data['statsVisitas']) > $lote->getVisitas()) {
+                $lote->setVisitas($data['statsVisitas'] ?? 0);
+            }
+        }
         if (isset($data['bem']['campos']) && is_array($data['bem']['campos'])) {
             $campos = [];
             foreach ($data['bem']['campos'] as $campo) {
