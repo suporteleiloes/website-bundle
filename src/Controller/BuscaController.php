@@ -27,10 +27,12 @@ class BuscaController extends AbstractController
     public function busca(Request $request, LeilaoService $leilaoService)
     {
         $routeName = $request->attributes->get('_route');
-        $page = $request->query->getInt('page', 1);
-        $page = $page === 0 ? 1 : $page;
-        $limit = $request->query->getInt('limit', 20);
-        if ($limit > 100) {
+        $page = intval($request->get('page', 1));
+        if (!is_numeric($page) || $page < 1) {
+            $page = 1;
+        }
+        $limit = $request->get('limit', 20);
+        if (!is_numeric($limit) || $limit > 100 || $limit < 1) {
             $limit = 100;
         }
         $offset = ($page * $limit) - $limit;
