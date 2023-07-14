@@ -102,31 +102,31 @@ class LoteRepository extends ServiceEntityRepository
 
         $queryFcn(
             $r,
-            'select distinct uf as valor, COUNT(uf) total from lote WHERE lote.deleted = 0 GROUP BY uf',
+            'select distinct uf as valor, COUNT(uf) total from lote WHERE lote.deleted = 0 and lote.status < 5 GROUP BY uf',
             'uf'
         );
         $queryFcn(
             $r,
-            'select distinct cidade valor, uf, COUNT(cidade) total from lote WHERE lote.deleted = 0 GROUP BY cidade, uf',
+            'select distinct cidade valor, uf, COUNT(cidade) total from lote WHERE lote.deleted = 0 and lote.status < 5 GROUP BY cidade, uf',
             'cidade',
             'uf'
         );
         $queryFcn(
             $r,
-            'select distinct cidade, bairro valor, COUNT(bairro) total from lote WHERE lote.deleted = 0 GROUP BY bairro, cidade',
+            'select distinct cidade, bairro valor, COUNT(bairro) total from lote WHERE lote.deleted = 0 and lote.status < 5 GROUP BY bairro, cidade',
             'bairro',
             'cidade'
         );
         //
         $queryFcn(
             $r,
-            'select distinct marca as valor, COUNT(marca) total from lote WHERE lote.deleted = 0 GROUP BY marca',
+            'select distinct marca as valor, COUNT(marca) total from lote WHERE lote.deleted = 0 and lote.status < 5 GROUP BY marca',
             'marca',
             null
         );
         $queryFcn(
             $r,
-            'select distinct modelo valor, marca, COUNT(marca) total from lote WHERE lote.deleted = 0 GROUP BY marca, modelo',
+            'select distinct modelo valor, marca, COUNT(marca) total from lote WHERE lote.deleted = 0 and lote.status < 5 GROUP BY marca, modelo',
             'marca',
             'modelo'
         );
