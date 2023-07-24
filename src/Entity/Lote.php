@@ -1258,6 +1258,32 @@ class Lote extends ApiSync
         return floor($porcentagem);
     }
 
+    public function diferencaMercado()
+    {
+        if (!$this->valorMercado) {
+            return null;
+        }
+        $diff = bcsub($this->valorMercado, $this->valorAtual());
+        if (bccomp($diff, 0, 0) < 0) {
+            return null;
+        }
+        return $diff;
+    }
+
+    public function diferencaMercadoPorcentagem()
+    {
+        if (!$this->valorAtual() || !$this->diferencaMercado()) {
+            return 0;
+        }
+        $diferenca = $this->diferencaMercado();
+        $avaliacao = $this->getValorAvaliacao();
+        $porcentagem = ($diferenca / $avaliacao) * 100;
+        if ($porcentagem <= 0) {
+            return 0;
+        }
+        return floor($porcentagem);
+    }
+
     /**
      * @return mixed
      */
