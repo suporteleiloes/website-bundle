@@ -171,6 +171,19 @@ class LeilaoService
             );
         }
 
+        if (isset($filtros['tipoPrincipal'])) {
+            $tipoArr = $convertArray($filtros['tipoPrincipal'], ';');
+            if (count($tipoArr) > 0) {
+                $tipoSearch = Criteria::expr()->orX(
+                    Criteria::expr()->in('l.tipo', $tipoArr),
+                    Criteria::expr()->in('l.tipoPai', $tipoArr)
+                );
+                $searchCriteria->andWhere(
+                    $tipoSearch
+                );
+            }
+        }
+
         if (isset($filtros['tipo-not'])) {
             $filtros['tipo-not'] = $convertArray($filtros['tipo-not'], ',');
             $tipoSearch = Criteria::expr()->andX(

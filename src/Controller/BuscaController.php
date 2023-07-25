@@ -59,6 +59,10 @@ class BuscaController extends AbstractController
             $requestFiltros['tipo'] = $request->get('tipo');
         }
 
+        if ($request->get('tipoPrincipal')) {
+            $requestFiltros['tipoPrincipal'] = $request->get('tipoPrincipal');
+        }
+
         if ($request->get('tipo-not')) {
             $requestFiltros['tipo-not'] = $request->get('tipo-not');
         }
