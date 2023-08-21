@@ -36,6 +36,7 @@ class LeilaoService
      *          'precoMaximo' => (decimal) Valor máximo
      *          'comitente' => (array|int) Tipo do Bem
      *          'tipo' => (array|int|string(separator: ;)) Tipo do Bem
+     *          'tipoPai' => (string) Tipo do Bem Pai
      *          'tipoLeilao' => (array|int) 1 = Judicial; 2 = Extrajudicial;
      *          'relevancia' => (int) 0 = Relevância baseado no número e acessos e lances; 1 = Pela data do leilão (Crescente); 2 = Valor (Crescente); 3 = Valor (Decrescente)
      *          'qtdLeiloes' => (int) 0 = Leilão único; 1 - Primeiro leilão; 2 = Segundo leilão; 3 = Terceiro leilão (falência)
@@ -168,6 +169,13 @@ class LeilaoService
             }
             $searchCriteria->andWhere(
                 $tipoSearch
+            );
+        }
+
+        if (isset($filtros['tipoPai'])) {
+            $tipoPaiSearch = Criteria::expr()->eq('l.tipoPai', $filtros['tipoPai']);
+            $searchCriteria->andWhere(
+                $tipoPaiSearch
             );
         }
 
