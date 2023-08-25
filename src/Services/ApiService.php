@@ -432,6 +432,8 @@ class ApiService
         $lote->setProcesso(@$data['bem']['processoNumero']);
         $lote->setExequente(@$data['bem']['processoExequente']);
         $lote->setExecutado(@$data['bem']['processoExecutado']);
+        $lote->setVara($data['bem']['processoVara'] ?? null);
+        $lote->setComarca($data['bem']['processoComarca'] ?? null);
         $lote->setLocalizacaoUrlGoogleMaps(@$data['bem']['localizacaoUrlGoogleMaps']);
         $lote->setLocalizacaoUrlStreetView(@$data['bem']['localizacaoUrlStreetView']);
         $lote->setLocalizacaoMapEmbed(@$data['bem']['localizacaoMapEmbed']);

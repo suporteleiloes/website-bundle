@@ -366,6 +366,16 @@ class Lote extends ApiSync
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
+    private $vara;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $comarca;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
     private $exequente;
 
     /**
@@ -2029,11 +2039,43 @@ class Lote extends ApiSync
     }
 
     /**
+     * @return mixed
+     */
+    public function getVara()
+    {
+        return $this->vara;
+    }
+
+    /**
+     * @param mixed $vara
+     */
+    public function setVara($vara): void
+    {
+        $this->vara = $vara;
+    }
+
+    /**
      * @param mixed $valorDebitos
      */
     public function setValorDebitos($valorDebitos): void
     {
         $this->valorDebitos = $valorDebitos;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getComarca()
+    {
+        return $this->comarca;
+    }
+
+    /**
+     * @param mixed $comarca
+     */
+    public function setComarca($comarca): void
+    {
+        $this->comarca = $comarca;
     }
 
     public function getDadosParaJsonSite()
