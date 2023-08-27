@@ -334,7 +334,7 @@ class DefaultController extends SLAbstractController
         if (!$lote) {
             return $this->redirectToRoute('leilao', array('id' => $leilao->getId()));
         }
-        return $this->redirectToRoute('lote', array('id' => $lote->getId(), 'slug' => $lote->getSlug(), 'tipoOferta' => 'leilao', 'tipoPai' => $lote->getTipoPaiSlug(), 'tipo' => $lote->getTipoSlug()));
+        return $this->redirectToRoute('lote', array('id' => $lote->getId(), 'slug' => $lote->getSlug(), 'tipoOferta' => 'leilao', 'tipoPai' => $lote->getTipoPaiSlug(), 'tipo' => $lote->getTipoSlug(), 'aid' => $lote->getAid()));
     }
 
     /**
