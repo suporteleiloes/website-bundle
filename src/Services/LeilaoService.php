@@ -390,7 +390,7 @@ class LeilaoService
         } elseif (isset($filtros['orderArray'])) {
             foreach($filtros['orderArray'] as $order) {
                if (count($order) > 1) {
-                   $qb->addOrderBy($filtros['order'][0]);
+                   $qb->addOrderBy($order[0]);
                } else {
                    $qb->addOrderBy($order[0], $order[1]);
                }
