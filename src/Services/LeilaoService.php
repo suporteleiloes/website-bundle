@@ -387,6 +387,14 @@ class LeilaoService
 
         if (isset($filtros['order'])) {
             $qb->addOrderBy($filtros['order'][0], $filtros['order'][1]);
+        } elseif (isset($filtros['orderArray'])) {
+            foreach($filtros['orderArray'] as $order) {
+               if (count($order) > 1) {
+                   $qb->addOrderBy($filtros['order'][0]);
+               } else {
+                   $qb->addOrderBy($order[0], $order[1]);
+               }
+            }
         } else {
             $qb->addOrderBy('l.order', 'ASC');
 
