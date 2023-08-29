@@ -121,14 +121,28 @@ class LeilaoService
                     ),
                     Criteria::expr()->neq('l.leilao', null)
                 );
+                if ((isset($filtros['leilaoSemVendaDireta']))) {
+                    $searchCriteria->andWhere(
+                        Criteria::expr()->orX(
+                            Criteria::expr()->eq('leilao.vendaDireta', false),
+                            Criteria::expr()->isNull('leilao.vendaDireta')
+                        )
+                    );
+                }
             } else {
-                $vdCrit = Criteria::expr()->andX(
+                $vdCrit = Criteria::expr()->orX(
+                    Criteria::expr()->eq('l.vendaDireta', true),
+                    Criteria::expr()->eq('leilao.vendaDireta', true)
+                );
+                /*
+                 * $vdCrit = Criteria::expr()->andX(
                     Criteria::expr()->eq('l.vendaDireta', true),
                     Criteria::expr()->orX(
                         Criteria::expr()->isNull('l.leilao'),
                         Criteria::expr()->eq('leilao.vendaDireta', true)
                     )
                 );
+                 */
             }
             $searchCriteria->andWhere(
                 $vdCrit
