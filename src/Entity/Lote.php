@@ -36,6 +36,7 @@ use Doctrine\ORM\Mapping as ORM;
  *     @ORM\Index(name="valor_inicial", columns={"valor_inicial"}),
  *     @ORM\Index(name="titulo", columns={"titulo"}),
  *     @ORM\Index(name="finalidade", columns={"finalidade"}),
+ *     @ORM\Index(name="position", columns={"position"}),
  * })
  * @ORM\Entity(repositoryClass=LoteRepository::class)
  */
@@ -498,6 +499,11 @@ class Lote extends ApiSync
      * @ORM\Column(type="smallint", nullable=true, options={"default": 0})
      */
     protected $totalLances = 0;
+
+    /**
+     * @ORM\Column(type="smallint", name="position", options={"default":99})
+     */
+    private $position = 99;
 
     /**
      * @ORM\OneToMany(targetEntity="SL\WebsiteBundle\Entity\Lance", mappedBy="lote", orphanRemoval=true, cascade={"persist", "remove"})
@@ -2076,6 +2082,22 @@ class Lote extends ApiSync
     public function setComarca($comarca): void
     {
         $this->comarca = $comarca;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPosition(): ?int
+    {
+        return $this->position;
+    }
+
+    /**
+     * @param int $position
+     */
+    public function setPosition(?int $position): void
+    {
+        $this->position = $position;
     }
 
     public function getDadosParaJsonSite()

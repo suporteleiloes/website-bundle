@@ -389,6 +389,7 @@ class ApiService
         //$lote->setStatusCor($data['statusCor']);
 
         // Bem
+        $lote->setPosition($data['bem']['order']);
         $lote->setBemId($data['bem']['id']);
         $lote->setTitulo($data['bem']['siteTitulo']);
         $lote->setSubtitulo(!empty($data['bem']['siteSubtitulo']) ? $data['bem']['siteSubtitulo'] : strip_tags(mb_substr($data['bem']['siteDescricao'], 0, 254)));
