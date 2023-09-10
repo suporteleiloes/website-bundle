@@ -6,7 +6,7 @@
 
       <div v-if="loading" class="text-center"><i class="fa fa-spin fa-spinner" /></div>
       <div class="app-leilao-abilitacao-texto" v-else v-html="document"></div>
-      <div> <!--  v-if="leilao.direitoPreferencia" -->
+      <div v-if="leilao.direitoPreferencia">
         <div class="termos-input-direito-preferencia"><input type="checkbox" v-model="direitoPreferencia" /><span>Exercer direito de preferência</span></div>
         <div class="box-direito-preferencia" v-if="direitoPreferencia">
           <div class="text-justify">
@@ -84,6 +84,7 @@ export default {
       getTextoHabilitacaoLeilao(this.leilao.id)
         .then(({data}) => {
           this.document = data.texto
+          this.leilao.direitoPreferencia = data.leilao.direitoPreferencia
           this.loading = false
         })
         .catch((error) => {
