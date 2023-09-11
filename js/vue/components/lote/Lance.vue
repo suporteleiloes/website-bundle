@@ -26,15 +26,17 @@
           </tbody>
         </table>
       </div>
-      <div class="col2 valores" v-if="showTaxas">
+      <div class="col2 valores">
         <div class="avaliacao"><span>Avaliação:</span> R$ {{ lote.valorAvaliacao|moeda }}</div>
         <div class="lance-minimo"><span>Lance Mínimo:</span> R$ {{ lote.valorAtual|moeda }}</div>
         <div class="incremento"><span>Incremento:</span> R$ {{ lote.valorIncremento|moeda }}</div>
-        <div class="taxas" v-if="leilao.sistemaTaxa && leilao.sistemaTaxa.taxas">
-          <div v-for="taxa in leilao.sistemaTaxa.taxas" :key="'taxa-' + taxa.id">
-            <span class="label">{{ taxa.nome }}:</span> <span class="valor" v-if="taxa.tipo === 1">{{
-              taxa.valor
-            }}%</span><span class="valor" v-else>R$ {{ taxa.valor }}</span>
+        <div  v-if="showTaxas">
+          <div class="taxas" v-if="leilao.sistemaTaxa && leilao.sistemaTaxa.taxas">
+            <div v-for="taxa in leilao.sistemaTaxa.taxas" :key="'taxa-' + taxa.id">
+              <span class="label">{{ taxa.nome }}:</span> <span class="valor" v-if="taxa.tipo === 1">{{
+                taxa.valor
+              }}%</span><span class="valor" v-else>R$ {{ taxa.valor }}</span>
+            </div>
           </div>
         </div>
         <!--      {% if lote.leilao.sistemaTaxa %}
