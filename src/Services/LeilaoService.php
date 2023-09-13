@@ -404,9 +404,9 @@ class LeilaoService
         } elseif (isset($filtros['orderArray'])) {
             foreach($filtros['orderArray'] as $order) {
                if (count($order) > 1) {
-                   $qb->addOrderBy($order[0]);
-               } else {
                    $qb->addOrderBy($order[0], $order[1]);
+               } else {
+                   $qb->addOrderBy($order[0]);
                }
             }
         } else {
@@ -546,9 +546,9 @@ class LeilaoService
         }  elseif (isset($filtros['orderArray'])) {
             foreach($filtros['orderArray'] as $order) {
                 if (count($order) > 1) {
-                    $qb->addOrderBy($order[0]);
-                } else {
                     $qb->addOrderBy($order[0], $order[1]);
+                } else {
+                    $qb->addOrderBy($order[0]);
                 }
             }
         } elseif (!isset($filtros['relevancia']) || $filtros['relevancia'] == '1') {
