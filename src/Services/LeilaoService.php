@@ -543,6 +543,14 @@ class LeilaoService
                 $orderType = $filtros['order'][1];
             }
             $qb->orderBy($order, $orderType);
+        }  elseif (isset($filtros['orderArray'])) {
+            foreach($filtros['orderArray'] as $order) {
+                if (count($order) > 1) {
+                    $qb->addOrderBy($order[0]);
+                } else {
+                    $qb->addOrderBy($order[0], $order[1]);
+                }
+            }
         } elseif (!isset($filtros['relevancia']) || $filtros['relevancia'] == '1') {
             $qb->orderBy('l.dataProximoLeilao', 'ASC');
         }
