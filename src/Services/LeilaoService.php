@@ -169,7 +169,7 @@ class LeilaoService
                     Criteria::expr()->in('l.tipoPai', $tipoArr)
                 );
             } else {
-                $tipoSearch = Criteria::expr()->in('l.tipoId', $convertArray($filtros['tipo']));
+                $tipoSearch = Criteria::expr()->in('l.tipoId', $convertArray($filtros['tipo'], ','));
                 if (!is_array($filtros['tipo'])) {
                     if (!is_numeric($filtros['tipo'])) {
                         $tipoSearch = Criteria::expr()->orX(
@@ -268,7 +268,7 @@ class LeilaoService
         }
 
         if (isset($filtros['ano'])) {
-            $anoSearch = Criteria::expr()->in('l.ano', $convertArray($filtros['ano']));
+            $anoSearch = Criteria::expr()->in('l.ano', $convertArray($filtros['ano'], ','));
             if (!is_array($filtros['ano'])) {
                 if (!is_numeric($filtros['ano'])) {
                     $anoSearch = Criteria::expr()->orX(
@@ -295,7 +295,7 @@ class LeilaoService
 
         if (isset($filtros['uf'])) {
             $searchCriteria->andWhere(
-                Criteria::expr()->in('l.uf', $convertArray($filtros['uf']))
+                Criteria::expr()->in('l.uf', $convertArray($filtros['uf'], ','))
             );
         }
 
@@ -307,13 +307,13 @@ class LeilaoService
 
         if (isset($filtros['bairro'])) {
             $searchCriteria->andWhere(
-                Criteria::expr()->in('l.bairro', $convertArray($filtros['bairro']))
+                Criteria::expr()->in('l.bairro', $convertArray($filtros['bairro'], ','))
             );
         }
 
         if (isset($filtros['codigo'])) {
             $searchCriteria->andWhere(
-                Criteria::expr()->in('l.aid', $convertArray($filtros['codigo']))
+                Criteria::expr()->in('l.aid', $convertArray($filtros['codigo'], ','))
             );
         }
 
