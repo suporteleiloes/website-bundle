@@ -9,6 +9,7 @@
           <tr>
             <th>Usuário</th>
             <th>Data</th>
+            <th v-if="showColParcelado">Modalidade</th>
             <th>Valor</th>
           </tr>
           </thead>
@@ -17,6 +18,7 @@
             <td>{{ lance.arrematante.apelido }} <span v-if="lance.arrematante.id === ARREMATANTEID"
                                                       class="label-meu-lance">você</span></td>
             <td>{{ lance.data|formatDate('dd/MM/yyyy HH:mm:ss') }}</td>
+            <td v-if="showColParcelado"><span v-if="lance.parcelado">Parcelado</span><span v-else>À vista</span></td>
             <td>R$ {{ lance.valor|moeda }}</td>
           </tr>
           <tr v-if="lote.lances.length === 0">
@@ -187,6 +189,10 @@ export default {
     showTaxas: {
       type: Boolean,
       default: true
+    },
+    showColParcelado: {
+      type: Boolean,
+      default: false
     }
   },
   components: {HabilitacaoBtn},
