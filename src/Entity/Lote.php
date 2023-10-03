@@ -29,6 +29,7 @@ use Doctrine\ORM\Mapping as ORM;
  *     @ORM\Index(name="valorMinimo", columns={"valor_minimo"}),
  *     @ORM\Index(name="comitente", columns={"comitente"}),
  *     @ORM\Index(name="comitenteId", columns={"comitente_id"}),
+ *     @ORM\Index(name="comitenteSlug", columns={"comitente_slug"}),
  *     @ORM\Index(name="ocupado", columns={"ocupado"}),
  *     @ORM\Index(name="visitas", columns={"visitas"}),
  *     @ORM\Index(name="venda_direta", columns={"venda_direta"}),
@@ -188,6 +189,11 @@ class Lote extends ApiSync
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $comitente;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $comitenteSlug;
 
     /**
      * @ORM\Column(type="array", nullable=true)
@@ -2098,6 +2104,22 @@ class Lote extends ApiSync
     public function setPosition(?int $position): void
     {
         $this->position = $position;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getComitenteSlug()
+    {
+        return $this->comitenteSlug;
+    }
+
+    /**
+     * @param mixed $comitenteSlug
+     */
+    public function setComitenteSlug($comitenteSlug): void
+    {
+        $this->comitenteSlug = $comitenteSlug;
     }
 
     public function getDadosParaJsonSite()
