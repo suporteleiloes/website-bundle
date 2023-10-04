@@ -60,6 +60,11 @@ class Banner extends ApiSync
      */
     private $link;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $secao;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -159,6 +164,22 @@ class Banner extends ApiSync
         $this->link = $link;
 
         return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSecao()
+    {
+        return $this->secao;
+    }
+
+    /**
+     * @param mixed $secao
+     */
+    public function setSecao($secao): void
+    {
+        $this->secao = $secao;
     }
 
     /*static function loadApiRepresentation(ApiRepresentationMetadataInterface $representation)
