@@ -656,6 +656,7 @@ class ApiService
         $banner->setHasVideo(@$data['hasVideo']);
         $banner->setImage(@$data['image']);
         $banner->setLink(@$data['link']);
+        $banner->setSecao($data['secao'] ?? null);
         $banner->setActive(@$data['active']);
         $banner->setDeleted(@$data['deleted']);
 
