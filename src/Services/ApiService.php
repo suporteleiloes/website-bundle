@@ -378,7 +378,7 @@ class ApiService
         $lote->setValorMercado($data['valorMercado']);
         $lote->setValorMinimo($data['valorMinimo']);
         $lote->setValorAvaliacao($data['valorAvaliacao']);
-        $lote->setValorDebitos($data['valorDebitos']);
+        $lote->setValorDebitos($data['valorDebitos'] ?? null);
         $lote->setPermitirParcelamento(@$data['permitirParcelamento']);
         $lote->setParcelamentoQtdParcelas(@$data['parcelamentoQtdParcelas']);
         $lote->setParcelamentoMinimoEntrada(@$data['parcelamentoMinimoEntrada']);
