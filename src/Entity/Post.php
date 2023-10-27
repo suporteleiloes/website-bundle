@@ -200,20 +200,4 @@ class Post extends ApiSync
     {
         $this->url = $url;
     }
-
-    /**
-     * @return bool
-     */
-    public function isActive(): bool
-    {
-        return $this->active;
-    }
-
-    /**
-     * @param bool $active
-     */
-    public function setActive($active): void
-    {
-        $this->active = $active;
-    }
 }
