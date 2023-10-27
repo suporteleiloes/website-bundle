@@ -614,12 +614,12 @@ class ApiService
             $entity->setAcreatedAt(new \DateTime());
         }
 
-        $entity->setAid(@$data['id']);
-        $entity->setActive(@$data['active']);
-        $entity->setTitle(@$data['title']);
-        $entity->setPageName(@$data['pageName']);
-        $entity->setPageDescription(@$data['pageDescription']);
-        $entity->setTemplate(@$data['template']);
+        $entity->setAid($data['id']);
+        $entity->setActive($data['active'] ?? 1);
+        $entity->setTitle($data['title'] ?? null);
+        $entity->setPageName($data['pageName'] ?? null);
+        $entity->setPageDescription($data['pageDescription'] ?? null);
+        $entity->setTemplate($data['template'] ?? null);
 
         $em->persist($entity);
         if ($autoFlush) $em->flush();
