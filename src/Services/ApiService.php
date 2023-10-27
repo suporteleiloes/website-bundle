@@ -615,7 +615,7 @@ class ApiService
         }
 
         $entity->setAid($data['id']);
-        $entity->setActive($data['active'] ?? 1);
+        $entity->setActive($data['active'] ?? true);
         $entity->setTitle($data['title'] ?? null);
         $entity->setPageName($data['pageName'] ?? null);
         $entity->setPageDescription($data['pageDescription'] ?? null);
@@ -694,7 +694,7 @@ class ApiService
         $entity->setDescription($data['description'] ?? null);
         $entity->setTemplate($data['template'] ?? null);
         $entity->setUrl($data['url'] ?? null);
-        $entity->setActive($data['active'] ?? 1);
+        $entity->setActive($data['active'] ?? true);
         $entity->setOrder($data['order'] ?? 0);
         if (isset($data['category'])) {
             $entity->setCategoryId(@$data['category']['id']);
