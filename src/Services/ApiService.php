@@ -694,7 +694,7 @@ class ApiService
         $entity->setDescription($data['description'] ?? null);
         $entity->setTemplate($data['template'] ?? null);
         $entity->setUrl($data['url'] ?? null);
-        $entity->setActive($data['active'] ?? true);
+        $entity->setActive($data['active'] ?? 1);
         $entity->setOrder($data['order'] ?? 0);
         if (isset($data['category'])) {
             $entity->setCategoryId(@$data['category']['id']);
