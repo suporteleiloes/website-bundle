@@ -149,6 +149,16 @@ class LeilaoService
             );
         }
 
+        if (isset($filtros['vendaDiretaSemLeilao'])) {
+            $vdCrit = Criteria::expr()->andX(
+                Criteria::expr()->eq('l.vendaDireta', true),
+                Criteria::expr()->neq('l.leilao', null)
+            );
+            $searchCriteria->andWhere(
+                $vdCrit
+            );
+        }
+
         if (isset($filtros['ocupacao'])) {
             $searchCriteria->andWhere(
                 Criteria::expr()->eq('l.ocupado', $isTrue($filtros['ocupacao']))
