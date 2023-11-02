@@ -32,11 +32,16 @@ class LoteRepository extends ServiceEntityRepository
             ->addScalarResult('tipo_pai_id', 'tipo_pai_id')
             ->addScalarResult('total', 'total');
 
-        $query = 'select distinct tipo_pai_id, tipo_pai, (select count(1) from lote l2 left join leilao on leilao.id = l2.leilao_id where l2.tipo_pai_id = lote.tipo_pai_id and l2.status < 5 and l2.deleted = 0 and (leilao.id is null or (leilao.status_tipo <= 2 and leilao.deleted = 0)) __UPDATE2__) total from lote where lote.status < 5 and lote.deleted = 0 and lote.active = 1';
+        //$query = 'select distinct tipo_pai_id, tipo_pai, (select count(1) from lote l2 left join leilao on leilao.id = l2.leilao_id where l2.tipo_pai_id = lote.tipo_pai_id and l2.status < 5 and l2.deleted = 0 and (leilao.id is null or (leilao.status_tipo <= 2 and leilao.deleted = 0)) __UPDATE2__) total from lote where lote.status < 5 and lote.deleted = 0 and lote.active = 1';
+        $query = 'select tipo_pai_id, MAX(tipo_pai) tipo_pai, count(1) total 
+FROM lote 
+left join leilao on leilao.id = lote.leilao_id 
+where lote.status < 5 and lote.deleted = 0 and lote.active = 1 and (lote.leilao_id is null or (leilao.status_tipo <= 2 and leilao.deleted = 0)) 
+__UPDATE2__ 
+GROUP BY tipo_pai_id';
 
         if ($leilao) {
-            $query = $query . ' and lote.leilao_id = ' . $leilao;
-            $query = str_replace('__UPDATE2__', ' and l2.leilao_id = ' . $leilao, $query);
+            $query = str_replace('__UPDATE2__', ' and lote.leilao_id = ' . $leilao, $query);
         } else {
             $query = str_replace('__UPDATE2__', '', $query);
         }
@@ -57,11 +62,16 @@ class LoteRepository extends ServiceEntityRepository
             ->addScalarResult('tipo_pai_id', 'tipo_pai_id')
             ->addScalarResult('total', 'total');
 
-        $query = 'select distinct tipo_id, tipo, tipo_pai_id, (select count(1) from lote l2 left join leilao on leilao.id = l2.leilao_id where l2.tipo_id = lote.tipo_id and l2.status < 5 and l2.deleted = 0 and (leilao.id is null or (leilao.status_tipo <= 2 and leilao.deleted = 0)) __UPDATE2__) total from lote where lote.status < 5 and lote.deleted = 0 and lote.active = 1';
+        //$query = 'select distinct tipo_id, tipo, tipo_pai_id, (select count(1) from lote l2 left join leilao on leilao.id = l2.leilao_id where l2.tipo_id = lote.tipo_id and l2.status < 5 and l2.deleted = 0 and (leilao.id is null or (leilao.status_tipo <= 2 and leilao.deleted = 0)) __UPDATE2__) total from lote where lote.status < 5 and lote.deleted = 0 and lote.active = 1';
+        $query = 'select tipo_id, MAX(lote.tipo) tipo, MAX(tipo_pai_id) tipo_pai_id, count(1) total 
+FROM lote 
+left join leilao on leilao.id = lote.leilao_id 
+where lote.status < 5 and lote.deleted = 0 and lote.active = 1 and (lote.leilao_id is null or (leilao.status_tipo <= 2 and leilao.deleted = 0)) 
+__UPDATE2__ 
+GROUP BY tipo_id';
 
         if ($leilao) {
-            $query = $query . ' and lote.leilao_id = ' . $leilao;
-            $query = str_replace('__UPDATE2__', ' and l2.leilao_id = ' . $leilao, $query);
+            $query = str_replace('__UPDATE2__', ' and lote.leilao_id = ' . $leilao, $query);
         } else {
             $query = str_replace('__UPDATE2__', '', $query);
         }
