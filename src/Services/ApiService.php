@@ -271,15 +271,6 @@ class ApiService
         #//dump('Persistindo leilão ID ' . $data['id']);
         if ($autoFlush) $em->flush();
 
-        $lotesIds = [];
-        if (isset($data['lotes']) && is_array($data['lotes']) && count($data['lotes'])) {
-            #//dump('Migrando lotes: ' . count($data['lotes']));
-            foreach ($data['lotes'] as $lote) {
-                $this->processLote($lote, true, false, $leilao);
-                $lotesIds[] = $lote['id'];
-            }
-        }
-
         if ($synchronize) {
             foreach ($leilao->getLotes() as $lote) {
                 if (!in_array($lote->getAid(), $lotesIds)) {
@@ -292,6 +283,15 @@ class ApiService
                 }
             }
             $em->flush();
+        }
+
+        $lotesIds = [];
+        if (isset($data['lotes']) && is_array($data['lotes']) && count($data['lotes'])) {
+            #//dump('Migrando lotes: ' . count($data['lotes']));
+            foreach ($data['lotes'] as $lote) {
+                $this->processLote($lote, true, false, $leilao);
+                $lotesIds[] = $lote['id'];
+            }
         }
 
         //$this->geraCacheLotes();
