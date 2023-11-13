@@ -1011,8 +1011,8 @@ class Lote extends ApiSync
         }
         if (count($fotos)) {
             $compareFunction = function ($obj1, $obj2) {
-                $order1 = $obj1['order'];
-                $order2 = $obj2['order'];
+                $order1 = @$obj1['order'];
+                $order2 = @$obj2['order'];
 
                 // Realiza a comparação
                 if ($order1 === $order2) {
