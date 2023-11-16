@@ -31,7 +31,7 @@ class BannerRepository extends ServiceEntityRepository
 
     public function findAtivosSemSecao(){
 
-        $dql = 'SELECT b FROM SL\WebsiteBundle\Entity\Banner b WHERE b.dateStartExhibition <= :dataatual AND b.dateEndExhibition >= :dataatual AND b.active = 1 and (b.secao = 0 or b.secao is empty) order by b.position, b.dateEndExhibition'; // AND b.situacao = true
+        $dql = 'SELECT b FROM SL\WebsiteBundle\Entity\Banner b WHERE b.dateStartExhibition <= :dataatual AND b.dateEndExhibition >= :dataatual AND b.active = 1 and (b.secao = 0 or b.secao is null) order by b.position, b.dateEndExhibition'; // AND b.situacao = true
         $query = $this->getEntityManager()->createQuery($dql)->setParameter('dataatual', (new \DateTime())->format('Y-m-d ') . '00:00:00');
         return $query->getResult();
     }
