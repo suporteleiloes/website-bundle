@@ -640,4 +640,9 @@ class LeilaoService
         return $this->em->getRepository(Banner::class)->findAtivos();
     }
 
+    public function getBannersSemSecao()
+    {
+        return $this->em->getRepository(Banner::class)->findAtivosSemSecao();
+    }
+
 }
