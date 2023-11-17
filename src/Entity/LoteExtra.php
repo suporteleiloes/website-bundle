@@ -17,7 +17,7 @@ class LoteExtra
      * @ORM\Id
      * @ORM\Column(type="integer")
      */
-    private $loteId;
+    private $lote;
 
     /**
      * @ORM\Column(type="json", nullable=true)
@@ -27,17 +27,17 @@ class LoteExtra
     /**
      * @return mixed
      */
-    public function getLoteId()
+    public function getLote()
     {
-        return $this->loteId;
+        return $this->lote;
     }
 
     /**
-     * @param mixed $loteId
+     * @param mixed $lote
      */
-    public function setLoteId($loteId): void
+    public function setLote($lote): void
     {
-        $this->loteId = $loteId;
+        $this->lote = $lote;
     }
 
     /**

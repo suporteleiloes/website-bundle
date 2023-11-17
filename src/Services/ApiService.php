@@ -302,7 +302,7 @@ class ApiService
             ]);
             if (!$extra) {
                 $extra = new LeilaoExtra();
-                $extra->setLeilaoId($data['id']);
+                $extra->setLeilao($data['id']);
             }
             unset($data['lotes']);
             $extra->setData($data);
@@ -499,11 +499,11 @@ class ApiService
         #try {
             if (isset($data['leilao']) || $leilao) {
                 $extra = $this->em->getRepository(LoteExtra::class)->findOneBy([
-                    'loteId' => $data['id']
+                    'lote' => $data['id']
                 ]);
                 if (!$extra) {
                     $extra = new LoteExtra();
-                    $extra->setLoteId($data['id']);
+                    $extra->setLote($data['id']);
                 }
                 $extra->setData($data);
                 $this->em->persist($extra);

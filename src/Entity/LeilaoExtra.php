@@ -17,7 +17,7 @@ class LeilaoExtra
      * @ORM\Id
      * @ORM\Column(type="integer")
      */
-    private $leilaoId;
+    private $leilao;
 
     /**
      * @ORM\Column(type="json", nullable=true)
@@ -27,17 +27,17 @@ class LeilaoExtra
     /**
      * @return mixed
      */
-    public function getLeilaoId()
+    public function getLeilao()
     {
-        return $this->leilaoId;
+        return $this->leilao;
     }
 
     /**
-     * @param mixed $leilaoId
+     * @param mixed $leilao
      */
-    public function setLeilaoId($leilaoId): void
+    public function setLeilao($leilao): void
     {
-        $this->leilaoId = $leilaoId;
+        $this->leilao = $leilao;
     }
 
     /**
