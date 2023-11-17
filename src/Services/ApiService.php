@@ -297,11 +297,12 @@ class ApiService
         }
 
         try {
-            $extra = $this->em->getRepository(LeilaoExtra::class)->findBy([
+            $extra = $this->em->getRepository(LeilaoExtra::class)->findOneBy([
                 'leilao' => $data['id']
             ]);
             if (!$extra) {
                 $extra = new LeilaoExtra();
+                $extra->setLeilaoId($data['id']);
             }
             unset($data['lotes']);
             $extra->setData($data);
@@ -495,19 +496,20 @@ class ApiService
 
         if ($autoFlush) $em->flush();
 
-        try {
+        #try {
             if (isset($data['leilao']) || $leilao) {
-                $extra = $this->em->getRepository(LoteExtra::class)->findBy([
+                $extra = $this->em->getRepository(LoteExtra::class)->findOneBy([
                     'loteId' => $data['id']
                 ]);
                 if (!$extra) {
                     $extra = new LoteExtra();
+                    $extra->setLoteId($data['id']);
                 }
                 $extra->setData($data);
                 $this->em->persist($extra);
                 if ($autoFlush) $em->flush();
             }
-        } catch (\Throwable $e) {}
+        #} catch (\Throwable $e) {}
 
         if (isset($data['lances']) && is_array($data['lances']) && count($data['lances'])) {
             sort($data['lances'], SORT_DESC);
