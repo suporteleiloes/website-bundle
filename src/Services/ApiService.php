@@ -14,7 +14,9 @@ use SL\WebsiteBundle\Entity\Content;
 use SL\WebsiteBundle\Entity\Lance;
 use SL\WebsiteBundle\Entity\Leilao;
 use SL\WebsiteBundle\Entity\LeilaoCache;
+use SL\WebsiteBundle\Entity\LeilaoExtra;
 use SL\WebsiteBundle\Entity\Lote;
+use SL\WebsiteBundle\Entity\LoteExtra;
 use SL\WebsiteBundle\Entity\LoteTipoCache;
 use SL\WebsiteBundle\Entity\Post;
 use SL\WebsiteBundle\Helpers\Sluggable;
@@ -294,6 +296,19 @@ class ApiService
             $em->flush();
         }
 
+        try {
+            $extra = $this->em->getRepository(LeilaoExtra::class)->findBy([
+                'leilao' => $data['id']
+            ]);
+            if (!$extra) {
+                $extra = new LeilaoExtra();
+            }
+            unset($data['lotes']);
+            $extra->setData($data);
+            $this->em->persist($extra);
+            if ($autoFlush) $em->flush();
+        } catch (\Throwable $e) {}
+
         //$this->geraCacheLotes();
         DeletedFilter::$disableDeletedFilter = false;
         $this->geraCacheLeilao($leilao);
@@ -479,6 +494,20 @@ class ApiService
         $em->persist($lote);
 
         if ($autoFlush) $em->flush();
+
+        try {
+            if (isset($data['leilao']) || $leilao) {
+                $extra = $this->em->getRepository(LoteExtra::class)->findBy([
+                    'loteId' => $data['id']
+                ]);
+                if (!$extra) {
+                    $extra = new LoteExtra();
+                }
+                $extra->setData($data);
+                $this->em->persist($extra);
+                if ($autoFlush) $em->flush();
+            }
+        } catch (\Throwable $e) {}
 
         if (isset($data['lances']) && is_array($data['lances']) && count($data['lances'])) {
             sort($data['lances'], SORT_DESC);
