@@ -8,9 +8,6 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Table(indexes={
- *     @ORM\Index(name="lote_id", columns={"bem_id"}),
- * })
  * @ORM\Entity(repositoryClass=LoteRepository::class)
  */
 class LoteExtra
