@@ -2,13 +2,13 @@
 
 namespace SL\WebsiteBundle\Entity;
 
-use SL\WebsiteBundle\Repository\LoteRepository;
+use SL\WebsiteBundle\Repository\LeilaoExtraRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass=LoteRepository::class)
+ * @ORM\Entity(repositoryClass=LeilaoExtraRepository::class)
  */
 class LeilaoExtra
 {
