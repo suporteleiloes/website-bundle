@@ -293,7 +293,7 @@ class DefaultController extends SLAbstractController
                         $model->setIp(Utils::get_client_ip_env());
                         $em->persist($model);
                         $em->flush();
-                        $apiService->enviarProposta($lote->getAid(), $model->__serialize());
+                        $apiService->enviarProposta($lote->getLeilao() ? $lote->getBemId() : $lote->getAid(), $model->__serialize());
                         $response = new RedirectResponse($request->getUri());
                         $cookie = Cookie::create($cookieName, 1)
                             ->withExpires((new \DateTime())->modify('+30 days')->getTimestamp())
