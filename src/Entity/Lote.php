@@ -1013,10 +1013,18 @@ class Lote extends ApiSync
             $compareFunction = function ($obj1, $obj2) {
                 $order1 = @$obj1['order'];
                 $order2 = @$obj2['order'];
+                $id1 = @$obj1['id'];
+                $id2 = @$obj2['id'];
 
                 // Realiza a comparação
                 if ($order1 === $order2) {
-                    return 0; // Igual, mantém a ordem atual
+                    if ($id1 === $id2) {
+                        return 0; // Igual, mantém a ordem atual
+                    } elseif ($id1 < $id2) {
+                        return -1; // Menor, coloca $obj1 antes de $obj2
+                    } else {
+                        return 1; // Maior, coloca $obj1 depois de $obj2
+                    }
                 } elseif ($order1 < $order2) {
                     return -1; // Menor, coloca $obj1 antes de $obj2
                 } else {
@@ -1044,10 +1052,18 @@ class Lote extends ApiSync
             $compareFunction = function ($obj1, $obj2) {
                 $order1 = $obj1['order'];
                 $order2 = $obj2['order'];
+                $id1 = $obj1['id'];
+                $id2 = $obj2['id'];
 
                 // Realiza a comparação
                 if ($order1 === $order2) {
-                    return 0; // Igual, mantém a ordem atual
+                    if ($id1 === $id2) {
+                        return 0; // Igual, mantém a ordem atual
+                    } elseif ($id1 < $id2) {
+                        return -1; // Menor, coloca $obj1 antes de $obj2
+                    } else {
+                        return 1; // Maior, coloca $obj1 depois de $obj2
+                    }
                 } elseif ($order1 < $order2) {
                     return -1; // Menor, coloca $obj1 antes de $obj2
                 } else {
