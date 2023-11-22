@@ -1017,7 +1017,7 @@ class Lote extends ApiSync
                 $id2 = @$obj2['id'];
 
                 // Realiza a comparação
-                if ($order1 === $order2) {
+                if ($order1 === $order2) { //
                     if ($id1 === $id2) {
                         return 0; // Igual, mantém a ordem atual
                     } elseif ($id1 < $id2) {
