@@ -97,6 +97,10 @@ class LeilaoService
         if (isset($filtros['relevancia'])) {
         }
 
+        if (isset($filtros['status'])) {
+            $searchCriteria->andWhere(Criteria::expr()->eq('l.status', $filtros['status']));
+        }
+
         if (isset($filtros['destaque'])) {
             if (isset($filtros['destaqueComVendaDireta']) && $filtros['destaqueComVendaDireta']) {
                 $searchCriteria->andWhere(
