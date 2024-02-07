@@ -243,6 +243,11 @@ class Leilao extends ApiSync
     private $infoRetirada;
 
     /**
+     * @ORM\Column(type="string", length=500, nullable=true)
+     */
+    private $infoPagamento;
+
+    /**
      * @ORM\Column(type="text", nullable=true)
      */
     private $observacoes;
@@ -1474,6 +1479,22 @@ class Leilao extends ApiSync
     public function setDataLimitePropostas($dataLimitePropostas): void
     {
         $this->dataLimitePropostas = $dataLimitePropostas;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getInfoPagamento()
+    {
+        return $this->infoPagamento;
+    }
+
+    /**
+     * @param mixed $infoPagamento
+     */
+    public function setInfoPagamento($infoPagamento): void
+    {
+        $this->infoPagamento = $infoPagamento;
     }
 
     public function __serialize(): array

@@ -230,6 +230,7 @@ class ApiService
         $leilao->setLocal($data['patio']);
         $leilao->setInfoVisitacao($data['infoVisitacao']);
         $leilao->setInfoRetirada($data['infoRetirada']);
+        $leilao->setInfoPagamento($data['infoPagamento']);
         $leilao->setObservacoes($data['observacao']);
         $leilao->setArquivos($data['documentos']);
         $leilao->setComitentes($data['comitentes']);
