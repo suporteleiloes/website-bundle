@@ -243,7 +243,7 @@ class Leilao extends ApiSync
     private $infoRetirada;
 
     /**
-     * @ORM\Column(type="string", length=500, nullable=true)
+     * @ORM\Column(type="text", nullable=true)
      */
     private $infoPagamento;
 
