@@ -84,12 +84,34 @@ class LeilaoService
 
         if ($somenteAtivos) {
             $searchCriteria->andWhere(Criteria::expr()->eq('l.active', true));
-            $searchCriteria->andWhere(Criteria::expr()->lt('l.status', 5));
+            //$searchCriteria->andWhere(Criteria::expr()->lt('l.status', 5));
+            /* $searchCriteria->andWhere(Criteria::expr()->orX(
+                 $searchCriteria->andWhere(Criteria::expr()->lt('l.status', 5),
+                     Criteria::expr()->andX(
+                         Criteria::expr()->eq('leilao.vendaDireta', true),
+                         Criteria::expr()->eq('leilao.statusTipo', 2),
+                         $searchCriteria->andWhere(Criteria::expr()->lt('l.status', 100),
+                     )
+             ))));*/
+            $searchCriteria->andWhere(Criteria::expr()->orX(
+                Criteria::expr()->lt('l.status', 5),
+                Criteria::expr()->andX(
+                    Criteria::expr()->eq('leilao.vendaDireta', true),
+                    Criteria::expr()->lte('leilao.statusTipo', 2),
+                    Criteria::expr()->lte('l.status', 8)
+                )
+            ));
             $searchCriteria->andWhere(
                 Criteria::expr()->orX(
-                    Criteria::expr()->eq('l.leilao', null),
-                    Criteria::expr()->lte('leilao.statusTipo', 2),
-                    Criteria::expr()->eq('l.vendaDireta', true)
+                    Criteria::expr()->andX(
+                        Criteria::expr()->eq('l.leilao', null),
+                        Criteria::expr()->eq('l.vendaDireta', true)
+                    ),
+                    Criteria::expr()->andX(
+                        Criteria::expr()->lte('leilao.statusTipo', 2),
+                        Criteria::expr()->eq('leilao.vendaDireta', true),
+                        Criteria::expr()->lte('l.status', 8)
+                    )
                 )
             );
         }
@@ -421,12 +443,12 @@ class LeilaoService
         if (isset($filtros['order'])) {
             $qb->addOrderBy($filtros['order'][0], $filtros['order'][1]);
         } elseif (isset($filtros['orderArray'])) {
-            foreach($filtros['orderArray'] as $order) {
-               if (count($order) > 1) {
-                   $qb->addOrderBy($order[0], $order[1]);
-               } else {
-                   $qb->addOrderBy($order[0]);
-               }
+            foreach ($filtros['orderArray'] as $order) {
+                if (count($order) > 1) {
+                    $qb->addOrderBy($order[0], $order[1]);
+                } else {
+                    $qb->addOrderBy($order[0]);
+                }
             }
         } else {
             $qb->addOrderBy('l.order', 'ASC');
@@ -562,8 +584,8 @@ class LeilaoService
                 $orderType = $filtros['order'][1];
             }
             $qb->orderBy($order, $orderType);
-        }  elseif (isset($filtros['orderArray'])) {
-            foreach($filtros['orderArray'] as $order) {
+        } elseif (isset($filtros['orderArray'])) {
+            foreach ($filtros['orderArray'] as $order) {
                 if (count($order) > 1) {
                     $qb->addOrderBy($order[0], $order[1]);
                 } else {
