@@ -443,7 +443,7 @@ class LeilaoService
         if (isset($filtros['order'])) {
             $qb->addOrderBy($filtros['order'][0], $filtros['order'][1]);
         } elseif (isset($filtros['orderArray'])) {
-            foreach ($filtros['orderArray'] as $order) {
+            foreach($filtros['orderArray'] as $order) {
                 if (count($order) > 1) {
                     $qb->addOrderBy($order[0], $order[1]);
                 } else {
@@ -584,8 +584,8 @@ class LeilaoService
                 $orderType = $filtros['order'][1];
             }
             $qb->orderBy($order, $orderType);
-        } elseif (isset($filtros['orderArray'])) {
-            foreach ($filtros['orderArray'] as $order) {
+        }  elseif (isset($filtros['orderArray'])) {
+            foreach($filtros['orderArray'] as $order) {
                 if (count($order) > 1) {
                     $qb->addOrderBy($order[0], $order[1]);
                 } else {
