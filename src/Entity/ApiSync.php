@@ -7,7 +7,6 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\MappedSuperclass()
  * * @ORM\Table(indexes={
- *     @ORM\Index(name="aid", columns={"aid"}),
  *     @ORM\Index(name="active", columns={"active"}),
  *     @ORM\Index(name="order", columns={"ordering"}),
  *     @ORM\Index(name="deleted", columns={"deleted"})
@@ -17,9 +16,10 @@ class ApiSync
 {
 
     /**
+     * @ORM\Id()
      * @ORM\Column(type="integer")
      */
-    private $aid;
+    protected $id;
 
     /**
      * @ORM\Column(type="datetime")

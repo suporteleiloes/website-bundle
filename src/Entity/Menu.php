@@ -10,12 +10,6 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Menu extends ApiSync
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
-    protected $id;
 
     /**
      * @ORM\Column(type="string", length=255)

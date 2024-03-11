@@ -9,50 +9,16 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Table(indexes={
- *     @ORM\Index(name="bem_id", columns={"bem_id"}),
- *     @ORM\Index(name="aid", columns={"aid"}),
  *     @ORM\Index(name="status", columns={"status"}),
  *     @ORM\Index(name="numero", columns={"numero"}),
- *     @ORM\Index(name="tipo_id", columns={"tipo_id"}),
- *     @ORM\Index(name="tipo", columns={"tipo"}),
- *     @ORM\Index(name="tipo_slug", columns={"tipo_slug"}),
- *     @ORM\Index(name="tipo_pai_id", columns={"tipo_pai_id"}),
- *     @ORM\Index(name="tipo_pai", columns={"tipo_pai"}),
- *     @ORM\Index(name="tipo_pai_slug", columns={"tipo_pai_slug"}),
- *     @ORM\Index(name="cidade", columns={"cidade"}),
- *     @ORM\Index(name="uf", columns={"uf"}),
- *     @ORM\Index(name="bairro", columns={"bairro"}),
- *     @ORM\Index(name="marca_id", columns={"marca_id"}),
- *     @ORM\Index(name="marca", columns={"marca"}),
- *     @ORM\Index(name="modelo_id", columns={"modelo_id"}),
- *     @ORM\Index(name="modelo", columns={"modelo"}),
- *     @ORM\Index(name="valorMinimo", columns={"valor_minimo"}),
- *     @ORM\Index(name="comitente", columns={"comitente"}),
- *     @ORM\Index(name="comitenteId", columns={"comitente_id"}),
- *     @ORM\Index(name="ocupado", columns={"ocupado"}),
- *     @ORM\Index(name="visitas", columns={"visitas"}),
- *     @ORM\Index(name="venda_direta", columns={"venda_direta"}),
- *     @ORM\Index(name="processo", columns={"processo"}),
- *     @ORM\Index(name="valor_inicial", columns={"valor_inicial"}),
  *     @ORM\Index(name="titulo", columns={"titulo"}),
- *     @ORM\Index(name="finalidade", columns={"finalidade"}),
- *     @ORM\Index(name="position", columns={"position"}),
+ *     @ORM\Index(name="valor_inicial", columns={"valor_inicial"})
+ *
  * })
  * @ORM\Entity(repositoryClass=LoteRepository::class)
  */
 class Lote extends ApiSync
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
-    protected $id;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private $bemId;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -180,234 +146,14 @@ class Lote extends ApiSync
     private $permitirLance = true;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
-     */
-    private $comitenteId;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $comitente;
-
-    /**
-     * @ORM\Column(type="array", nullable=true)
-     */
-    private $comitenteLogo;
-
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     */
-    private $comitenteTipoId;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $comitenteTipo;
-
-    /**
-     * @ORM\Column(type="boolean", nullable=true)
-     */
-    private $mostrarComitente;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true, options={"default": "Indefinida"})
-     */
-    private $finalidade = 'Indefinida';
-
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     */
-    private $marcaId;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $marca;
-
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     */
-    private $modeloId;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $modelo;
-
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     */
-    private $ano;
-
-    /**
-     * @ORM\Column(type="string", length=20, nullable=true)
-     */
-    private $placa;
-
-    /**
-     * @ORM\Column(type="string", length=20, nullable=true)
-     */
-    private $chassi;
-
-    /**
-     * @ORM\Column(type="string", length=20, nullable=true)
-     */
-    private $km;
-
-    /**
-     * @ORM\Column(type="string", length=40, nullable=true)
-     */
-    private $combustivel;
-
-    /**
-     * @ORM\Column(type="string", length=50, nullable=true, options={"default": 0})
-     */
-    private $pais;
-
-    /**
-     * @ORM\Column(type="string", length=50, nullable=true)
-     */
-    private $cep;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $endereco;
-
-    /**
-     * @ORM\Column(type="string", length=50, nullable=true)
-     */
-    private $endNumero;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $endComplemento;
-
-    /**
-     * @ORM\Column(type="string", length=100, nullable=true)
-     */
-    private $uf;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $cidade;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $bairro;
-
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     */
-    private $tipoId;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $tipo;
-
-    /**
-     * @ORM\Column(type="string", length=50, nullable=true)
-     */
-    private $tipoSlug;
-
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     */
-    private $tipoPaiId;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $tipoPai;
-
-    /**
-     * @ORM\Column(type="string", length=50, nullable=true)
-     */
-    private $tipoPaiSlug;
-
-    /**
      * @ORM\Column(type="json", nullable=true)
      */
     private $extra;
 
     /**
-     * @ORM\Column(type="json", nullable=true)
-     */
-    private $bemExtra;
-
-    /**
-     * @ORM\Column(type="boolean", nullable=true)
-     */
-    private $destaque = false;
-
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     */
-    private $conservacaoId;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $conservacao;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $processo;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $executado;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $vara;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $comarca;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $exequente;
-
-    /**
-     * @ORM\Column(type="decimal", precision=15, scale=2, nullable=true)
-     */
-    private $valorDebitos;
-
-    /**
      * @ORM\Column(type="text", nullable=true)
      */
     private $formasPagamento;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $localizacao;
-
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     */
-    private $localizacaoUrlGoogleMaps;
-
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     */
-    private $localizacaoUrlStreetView;
-
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     */
-    private $localizacaoMapEmbed;
 
     /**
      * @ORM\Column(type="boolean", nullable=true)
@@ -430,32 +176,6 @@ class Lote extends ApiSync
     private $parcelamentoIndices;
 
     /**
-     * @ORM\Column(type="boolean", nullable=true)
-     */
-    private $permitirPropostas;
-
-    /**
-     * @ORM\Column(type="array", nullable=true)
-     */
-    private $videos;
-
-    /**
-     * @deprecated
-     * @ORM\Column(type="array", nullable=true)
-     */
-    private $camposExtras;
-
-    /**
-     * @ORM\Column(type="json", nullable=true)
-     */
-    private $campos;
-
-    /**
-     * @ORM\Column(type="json", nullable=true)
-     */
-    private $tags;
-
-    /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $textoTaxas;
@@ -466,34 +186,9 @@ class Lote extends ApiSync
     private $taxas;
 
     /**
-     * @ORM\Column(type="integer", options={"default": 0})
-     */
-    private $visitas = 0;
-
-    /**
-     * @ORM\Column(type="boolean", nullable=true)
-     */
-    private $ocupado;
-
-    /**
-     * @ORM\Column(type="boolean", nullable=true)
-     */
-    private $vendaDireta;
-
-    /**
-     * @ORM\Column(type="boolean", nullable=true)
-     */
-    private $publicado;
-
-    /**
      * @ORM\Column(type="array", nullable=true)
      */
     private $impostos = [];
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $tour360;
 
     /**
      * @ORM\Column(type="smallint", nullable=true, options={"default": 0})
@@ -516,6 +211,12 @@ class Lote extends ApiSync
      * @ORM\JoinColumn(nullable=true)
      */
     private $leilao;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="SL\WebsiteBundle\Entity\Bem", inversedBy="lotes")
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $bem;
 
     public function __construct()
     {

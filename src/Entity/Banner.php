@@ -14,13 +14,6 @@ class Banner extends ApiSync
     const TYPE_POPUP = 2;
 
     /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
-    protected $id;
-
-    /**
      * @ORM\Column(type="smallint")
      */
     private $type;
@@ -64,11 +57,6 @@ class Banner extends ApiSync
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $secao;
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
 
     public function getType(): ?int
     {
