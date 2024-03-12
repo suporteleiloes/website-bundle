@@ -93,16 +93,19 @@ class LeilaoService
                          $searchCriteria->andWhere(Criteria::expr()->lt('l.status', 100),
                      )
              ))));*/
+            // $searchCriteria->andWhere(Criteria::expr()->orX(
+            //     Criteria::expr()->lt('l.status', 5),
+            //     Criteria::expr()->andX(
+            //         Criteria::expr()->eq('leilao.vendaDireta', true),
+            //         Criteria::expr()->lte('leilao.statusTipo', 2),
+            //         Criteria::expr()->lte('l.status', 8)
+            //     )
+            // ));
+
             $searchCriteria->andWhere(Criteria::expr()->orX(
                 Criteria::expr()->lt('l.status', 5),
-                Criteria::expr()->andX(
-                    Criteria::expr()->eq('leilao.vendaDireta', true),
-                    Criteria::expr()->lte('leilao.statusTipo', 2),
-                    Criteria::expr()->lte('l.status', 8)
-                )
-            ));
-            $searchCriteria->andWhere(
                 Criteria::expr()->orX(
+
                     Criteria::expr()->andX(
                         Criteria::expr()->eq('l.leilao', null),
                         Criteria::expr()->eq('l.vendaDireta', true)
@@ -112,8 +115,23 @@ class LeilaoService
                         Criteria::expr()->eq('leilao.vendaDireta', true),
                         Criteria::expr()->lte('l.status', 8)
                     )
+
                 )
-            );
+            ));
+
+            // $searchCriteria->andWhere(
+            //     Criteria::expr()->orX(
+            //         Criteria::expr()->andX(
+            //             Criteria::expr()->eq('l.leilao', null),
+            //             Criteria::expr()->eq('l.vendaDireta', true)
+            //         ),
+            //         Criteria::expr()->andX(
+            //             Criteria::expr()->lte('leilao.statusTipo', 2),
+            //             Criteria::expr()->eq('leilao.vendaDireta', true),
+            //             Criteria::expr()->lte('l.status', 8)
+            //         )
+            //     )
+            // );
         }
 
         if (isset($filtros['relevancia'])) {
