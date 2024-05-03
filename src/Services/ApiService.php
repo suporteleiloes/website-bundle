@@ -478,6 +478,21 @@ class ApiService
         $lote->setTags($data['bem']['tags'] ?? []);
         $lote->setTour360(@$data['bem']['tour360']);
 
+        if (empty($lote->getBemExtra())) {
+            $lote->setBemExtra([]);
+        }
+
+        $extra = [
+            'matricula' => $data['bem']['identificador'] ?? null,
+            'inscricaoMunicipal' => $data['bem']['inscricaoMunicipal'] ?? null,
+            'cartorio' => $data['bem']['cartorio'] ?? null,
+        ];
+
+        $lote->setBemExtra(array_merge(
+            $lote->getBemExtra(),
+            $extra
+        ));
+
         if (isset($data['leilao']) || $leilao) {
             /* @var Leilao $leilao */
             $leilao = $leilao ?? $em->getRepository(Leilao::class)->findOneByAid($data['leilao']['id']);
