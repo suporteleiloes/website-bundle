@@ -83,72 +83,27 @@ class LeilaoService
         $joins[] = ['l.leilao', 'leilao', true];
 
         if ($somenteAtivos) {
-            // $searchCriteria->andWhere(Criteria::expr()->eq('l.active', true));
+            $searchCriteria->andWhere(Criteria::expr()->eq('l.active', true));
             $searchCriteria->andWhere(Criteria::expr()->orX(
-                Criteria::expr()->in('l.status', [1,3,4]),
-
-                Criteria::expr()->orX(
-
-                    // Criteria::expr()->andX(
-                    //     Criteria::expr()->eq('l.leilao', null),
-                    //     Criteria::expr()->eq('l.vendaDireta', true)
-                    // ),
-                    Criteria::expr()->andX(
-                        Criteria::expr()->lte('leilao.statusTipo', 2),
-                        Criteria::expr()->eq('leilao.vendaDireta', true),
-                        Criteria::expr()->lte('l.status', 8)
-                    )
-
+                
+                Criteria::expr()->andX(
+                    Criteria::expr()->in('l.status', [1,2,3,4]),
+                    Criteria::expr()->eq('leilao.statusTipo', 1)
+                ),
+              
+                Criteria::expr()->andX(
+                    Criteria::expr()->eq('l.leilao', null),
+                    Criteria::expr()->eq('l.vendaDireta', true)
+                ),
+                
+                Criteria::expr()->andX(
+                    Criteria::expr()->eq('leilao.statusTipo', 2),
+                    Criteria::expr()->eq('leilao.vendaDireta', true),
+                    Criteria::expr()->eq('l.status', 8)
                 )
+                
             ));
-            //$searchCriteria->andWhere(Criteria::expr()->lt('l.status', 5));
-            /* $searchCriteria->andWhere(Criteria::expr()->orX(
-                 $searchCriteria->andWhere(Criteria::expr()->lt('l.status', 5),
-                     Criteria::expr()->andX(
-                         Criteria::expr()->eq('leilao.vendaDireta', true),
-                         Criteria::expr()->eq('leilao.statusTipo', 2),
-                         $searchCriteria->andWhere(Criteria::expr()->lt('l.status', 100),
-                     )
-             ))));*/
-            // $searchCriteria->andWhere(Criteria::expr()->orX(
-            //     Criteria::expr()->lt('l.status', 5),
-            //     Criteria::expr()->andX(
-            //         Criteria::expr()->eq('leilao.vendaDireta', true),
-            //         Criteria::expr()->lte('leilao.statusTipo', 2),
-            //         Criteria::expr()->lte('l.status', 8)
-            //     )
-            // ));
-
-            // $searchCriteria->andWhere(Criteria::expr()->orX(
-            //     Criteria::expr()->lt('l.status', 5),
-            //     Criteria::expr()->orX(
-
-            //         Criteria::expr()->andX(
-            //             Criteria::expr()->eq('l.leilao', null),
-            //             Criteria::expr()->eq('l.vendaDireta', true)
-            //         ),
-            //         Criteria::expr()->andX(
-            //             Criteria::expr()->lte('leilao.statusTipo', 2),
-            //             Criteria::expr()->eq('leilao.vendaDireta', true),
-            //             Criteria::expr()->lte('l.status', 8)
-            //         )
-
-            //     )
-            // ));
-
-            // $searchCriteria->andWhere(
-            //     Criteria::expr()->orX(
-            //         Criteria::expr()->andX(
-            //             Criteria::expr()->eq('l.leilao', null),
-            //             Criteria::expr()->eq('l.vendaDireta', true)
-            //         ),
-            //         Criteria::expr()->andX(
-            //             Criteria::expr()->lte('leilao.statusTipo', 2),
-            //             Criteria::expr()->eq('leilao.vendaDireta', true),
-            //             Criteria::expr()->lte('l.status', 8)
-            //         )
-            //     )
-            // );
+            
         }
 
         if (isset($filtros['relevancia'])) {
