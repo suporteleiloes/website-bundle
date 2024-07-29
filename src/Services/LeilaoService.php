@@ -88,7 +88,7 @@ class LeilaoService
                 
                 Criteria::expr()->andX(
                     Criteria::expr()->in('l.status', [1,2,3,4]),
-                    Criteria::expr()->eq('leilao.statusTipo', 1)
+                    Criteria::expr()->lte('leilao.statusTipo', 2)
                 ),
               
                 Criteria::expr()->andX(
@@ -97,8 +97,9 @@ class LeilaoService
                 ),
                 
                 Criteria::expr()->andX(
-                    Criteria::expr()->eq('leilao.statusTipo', 2),
+                    Criteria::expr()->eq('leilao.statusTipo', 100),
                     Criteria::expr()->eq('leilao.vendaDireta', true),
+                    Criteria::expr()->gte('leilao.dataLimitePropostas', $hoje->format('Y-m-d ') . '00:00:00'),
                     Criteria::expr()->eq('l.status', 8)
                 )
                 
@@ -508,6 +509,12 @@ class LeilaoService
 
             $searchCriteria->andWhere(
                 Criteria::expr()->orX(
+                    
+                    Criteria::expr()->andX(
+                        Criteria::expr()->eq('l.vendaDireta', true),
+                        Criteria::expr()->gte('l.dataLimitePropostas', $hoje->format('Y-m-d ') . '00:00:00')
+                    ),
+
                     Criteria::expr()->gt('l.dataProximoLeilao', $hoje->format('Y-m-d ') . '00:00:00'),
                     Criteria::expr()->in('l.statusTipo', [Leilao::STATUS_TIPO_ABERTO, Leilao::STATUS_TIPO_EM_LEILAO])
                 )
