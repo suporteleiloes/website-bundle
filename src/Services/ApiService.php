@@ -461,6 +461,7 @@ class ApiService
         $lote->setInfoVisitacao($data['bem']['infoVisitacao'] ?? null);
         $lote->setFinalidade($data['bem']['imovel']['finalidade']['nome'] ?? null);
         $lote->setOcupado($data['bem']['imovel']['ocupado'] ?? null);
+        $lote->setPatio($data['bem']['patio'] ?? null);
         if (isset($data['statsVisitas'])) {
             if (intval($data['statsVisitas']) > $lote->getVisitas()) {
                 $lote->setVisitas($data['statsVisitas'] ?? 0);

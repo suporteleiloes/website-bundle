@@ -506,6 +506,11 @@ class Lote extends ApiSync
     private $position = 99;
 
     /**
+     * @ORM\Column(type="json", nullable=true)
+     */
+    private $patio;
+
+    /**
      * @ORM\OneToMany(targetEntity="SL\WebsiteBundle\Entity\Lance", mappedBy="lote", orphanRemoval=true, cascade={"persist", "remove"})
      * @ORM\OrderBy({"valor" = "DESC", "data" = "DESC"})
      */
@@ -2114,6 +2119,22 @@ class Lote extends ApiSync
     public function setPosition(?int $position): void
     {
         $this->position = $position;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPatio()
+    {
+        return $this->patio;
+    }
+
+    /**
+     * @param mixed $patio
+     */
+    public function setPatio($patio): void
+    {
+        $this->patio = $patio;
     }
 
     public function getDadosParaJsonSite()
